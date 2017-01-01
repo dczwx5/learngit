@@ -11,3 +11,4 @@ A : 我在testBranch写了东西
 B : 我在testBranch写了东西
 
 A : 我在LAST写了东西
+B : 我也在last写了
