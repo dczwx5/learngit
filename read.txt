@@ -3,4 +3,4 @@ git is fs
 
 create a dev branch
 
-create  a dev auto
+create XXX a dev auto
