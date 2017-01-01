@@ -45,6 +45,8 @@ git commit -m "read.txt修改了, 要add再commit", 如果修改后没add, 不会被commit
 ====
 git log // 显示提交日志
 git log --pretty=oneline // 简易显示
+git log --graph --pretty=oneline --abbrev-commit // 查看分支合并情况
+git log --graph // 分支合并图
 git reset --hard HEAD 
 	// 回退版本到HEAD, HEAD^是上一个版本, HEAD^^是上上个版本
 	// 这里也可以填版本号
@@ -64,10 +66,23 @@ git clone git@github.com:OSGame/RussiaSnakeTower.git
 复制远程库到本地
 git clone git@github.com:dczwx5/test2.git
 复制下来之后, 可以进行修改提交推送, 前提是有权限
+==== 
+## 分支
+* git branch // 查看现有分支, *号表示的是当前分支
+* git branch name // 创建分支
+* git checkout bname // 切换分支
+* git checkout -b bname // 创建并切换分支
+* git merge bname // 将bname分支合并到当前分支
+* git branch -d bname // 删除分支
+
+## 合并分支
+* git merge bname // 快速合并 将bname分支合并到当前分支, 删除分支信息
+* git merge --no-ff -m "merge with no-ff" dev // 不快速合并, 保留 分支信息
+
+## 冲突
+* 冲突解决
+* 合并分支之后, 出现分支, 手动处理冲突, 然后
+* git add xxxx.xx
+* git commit -m "zzzz"
+* 此时两个分支都处于同一个head
 ====
-git branch // 查看现有分支, *号表示的是当前分支
-git branch name // 创建分支
-git checkout bname // 切换分支
-git checkout -b bname // 创建并切换分支
-git merge bname // 将bname分支合并到当前分支
-git branch -d bname // 删除分支
