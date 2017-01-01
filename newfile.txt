@@ -1,4 +1,0 @@
-public function main() : void {
-
-	trace(a+b);
-}
