@@ -53,3 +53,14 @@ git reset --hard HEAD
 ====
 git checkout -- read.txt // 清除工作区的修改, 类似reset
 git reset HEAD read.txt // 清除add
+====
+先有本地库, 再关联一个远程库
+	git remote add origin git@github.com:dczwx5/learngit.git
+	git remote add origin git@github.com:UserName/repo-name.git
+git push -u origin master //第一次推送master分支的所有内容
+git push origin master // 之后可以使用这个推送
+git clone git@github.com:OSGame/RussiaSnakeTower.git
+====
+复制远程库到本地
+git clone git@github.com:dczwx5/test2.git
+复制下来之后, 可以进行修改提交推送, 前提是有权限
