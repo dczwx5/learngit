@@ -45,7 +45,7 @@
 * git checkout -- file.xx : 清除工作区 注意是两个-的(--)
 * git checkout branchName : 切换分支
 * git checkout -b branchName : 创建并切换分支
-
+* git branch -D branchName : 强行删除一个未合并的branch
 ## reset
 回退版本, 可以指定版本号, 或HEAD, 和指定某个文件
 需不需要加--hard, 忘了
