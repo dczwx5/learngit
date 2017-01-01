@@ -1,0 +1,120 @@
+简易
+
+# 区域
+* 工作区 : 没有add/rm 之前的修改存于工作区
+* 暂存区 ：add/rm之后的修改存于暂存区
+* master : commit 之后的内容存于master区
+
+# 准备
+## 设置全局帐号/邮箱
+	* git config --global user.name "dczwx5"
+	* git config --global user.email "dczwx5@126.com"
+## 初始化仓库
+* git init : 通过git init命令把这个目录变成Git可以管理的仓库
+	
+## 创建密钥
+生成密钥 : 存于 -> C:\Users\Administrator\.ssh -> id_rsa私钥和id_rsa.pub公钥
+用公钥添加github帐户的sshkey上
+* ssh-keygen -t rsa -C "dczwx5@126.com"
+
+## 本地建库, 关联远程库
+* git remote add origin git@github.com:dczwx5/learngit.git
+* -- git remote add origin git@github.com:UserName/repo-name.git ：这是注释
+* git push -u origin master :第一次推送master分支的所有内容
+* git push origin master : 之后可以使用这个推送
+
+## 复制远程库
+* git clone git@github.com:OSGame/RussiaSnakeTower.git : vincent的项目
+* git clone git@github.com:dczwx5/test2.git : 我的项目
+
+
+# 命令
+## add
+
+* git add file.txt file2.txt file3.txt : 将工作区内容添加到暂存区
+
+## commit
+* git commit -m "fix all log" : 提交所有暂存区内存到master
+* git commit -m "fix single log" file.txt : 提交某个暂存区内容到master
+	
+
+## checkout
+* git checkout -- file.xx : 清除工作区 注意是两个-的(--)
+* git checkout branchName : 切换分支
+* git checkout -b branchName : 创建并切换分支
+
+## reset
+回退版本, 可以指定版本号, 或HEAD, 和指定某个文件
+需不需要加--hard, 忘了
+* git reset HEAD : 回退到HEAD, 即当前版本
+* git reset HEAD^/HEAD^^ : 回退到上个版本/上上个版本
+* git reset 391299123 : 回退到指定版本号
+* git reset HEAD^ -file.xx : file.xx文件回退到上个版本
+
+## 实现svn的reset
+从head版本回退到以前的版本号之后(过去), 记得最新的版本号。也可以回退回去(现在)
+如果不记得版本号, 可以通过git reflog, 查看命令历史记录
+* git reset --hard HEAD^
+* git checkout -- file.xx
+
+## pwd
+显示当前路径. 不需加git
+## status
+显示当前git状态
+
+## init
+* git init : 通过git init命令把这个目录变成Git可以管理的仓库
+
+## rm
+* git rm read.txt : 删除read.txt文件
+
+## diff
+查看修改内容
+* git diff xx.xx
+
+## log
+* git log : 显示提交日志
+* git log --pretty=oneline : 简易显示
+	
+## branch
+* git branch : 查看现有分支, *号表示的是当前分支
+* 创建并切换分支 : 
+	* 1
+		* git branch branchName : 创建分支
+		* git checkout branchName : 切换分支
+	* 2
+		* git checkout -b branchName : 创建并切换分支
+* git branch -d branchName : 删除分支 : 一般merge完确定没问题就可以删除分支
+
+## merge
+* git merge bname : 将bname分支合并到当前分支
+
+## stash
+* 某些情况可以通过不提交对应的代码替代
+* 但是有些情况只能使用stash, 比如刚好改的就是同一个文件
+* git stash : 保存现场(操作的是暂存区中的, 即add/rm之后的)
+* git stash list : 现场列表
+* git stash pop : 恢复上一个现场, 同时删除现场
+* git stash apply stash@{0} : 恢复索引是0的现场
+* git stash drop stash@{0} : 删除现场
+
+### stash使用流程
+* 在本地分支selfBranch
+	*  git add xx.xx xx.xx : add修改
+	*  git stash : 保存现场
+* 到需要改bug的分支
+	* git checkout master
+* 创建新分支处理问题
+	* git checkout -b fixBugBranch
+	* ...fixing
+	* git add xx.xx  : fix finish
+	* git commit -m "fix commit"
+* merge
+	* git checkout master
+	* git merge fixBugBranch
+* 确定没问题, 删除fixbugBranch
+	* git branch -d fixbugBranch
+* 回到selfBranch继续干活
+	* git checkout selfBranch
+	* git stash pop : 恢复现场
+	* ...working
