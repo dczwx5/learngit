@@ -1,0 +1,24 @@
+1.FW要升级，需要修改相关XAML中的所有旧版本到新版本。 
+通过PowerShell 可以非常方便的找到所有的相关文件。
+#查找本目录中下所有的xaml文件中的 ”1.0.101“ 字符串 
+select-string 1.0.101 *.xaml 
+ 
+2. 查找指定目录下所有CS文件中的特定的字符串
+复制代码
+# D:\MyProject\ 指定要递归遍历查找的目录
+# *.cs  要查找的文件
+# myString 要查找的字符串$fileList = Get-ChildItem “D:\MyProject\" -recurse *.cs | %{$_.FullName}
+Foreach($file in $fileList)
+{
+
+　　 $tmpContent = Get-Content $file
+
+　　for ($i=0; $i -le $tmpContent.length; $i++)
+　　{
+　　　　if($tmpContent[$i] -like '*myString *')　
+　　　　 {
+　　　　　　write-host $file
+　　　　　　write-host $tmpContent[$i] -background red
+　　　　}
+　　 }
+}
