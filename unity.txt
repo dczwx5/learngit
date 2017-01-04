@@ -1,3 +1,11 @@
+## 安装
+从unity官网下载, 如果不想装最新的, 就点下载旧版本, 直接点下载unity即可
+安装过程, 在装vs时, 如果卡create system restore 或 vs prepare,就重启电脑, 会自动继续装， 否则会一直卡着, 装完vs, 重新安装unity, 勾掉vs的安装
+
+# tutorial 
+https://unity3d.com/cn/learn
+https://unity3d.com/cn/learn/tutorials
+
 ## 发布
 http://docs.manew.com/Manual/index.htm : 用户指南->构建发布
 
