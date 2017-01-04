@@ -1,0 +1,20 @@
+## 发布
+http://docs.manew.com/Manual/index.htm : 用户指南->构建发布
+
+## 快捷键
+QWER : 切换 平移/移动/旋转/缩放
+## prefabs
+如果修改了prefabs的实例, 则实例与prefabs链接分离, 可点击apply重新建立连接
+
+## level
+if (Application.CanStreamedLevelBeLoaded (levelToLoad)) {
+	Application.LoadLevel (levelToLoad);
+}
+	
+场景中标记有“限编辑器 (EditorOnly)” 的任何游戏对象 (GameObject) 不会包含在发布版本中。
+上一个关卡的所有对象会销毁。为防止出现这种情况，请在任何不想销毁的对象上使用 DontDestroyOnLoad()
+
+加载新关卡完成后，信息：OnLevelWasLoaded() 将发送到所有活动的游戏对象
+
+## gameobject
+gameObject.setActive(true/false); // 激活一个物件
