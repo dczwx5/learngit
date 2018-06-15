@@ -37,8 +37,38 @@
             * 委托 
                 * public delegate int handler(int v); 
                 * 声明了一个整形参数，返回整形的委托
+                class Program
+	{
+	    public static void tt(int a) {
+    
+        Console.WriteLine(a);
+    }
+    
+		static void Main(string[] args)
+		{
+			
+			Handler h = tt;
+			h += tt;
+			h(44);
+			
+			h = new Handler(tt);
+			h += tt;
+			h(55);
+		}
+		public delegate void Handler(int a);
+	}
                 * 委托类似函数指针
             * 事件
                 * public event handle myEvent;
                 * 声明事件，使用指定的委托
-            * 
+            * test
+                delegate void Handler();
+                void func() {}
+                event Handler e;
+                Handler handler = func;
+                Handler handler2 = new Handler(func);
+               
+                e += handler;
+                e += handler2;
+                e();
+                
