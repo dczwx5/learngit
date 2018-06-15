@@ -32,4 +32,13 @@
             * 效果和ref类似，期望从函数中带出返回值
     
 * 数组
-        * 
+        
+* 事件
+            * 委托 
+                * public delegate int handler(int v); 
+                * 声明了一个整形参数，返回整形的委托
+                * 委托类似函数指针
+            * 事件
+                * public event handle myEvent;
+                * 声明事件，使用指定的委托
+            * 
