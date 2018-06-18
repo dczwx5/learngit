@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace code._delegate.mornuiHandler
     public delegate void MornHandler(ArrayList args);
 
     class CMornHandler {
-        public CMornHandler(MornHandler callback, ArrayList args) {
+        public CMornHandler(MornHandler callback, ArrayList args = null) {
             m_handler = callback;
             m_args = args;
         }

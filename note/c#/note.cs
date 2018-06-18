@@ -34,6 +34,26 @@
 * 数组
         
 * 事件
+            * 委托实际是一个类
+                public class DelegateHandler : Delegate{
+                private Object m_ptrOwner；
+                private Object m_handler；
+                private Arraylist m_handlerList;
+                public DelegateHandler Combine(DelegateHandler d1, DelegateHandler d2) {
+                if (null != d1) {
+                    
+                } else {
+                    return d2;
+                }
+            }
+            }
+            * 返回值协变 
+                * 函数返回值是委托返回值的派生类 (不能是值类型)
+                * public delegate Object Handler(String s);
+                * public String func(String) {} // String 是Object的子类
+            * 参数逆变
+                * 函数参数是委托参数基类
+                * public Object func(Object) {} // Object 是String 基类
             * 委托 
                 * public delegate int handler(int v); 
                 * 声明了一个整形参数，返回整形的委托
@@ -71,4 +91,6 @@
                 e += handler;
                 e += handler2;
                 e();
+=====================================
+
                 
