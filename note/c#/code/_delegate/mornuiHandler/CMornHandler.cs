@@ -7,20 +7,19 @@ using System.Threading.Tasks;
 
 namespace code._delegate.mornuiHandler
 {
+    // ===============================mornui Handler实现===================================
     public delegate void MornHandler(ArrayList args);
 
-    class CMornHandler {
+    public class CMornHandler {
         public CMornHandler(MornHandler callback, ArrayList args = null) {
             m_handler = callback;
             m_args = args;
         }
 
         public void execute() {
-            if (null != m_handler) {
-                m_handler(m_args);
-            }
+            Invoke(m_args);
         }
-        public void executeWith(ArrayList data) {
+        public void execute(ArrayList data) {
             if (data == null) {
                 execute();
                 return;
@@ -30,20 +29,43 @@ namespace code._delegate.mornuiHandler
                 
                 if (null != m_args) {
                     tempArgs = (ArrayList)m_args.Clone();
-                    for (int i = 0; i < data.Capacity; i++) {
+                    for (int i = 0; i < data.Count; i++) {
                         tempArgs.Add(data[i]);
                     }
                 } else {
                     tempArgs = m_args;
                 }
-                m_handler(tempArgs);
+                Invoke(tempArgs);
             }
         }
 
-        private MornHandler m_handler;
-        private ArrayList m_args;
+        protected virtual void Invoke(ArrayList args) {
+            if (null != m_handler) {
+                m_handler.Invoke(args);
+            }
+        }
+
+        protected MornHandler m_handler;
+        protected ArrayList m_args;
     }
 
+    // ==================================使用实例==================================================
+
+    public class CMornHandlerUsage {
+        public static void Usage() {
+            ArrayList args = new ArrayList();
+            args.Add(5);
+            CMornHandler mornHandler = new CMornHandler(Callback, args);
+            mornHandler.execute();
+
+        }
+        public static void Callback(ArrayList args) {
+            my.Trace("Callback");
+        }
+
+    }
+
+    /**
     // imimimimimim
     public class CMornEevenHandlerArgs {
         private Object m_owner;
@@ -74,5 +96,5 @@ namespace code._delegate.mornuiHandler
 
             }
         }
-    }
+    }*/
 }

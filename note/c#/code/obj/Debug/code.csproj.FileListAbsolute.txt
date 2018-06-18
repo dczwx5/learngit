@@ -5,3 +5,10 @@ D:\myGit\learngit\note\c#\code\obj\Debug\code.csproj.CoreCompileInputs.cache
 D:\myGit\learngit\note\c#\code\obj\Debug\code.exe
 D:\myGit\learngit\note\c#\code\obj\Debug\code.pdb
 D:\myGit\learngit\note\c#\code\obj\Debug\code.csprojAssemblyReference.cache
+F:\auto\autoGit\learngit\note\c#\code\bin\Debug\code.exe.config
+F:\auto\autoGit\learngit\note\c#\code\bin\Debug\code.exe
+F:\auto\autoGit\learngit\note\c#\code\bin\Debug\code.pdb
+F:\auto\autoGit\learngit\note\c#\code\obj\Debug\code.csprojAssemblyReference.cache
+F:\auto\autoGit\learngit\note\c#\code\obj\Debug\code.csproj.CoreCompileInputs.cache
+F:\auto\autoGit\learngit\note\c#\code\obj\Debug\code.exe
+F:\auto\autoGit\learngit\note\c#\code\obj\Debug\code.pdb

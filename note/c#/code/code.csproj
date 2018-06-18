@@ -43,12 +43,17 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DelegateEventData.cs" />
+    <Compile Include="time\MyTime.cs" />
+    <Compile Include="sync\MySync.cs" />
     <Compile Include="_delegate\DelegateCommon.cs" />
     <Compile Include="generics\GenericsCommon.cs" />
     <Compile Include="my.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="_delegate\mornuiHandler\CHandler.cs" />
+    <Compile Include="_delegate\mornuiHandler\CAyncMornHandler.cs" />
+    <Compile Include="_delegate\mornuiHandler\CMornHandler.cs" />
+    <Compile Include="_delegate\MyAsyncDelegate.cs" />
+    <Compile Include="_event\MyEventArgs.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

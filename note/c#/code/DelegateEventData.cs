@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace code {
-    class DelegateEventData {
+    public class DelegateEventData {
         public DelegateEventData(Object rOwner, String rType, Object rData) {
             owner = rOwner;
             type = rType;

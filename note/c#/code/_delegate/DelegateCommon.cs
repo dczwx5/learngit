@@ -5,7 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace code._delegate {
-    class DelegateCommon {
+    // =====================================================================================
+
+    public class DelegateCommon {
 
         public DelegateCommon() {
         }
@@ -37,5 +39,24 @@ namespace code._delegate {
         public delegate void DataEventHandler(DelegateEventData e);
     }
 
-    
+    // ============================测试实例=========================================
+    public class DelegateCommonTest {
+        public static void Usage() {
+            DelegateCommon d = new DelegateCommon();
+            d.AddDataEventListener(OnDelegateDataChangeTestA);
+            d.AddDataEventListener(OnDelegateDataChangeTestB);
+
+            d.TestChangeData();
+            d.TestChangeData();
+            d.TestChangeData();
+        }
+        public static void OnDelegateDataChangeTestA(DelegateEventData e) {
+            my.Trace("OnDelegateDataChangeTestA");
+            my.Trace(e.data);
+        }
+        public static void OnDelegateDataChangeTestB(DelegateEventData e) {
+            my.Trace("OnDelegateDataChangeTestB");
+            my.Trace(e.data);
+        }
+    }
 }

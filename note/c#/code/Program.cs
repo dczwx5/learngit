@@ -1,6 +1,9 @@
 ﻿using code._delegate;
+using code._delegate.mornuiHandler;
+using code.sync;
 using generics.generics;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,7 +12,11 @@ using System.Threading.Tasks;
 namespace code {
     class Program {
         static void Main(string[] args) {
+            MyAsyncDelegateUsage.Usage();
+            // testAyncMornHandler();
+            // new MySync();
             //  new GenericsCommon();
+            /**
             DelegateCommon d = new DelegateCommon();
             d.AddDataEventListener(OnDelegateDataChangeTestA);
             d.AddDataEventListener(OnDelegateDataChangeTestB);
@@ -18,28 +25,12 @@ namespace code {
 
             d.TestChangeData();
             d.TestChangeData();
-            d.TestChangeData();
+            d.TestChangeData();*/
 
             my.ReadLine();
 
         }
 
-        public static void OnDelegateDataChangeTestA(DelegateEventData e) {
-            my.Trace("OnDelegateDataChangeTestA");
-            my.Trace(e.data);
-        }
-        public static void OnDelegateDataChangeTestB(DelegateEventData e) {
-            my.Trace("OnDelegateDataChangeTestB");
-            my.Trace(e.data);
-        }
-        public static void OnDelegateDataChangeTestC(DelegateEventData e) {
-            my.Trace("OnDelegateDataChangeTestC");
-            my.Trace(e.data);
-        }
-
-        public static void OnDelegateDataChangeTestD(DelegateEventData e) {
-            my.Trace("OnDelegateDataChangeTestD");
-            my.Trace(e.data);
-        }
+        
     }
 }
