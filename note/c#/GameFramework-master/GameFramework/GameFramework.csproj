@@ -310,6 +310,8 @@
     <Compile Include="WebRequest\WebRequestSuccessEventArgs.cs" />
     <Compile Include="__my\dataStruct\DataType.cs" />
     <Compile Include="__my\DelegateEventData.cs" />
+    <Compile Include="__my\gameFrameWorkTest\testFsm2.cs" />
+    <Compile Include="__my\gameFrameWorkTest\testFSM.cs" />
     <Compile Include="__my\generics\GenericsCommon.cs" />
     <Compile Include="__my\my.cs" />
     <Compile Include="__my\sync\MySync.cs" />
