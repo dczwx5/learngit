@@ -310,6 +310,8 @@
     <Compile Include="WebRequest\WebRequestSuccessEventArgs.cs" />
     <Compile Include="__my\dataStruct\DataType.cs" />
     <Compile Include="__my\DelegateEventData.cs" />
+    <Compile Include="__my\gameFrameWorkTest\objPool\PoolTest1.cs" />
+    <Compile Include="__my\gameFrameWorkTest\procedure\TestProcedure.cs" />
     <Compile Include="__my\gameFrameWorkTest\testFsm2.cs" />
     <Compile Include="__my\gameFrameWorkTest\testFSM.cs" />
     <Compile Include="__my\generics\GenericsCommon.cs" />
@@ -321,6 +323,7 @@
     <Compile Include="__my\_delegate\mornuiHandler\CMornHandler.cs" />
     <Compile Include="__my\_delegate\MyAsyncDelegate.cs" />
     <Compile Include="__my\_event\MyEventArgs.cs" />
+    <Compile Include="__my\_function\MyFunction.cs" />
   </ItemGroup>
   <ItemGroup />
 </Project>
