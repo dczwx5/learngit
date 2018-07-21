@@ -1,157 +1,96 @@
-数据类型 : 
-	.JavaScript不区分整数和浮点数，统一用 Number 表示，以下都是合法的 Number 类型：
-		123; // 整数123
-		0.456; // 浮点数0.456
-		1.2345e3; // 科学计数法表示1.2345x1000，等同于1234.5
-		-99; // 负数
-		NaN; // NaN表示Not a Number，当无法计算结果时用NaN表示
-		Infinity; // Infinity表示无限大，当数值超过了
-	.字符串是以单引号'或双引号"括起来的任意文本
-	.由于JavaScript这个设计缺陷，不要使用==比较，始终坚持使用===比较。
-	.NaN
-		另一个例外是 NaN 这个特殊的 Number 与所有其他值都不相等，包括它自己：
-			NaN === NaN; // false
-			唯一能判断NaN的方法是通过isNaN()函数：
-			isNaN(NaN); // true
-	.Number 
-		这不是JavaScript的设计缺陷。浮点数在运算过程中会产生误差，因为计算机无法精确表示无限循环小数。要比较两个浮点数是否相等，只能计算它们之差的绝对值，看是否小于某个阈值：
-		Math.abs(1 / 3 - (1 - 2 / 3)) < 0.0000001; // true
-	.null 和 undefined
-	.数组
-		数组是一组按顺序排列的集合，集合的每个值称为元素。JavaScript的数组可以包括任意数据类型。例如：
-		[1, 2, 3.14, 'Hello', null, true];
-		new Array(1, 2, 3); // 创建了数组[1, 2, 3]
-		然而，出于代码的可读性考虑，强烈建议直接使用[]。
-		数组的元素可以通过索引来访问。请注意，索引的起始值为0：
-			var arr = [1, 2, 3.14, 'Hello', null, true];
-			arr[0]; // 返回索引为0的元素，即1
-			arr[5]; // 返回索引为5的元素，即true
-			arr[6]; // 索引超出了范围，返回undefined
-		// length
-			arr.length = 10; // 会改变数组长度. 
-		请注意，如果通过索引赋值时，索引超过了范围，同样会引起Array大小的变化：
-			var arr = [1, 2, 3];
-			arr[5] = 'x';
-			arr; // arr变为[1, 2, 3, undefined, undefined, 'x']
 
 
-	
+.数据类型 : 
+	.没有int 只有 Number
 	.'use strict';
 		使用use strict 。强制变量一定要先定义. 
 		如果变量没定义则是全局变量
-	.字符串
-		toUpperCase
-			toUpperCase()把一个字符串全部变为大写：
-			var s = 'Hello';
-			s.toUpperCase(); // 返回'HELLO'
-		toLowerCase
-			toLowerCase()把一个字符串全部变为小写：
-			var s = 'Hello';
-			var lower = s.toLowerCase(); // 返回'hello'并赋值给变量lower
-			lower; // 'hello'
-		indexOf
-			indexOf()会搜索指定字符串出现的位置：
-			var s = 'hello, world';
-			s.indexOf('world'); // 返回7
-			s.indexOf('World'); // 没有找到指定的子串，返回-1
-
-		substring
-			substring()返回指定索引区间的子串：
-			var s = 'hello, world'
-			s.substring(0, 5); // 从索引0开始到5（不包括5），返回'hello'
-			s.substring(7); // 从索引7开始到结束，返回'world'
-
+	.始终坚持使用===比较
+	.undefined 未定义
+	.null 空
+	.Infinity; // Infinity表示无限大，当数值超过了
+	.NaN : 
+		NaN与任意值都不等 
+		isNaN(NaN); // true 
+		NaN === NaN; // false
+	.Number : 判断大小只能用 a - b > 0.0000001;
+	.Object & Map & Set :
+		. Object's key : 字符串 : "3" 和 3是同一个key
+		. Map's key : "3" 和 3不是同一个key
+		. Set's key : "3" 和 3不是同一个key
+.字符串 :
+	.'' or ""
+	.toUpperCase : toLowerCase
+	.indexOf : 搜索指定字符串出现的位置
+		var s = 'hello, world';
+		s.indexOf('world'); // 返回7
+		s.indexOf('World'); // 没有找到指定的子串，返回-1
+	.substring : 返回指定索引区间的子串
+		var s = 'hello, world'
+		s.substring(0, 5); // 从索引0开始到5（不包括5），返回'hello'
+		s.substring(7); // 从索引7开始到结束，返回'world'
 .数组
+	// list = [1,2,3,4];
 	.indexOf
-		与String类似，Array也可以通过indexOf()来搜索一个指定的元素的位置：
-			var arr = [10, 20, '30', 'xyz'];
-			arr.indexOf(10); // 元素10的索引为0
-			arr.indexOf(20); // 元素20的索引为1
-			arr.indexOf(30); // 元素30没有找到，返回-1
-			arr.indexOf('30'); // 元素'30'的索引为2
-		注意了，数字30和字符串'30'是不同的元素。
-
-
-	.slice
-		slice()就是对应String的substring()版本，它截取Array的部分元素，然后返回一个新的Array：
-			var arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-			arr.slice(0, 3); // 从索引0开始，到索引3结束，但不包括索引3: ['A', 'B', 'C']
-			arr.slice(3); // 从索引3开始到结束: ['D', 'E', 'F', 'G']
-		注意到slice()的起止参数包括开始索引，不包括结束索引。
-		如果不给slice()传递任何参数，它就会从头到尾截取所有元素。利用这一点，我们可以很容易地复制一个Array：
-			var arr = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
-			var aCopy = arr.slice();
-			aCopy; // ['A', 'B', 'C', 'D', 'E', 'F', 'G']
-			aCopy === arr; // false
-
-
-	.push和pop
-		push()向Array的末尾添加若干元素，pop()则把Array的最后一个元素删除掉：
-			var arr = [1, 2];
-			arr.push('A', 'B'); // 返回Array新的长度: 4
-			arr; // [1, 2, 'A', 'B']
-			arr.pop(); // pop()返回'B'
-			arr; // [1, 2, 'A']
-			arr.pop(); arr.pop(); arr.pop(); // 连续pop 3次
-			arr; // []
-			arr.pop(); // 空数组继续pop不会报错，而是返回undefined
-			arr; // []
-
-
-	.unshift和shift
-		如果要往Array的头部添加若干元素，使用unshift()方法，shift()方法则把Array的第一个元素删掉：
-			var arr = [1, 2];
-			arr.unshift('A', 'B'); // 返回Array新的长度: 4
-			arr; // ['A', 'B', 1, 2]
-			arr.shift(); // 'A'
-			arr; // ['B', 1, 2]
-			arr.shift(); arr.shift(); arr.shift(); // 连续shift 3次
-			arr; // []
-			arr.shift(); // 空数组继续shift不会报错，而是返回undefined
-			arr; // []
-
+		list.indexOf(2); // 1
+	.slice : 
+		var startIndex = 1;
+		var endInstance = 3;
+		list.slice(1,3); // [2,3,4]
+		list.slice(); // [1,2,3,4]
+	.push : 添加到尾部
+	.pop : 从尾部删掉
+	.unshift : 添加到头部
+	.shift : 从头部删除
 	.sort
-		sort()可以对当前Array进行排序，它会直接修改当前Array的元素位置，直接调用时，按照默认顺序排序：
-
-			var arr = ['B', 'C', 'A'];
-			arr.sort();
-			arr; // ['A', 'B', 'C']
-		能否按照我们自己指定的顺序排序呢？完全可以，我们将在后面的函数中讲到。
-
-	.reverse
-		reverse()把整个Array的元素给掉个个，也就是反转：
-			var arr = ['one', 'two', 'three'];
-			arr.reverse(); 
-			arr; // ['three', 'two', 'one']
+	.reverse : 反转数组 : 改变本数组
 	.splice
-		splice()方法是修改Array的“万能方法”，它可以从指定的索引开始删除若干元素，然后再从该位置添加若干元素：
-			var arr = ['Microsoft', 'Apple', 'Yahoo', 'AOL', 'Excite', 'Oracle'];
-			// 从索引2开始删除3个元素,然后再添加两个元素:
-			arr.splice(2, 3, 'Google', 'Facebook'); // 返回删除的元素 ['Yahoo', 'AOL', 'Excite']
-			arr; // ['Microsoft', 'Apple', 'Google', 'Facebook', 'Oracle']
-			// 只删除,不添加:
-			arr.splice(2, 2); // ['Google', 'Facebook']
-			arr; // ['Microsoft', 'Apple', 'Oracle']
-			// 只添加,不删除:
-			arr.splice(2, 0, 'Google', 'Facebook'); // 返回[],因为没有删除任何元素
-			arr; // ['Microsoft', 'Apple', 'Google', 'Facebook', 'Oracle']
+		var startIndex = 1;
+		var deleteCount = 1;
+		var add1 = "aa";
+		var add2 = "bb";
+		var ret = null;
+		ret = list.splice(startIndex, deleteCount, add1, add2);
+		// ret = [2];
+		// list : [1, "aa", "bb", 3, 4]
 
-	.concat
-		concat()方法把当前的Array和另一个Array连接起来，并返回一个新的Array：
-			var arr = ['A', 'B', 'C'];
-			var added = arr.concat([1, 2, 3]);
-			added; // ['A', 'B', 'C', 1, 2, 3]
-			arr; // ['A', 'B', 'C']
-		请注意，concat()方法并没有修改当前Array，而是返回了一个新的Array。
-		实际上，concat()方法可以接收任意个元素和Array，并且自动把Array拆开，然后全部添加到新的Array里：
-			var arr = ['A', 'B', 'C'];
-			arr.concat(1, 2, [3, 4]); // ['A', 'B', 'C', 1, 2, 3, 4]
+	.concat : 连接数组
+		arr = ['A', 'B', 'C'];
+		var added = arr.concat([1, 2, 3]);
 
-	.join
-		join()方法是一个非常实用的方法，它把当前Array的每个元素都用指定的字符串连接起来，然后返回连接后的字符串：
-			var arr = ['A', 'B', 'C', 1, 2, 3];
-			arr.join('-'); // 'A-B-C-1-2-3'
-		如果Array的元素不是字符串，将自动转换为字符串后再连接。
+	.join ：
+		var arr = ['A', 'B', 'C', 1, 2, 3];
+		arr.join('-'); // 'A-B-C-1-2-3'
+	// map : 同于一个参数, 所有数组元素转过一个运算, 得到另一个数组
+		var foo = function (x) {return x*x};
+		var arr = [1,2,3,4,5];
+		// 使用map
+		var result = arr.map(foo); // step 3
+		// 同于
+		for (var i:int = 0; i < arr.length; i++) {
+			var value = foo(arr[i]);
+			result.push(value);
+		}
+	// reduce : 函数参数必须是2个, 从数组前2个元素开始, 使用函数运算, 得出结果, 再用结果和下一个元素运算, 一直到最后
+		// 以下实现了函数累加
+		var arr = [1,2,3,4];
+		var foo = (x1, x2) => x1+x2;
+		// 使用reduce
+		var ret = arr.reduce(foo); // 1+2+3+4;
+		// 同于
+		var ret = foo(arr[0], arr[1]);
+		ret = foo(ret, arr[2]);
+		ret = foo(ret, arr[3]);
+	// filter : 一个参数, 过滤掉为false元素, 生成新数组
+		var arr[1,2,3,4];
+		var foo = (x) => x < 3;
+		var ret = arr.filter(foo); // ret = [1,2]
+		// 也可以是3个参数 (function (element, index, self) 
+	// sort : 默认按字符串比较
+		var arr = [1, 10, 2, 20];
+		arr.sort(); // [1, 10, 2, 20];
+		var fooSort = (v1, v2) => v1 - v2;
+		arr.sort(fooSort); // 1, 2, 10, 20
 .对象
 		// 同as 的object , 键值为string
 		delete obj.xx; // 删 除字段
@@ -174,21 +113,26 @@ Map :
 		m.delete('Adam'); 
 Set :
 	// 只有key, 没有value
-		var s1 = new Set(); // 空Set
-		var s2 = new Set([1, 2, 3]); // 含1, 2, 3
-		var s = new Set([1, 2, 3, 3, '3']); // Set {1, 2, 3, "3"} 3和字符串'3'是不同的元素。重复添加，但不会有效果：
-		s.delete(3);
-		s; // Set {1, 2, "3"}
+	var s1 = new Set(); // 空Set
+	var s2 = new Set([1, 2, 3]); // 含1, 2, 3
+	var s = new Set([1, 2, 3, 3, '3']); // Set {1, 2, 3, "3"} 3和字符串'3'是不同的元素。重复添加，但不会有效果：
+	s.delete(3);
+	s; // Set {1, 2, "3"}
 
 iterable :
-	// 遍历Array可以采用下标循环，遍历Map和Set就无法使用下标。为了统一集合类型，ES6标准引入了新的iterable类型，Array、Map和Set都属于iterable类型。
-	// 具有iterable类型的集合可以通过新的for ... of循环来遍历。
-	// for ... of循环是ES6引入的新的语法，请测试你的浏览器是否支持：
-	'use strict';
-	var a = [1, 2, 3];
-	for (var x of a) {
-	}
-	console.log('你的浏览器支持for ... of');
+	// list = [10,20]; list.kk = "bb";
+	.for of : 遍历集合值
+		for (var value of list) {
+			// 10, 20
+		}
+	.for in : 遍历所有key // 类 for (var key in ..);
+		for (var key in list) {
+			// 0,1,kk
+		}
+	.forEach : 统一 遍历集合值
+		a.forEach(function (element, index, array) {
+			// 10,20
+		});
 
 函数 : 
 	// 函数允许接收任意个参数
@@ -220,8 +164,42 @@ iterable :
 			console.log(rest);
 		}
 		foo(1,2,3,4,5); // rest = [3,4,5]
+	// 匿名函数
+		function () {}
+	// => 函数
+		() => 1; // 最简单的无参函数 同 function () { return 1; }
+		x => x+1; // 1个参数 同 function (x) { return x+1; }
+		(x, y) => x + y; // 2个参数 同function (x, y) { return x + y; }
+		// 非单语句 
+		(x, y) => {
+			if (x > y) return x;
+			else return y;
+		}
+		// 如果返回值是obj // 同 function () { return {name:"kk"};}
+		() => {{name : "kk"}};  // ()=> {name:"kk"} 这是错的
+		// this 和 其他的this不一样, this指向所在的object
+	// generator
+		var foo = function* (x) {
+			while(x > 0) {
+				if (x == 1) 
+					return 1;
+				else 
+					yield x;
+				x--;
+			}
+		} 
+		// 定义function *
+		var f = foo(1); // 此时函数体未执行, 只是生成了generator对象
+		f.next(); // 执行函数 返回 {value:1, done:true}
+		f = foo(2);
+		f.next(); // 返回{value:2, done:false}
+		f.next(); // 返回{value:1, done:true};
+		// 调用next时才执行函数体
+		// 执行到yield的时候, 函数停止, 并返回
+		// 再次调用next, 从上次yield停止的地方继续执行
 		
-行末自动添加分号 : 
+		
+.行末自动添加分号 : 
 	// JavaScript引擎在行末自动添加分号的机制
 	return 
 		1;
@@ -233,30 +211,20 @@ iterable :
 	return {
 		1;
 	}
-	
-全局作用域 : 
-	// 函数外定义的变量, 函数都是全局变量, 函数, 存于window变量里
-	var abc = 13;
-	alert(abc); // 等价
-	alert(window.abc); // 等价
-	// 函数也一样
-	function foo() {
-		alert('foo');
-	}
 
-	foo(); // 直接调用foo()
-	window.foo(); // 通过window.foo()调用
-let : 
-	// 和as 一样. 变量的作用域是函数内, 所以for里定义的变量, 也是在函数内都可以使用的
-	// 为在类似for 里面定义局部变量, 使用let, 固定区域
-	for (let i = 0; i < 100; i++) {
-		// i 的作用域只在for里
-	}
-const :
-	// 常量
-	// 和 let 一样, 有区块作用域
+.作用域 : 
+	.全局作用域 : // 函数外定义的变量, 函数都是全局变量, 函数, 存于window变量里
+	.let : 
+		// 和as 一样. 变量的作用域是函数内, 所以for里定义的变量, 也是在函数内都可以使用的
+		// 为在类似for 里面定义局部变量, 使用let, 固定区域
+		for (let i = 0; i < 100; i++) {
+			// i 的作用域只在for里
+		}
+	.const :
+		// 常量
+		// 和 let 一样, 有区块作用域
 	
-解构赋值 : 
+.解构赋值 : 
 		// 
 		var array = ['a', 'b', 'c'];
 		var x = array[0];
@@ -264,7 +232,40 @@ const :
 		// ==>
 		var [x, y] = ['a', 'b'];
 	
-	
-	
+.类 
+	1.class : ES6开始才有
+		// 类定义
+		class Student {
+			// 构造函数
+			constructor(name) { 
+				// this指向自己 , name 成员变量
+				this.name = name;
+			}
+			// 成员函数
+			hello() {
+				//
+			}
+		}
+		// 类继承
+		class PrimaryStudent extends Student {
+			// 构造函数
+			constructor(name, grade) {
+				super(name); // 调用父类构造函数
+				this.grade = grade;
+			}
+			// 成员函数
+			myGrade() {
+				console.log(this.grade);
+			}
+		}
+		// 创建对象
+		var s1 = new Student("s1");
+		s1.hello();
+		var s2 = new PrimaryStudent("s2", 1);
+		s2.hello();
+		s2.myGrade();
+		
+		
+	2.非class
 	
 	
