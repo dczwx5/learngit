@@ -8,6 +8,41 @@
 	2.Project Setting : 
 		1.Input : 输入控制
 		2.Time : 游戏fps控制
+		4.Editor Setting
+			1.Unity Remote 
+				1.Device : 
+				2.Compression : 
+					// 当传输游戏屏幕到设备时图片使用的压缩类型.
+					1.jpg : 提供了高压缩和性能
+					2.png : PNG提供了一个更精确的游戏显示表现
+					
+				3.Resolution
+					1.normal : 显示标准分辨率(图形表现精确)
+					2.downSize : 缩小尺寸(性能up)
+			2.Version Control
+				
+			3.WWW Security Emulation
+				1.Enable Webplayer Security Emulation
+				2.Host URL : 
+			4.Asset Serialization 
+				1.mode :
+					1.mixed
+					2.force binary
+					3.force text
+			5.Default behavior mode 
+				1.mode ：
+					1.3D
+					2.2D
+			6.Sprite Packer
+				1.Mode :
+					1.Always Enabled
+					2.Disable
+					3.Enabled for builds
+				2.Padding Power
+			7.C# Project Generation 
+				1.Additional extendsions to include 
+					1.(defalut)txt;xml;fnt;cd
+				2.Root namespace 
 	3.Render Setting : 全局渲染控制
 		1.fog : 如果不打开fog, 物体不管多远，都会显示在窗口, 如果打开了，则会用fog代替远处的物体
 		2.Ambient light : 全局环境光（非自己创建的光源）
@@ -38,6 +73,7 @@
 		2.不支持移动端
 		3.不支持抗锯齿
 		4.只能使用4层(layer)
+
 * 生命周期
     * 加载新关卡时，所有对象都会被销毁，如果不想被销毁，使用DontDestroyOnLoad
     
