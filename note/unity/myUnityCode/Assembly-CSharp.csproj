@@ -68,6 +68,9 @@
      <Compile Include="Assets\note\_Input\CInputManagerController.cs" />
      <Compile Include="Assets\note\_Json\CJson.cs" />
      <Compile Include="Assets\note\_Json\CJsonByBehavior.cs" />
+     <Compile Include="Assets\note\_Render\_Light\_Baked_GI_Lighting.cs" />
+     <Compile Include="Assets\note\_Render\_Light\_PrecomputedRealtimeGILighting.cs" />
+     <Compile Include="Assets\note\_Render\_Light\_RealTimeLight.cs" />
      <Compile Include="Assets\note\_Test\CSetCameraToObj.cs" />
      <Compile Include="Assets\note\_Test\MaterialPlane.cs" />
      <None Include="Assets\Resources\txt.txt" />
