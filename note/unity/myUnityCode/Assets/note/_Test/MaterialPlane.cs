@@ -16,8 +16,8 @@ public class MaterialPlane : MonoBehaviour {
     public bool showDiffuseOhterColorPlane = true;
     // Use this for initialization
     void Start() {
-        m_mainCamera = GameObject.Find("MainCamera");
-        m_pointLight = GameObject.Find("PointLight");
+        //m_mainCamera = GameObject.Find("MainCamera");
+       // m_pointLight = GameObject.Find("PointLight");
         m_DiffusePlane = GameObject.Find("DiffusePlane");
         m_DiffuseNormalPlane = GameObject.Find("DiffuseNormalPlane");
         m_DiffuseSpecularPlane = GameObject.Find("DiffuseSpecularPlane");

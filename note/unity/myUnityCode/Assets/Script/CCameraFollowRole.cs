@@ -33,8 +33,6 @@ public class CCameraFollowRole : MonoBehaviour {
     }
 
     private void _mouseRight() {
-        Transform pTran = gameObject.transform;
-
         // 右键
         bool isRightMouseDown = Input.GetMouseButton(1);
         if (isRightMouseDown) {
@@ -51,17 +49,15 @@ public class CCameraFollowRole : MonoBehaviour {
         }
     }
     private void _mouseMid() {
-        Transform pTran = gameObject.transform;
-
         // 中键
         bool isMouseMidDown = Input.GetMouseButtonDown(2);
-        if (m_pCamera) {
+        if (isMouseMidDown && m_pCamera) {
             float mouseWheelValue = Input.GetAxis(CInputManagerController.MouseScrollWheel);
             m_distanceToCamera -= mouseWheelValue;
         }
     }
     private float m_distanceToCamera = 4.0f;
 
-
+     
 }
 

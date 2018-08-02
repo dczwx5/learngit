@@ -57,6 +57,9 @@ public class CJson : MonoBehaviour {
         Debug.Log(path);
         string content = CFile.ReadFile(path);
         JHeroData heroData = JsonUtility.FromJson<JHeroData>(content);
+        if (null != heroData) {
+
+        }
         Debug.Log(content);
         Debug.Log("end");
 

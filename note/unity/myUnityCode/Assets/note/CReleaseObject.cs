@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ReleaseObject : MonoBehaviour {
+public class CReleaseObject : MonoBehaviour {
 
     // Use this for initialization
     private GameObject m_cube;

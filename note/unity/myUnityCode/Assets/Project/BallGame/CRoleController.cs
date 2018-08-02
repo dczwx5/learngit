@@ -56,11 +56,13 @@ public class CRoleController : MonoBehaviour {
         m_isFire1 = Input.GetAxis(Fire1) != 0;
         m_isFire2 = Input.GetAxis(Fire2) != 0;
         m_isFire3 = Input.GetAxis(Fire3) != 0;
+        // 消除警告
+        if (m_isFire1 || m_isFire2 || m_isFire3) {
+
+        }
     }
 
     private void _ASWD() {
-
-        Transform pTran = gameObject.transform;
         float movePower = MoveStep;
         if (m_isJump) {
             movePower /= 5;

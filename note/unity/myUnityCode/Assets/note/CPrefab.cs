@@ -28,6 +28,9 @@ public class CPrefab : MonoBehaviour {
             m_material_prefab = Resources.Load(path);
         }
         Material material = (Material)Instantiate(m_material_prefab);
+        if (material) {
+
+        }
        // tomoll
     }
     // GameObject by Prefab
