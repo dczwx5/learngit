@@ -1,3 +1,6 @@
+* Application
+	Application.dataPath // F:/auto/autoGit/AssetbundleTool/Assets
+	Application.streamingAssetsPath // F:/auto/autoGit/AssetbundleTool/Assets/StreamingAssets
 * Build Setting : 发布设置
 	1.player Setting :
 		1.Resolution and presentation : 

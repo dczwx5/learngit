@@ -42,7 +42,7 @@ public class CInputController : MonoBehaviour {
                     m_isJump = true;
                    if (m_rigibody) {
                         m_rigibody.AddForce(target.transform.up * jumpPower);
-                   }
+                    }
                 }
             }
         }

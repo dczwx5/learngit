@@ -56,20 +56,38 @@
     <Reference Include="UnityEngine.Networking">
       <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\BallGame\CRoleController.cs" />
+    <Compile Include="Assets\Script\CCameraFollowRole.cs" />
     <Compile Include="Assets\Script\CSystemInfo.cs" />
+    <Compile Include="Assets\ScriptForTutorial\CEarth.cs" />
     <Compile Include="Assets\ScriptForTutorial\CInputController.cs" />
     <Compile Include="Assets\ScriptForTutorial\CInputManagerController.cs" />
     <Compile Include="Assets\ScriptForTutorial\CMonoBehaviourEvent.cs" />
+    <Compile Include="Assets\ScriptForTutorial\CMouseCoordinate.cs" />
     <Compile Include="Assets\ScriptForTutorial\CPhysicEvent.cs" />
+    <Compile Include="Assets\ScriptForTutorial\CPrefab.cs" />
+    <Compile Include="Assets\ScriptForTutorial\CReleaseObject.cs" />
     <Compile Include="Assets\ScriptForTutorial\CSetCameraToObj.cs" />
+    <Compile Include="Assets\ScriptForTutorial\CSkyBox.cs" />
     <Compile Include="Assets\ScriptForTutorial\MaterialPlane.cs" />
+    <Compile Include="Assets\ScriptForTutorial\RayCast_SengMessage.cs" />
+    <Compile Include="Assets\ScriptForTutorial\RayCast_SengMessage_children.cs" />
+    <Compile Include="Assets\ScriptForTutorial\ReleaseObject.cs" />
     <Compile Include="Assets\ScriptForTutorial\UI.cs" />
     <Compile Include="Assets\ScriptForTutorial\UI_1.cs" />
+    <Compile Include="Assets\rotationTest\CRotation.cs" />
+    <Compile Include="Assets\rotationTest\CRotation2.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />
