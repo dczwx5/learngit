@@ -80,7 +80,7 @@ public class CApplication_ResLoad : MonoBehaviour {
         // 只能加载bundle
         // WWW.LoadFromCacheOrDownload(path, 1);
 
-        AssetBundle bundle = new AssetBundle();
+        /**AssetBundle bundle = new AssetBundle();
         //读取放入StreamingAssets文件夹中的bundle文件
         string str = "file://" + Application.streamingAssetsPath + "/bundle/commoncfg.assetbundle";
         WWW www = new WWW(str);
@@ -97,6 +97,8 @@ public class CApplication_ResLoad : MonoBehaviour {
             string ret = test.ToString();
             Debug.Log(ret);
         }
+        */
+        return null;
     }
 
     // ========================================================persistentDataPath=============================================================================
