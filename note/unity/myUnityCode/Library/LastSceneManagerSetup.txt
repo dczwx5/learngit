@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Free Island Collection/Scenes/Scene 1.unity
+- path: Assets/FairyGUI/Examples/Scenes/Example 02 - Bag.unity
   isLoaded: 1
   isActive: 1
