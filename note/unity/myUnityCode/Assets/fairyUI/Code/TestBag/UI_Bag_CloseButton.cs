@@ -1,0 +1,38 @@
+/** This is an automatically generated class by FairyGUI. Please do not modify it. **/
+
+using FairyGUI;
+using FairyGUI.Utils;
+
+namespace TestBag
+{
+	public partial class UI_Bag_CloseButton : GButton
+	{
+		public Controller m_button;
+		public Controller m_c1;
+		public GImage m_n1;
+		public GImage m_n3;
+		public GImage m_n4;
+
+		public const string URL = "ui://rbw1tv9tdwwc4";
+
+		public static UI_Bag_CloseButton CreateInstance()
+		{
+			return (UI_Bag_CloseButton)UIPackage.CreateObject("TestBag","CloseButton");
+		}
+
+		public UI_Bag_CloseButton()
+		{
+		}
+
+		public override void ConstructFromXML(XML xml)
+		{
+			base.ConstructFromXML(xml);
+
+			m_button = this.GetController("button");
+			m_c1 = this.GetController("c1");
+			m_n1 = (GImage)this.GetChild("n1");
+			m_n3 = (GImage)this.GetChild("n3");
+			m_n4 = (GImage)this.GetChild("n4");
+		}
+	}
+}

@@ -1,0 +1,15 @@
+{
+	"codeGeneration":{
+		"classNamePrefix":"UI_Bag_",
+		"codePath":"D:\\myGit\\learngit\\note\\unity\\myUnityCode\\Assets\\fairyUI\\Code",
+		"codeType":"",
+		"getMemberByName":true,
+		"ignoreNoname":false,
+		"memberNamePrefix":"m_",
+		"packageName":""
+	},
+	"compressDesc":true,
+	"fileExtension":"",
+	"packageCount":2,
+	"path":"D:\\myGit\\learngit\\note\\unity\\myUnityCode\\Assets\\fairyUI\\Resources"
+}

@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/FairyGUI/Examples/Scenes/Example 02 - Bag.unity
+- path: Assets/fairyUI/bag1.unity
   isLoaded: 1
   isActive: 1
