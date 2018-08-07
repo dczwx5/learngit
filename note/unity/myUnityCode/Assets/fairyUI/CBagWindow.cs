@@ -8,6 +8,8 @@ public class CBagWindow : MonoBehaviour {
 
     // Use this for initialization
     void Start() {
+        TestBagBinder.BindAll();
+
         m_panel = gameObject.GetComponent<UIPanel>();
         Debug.Log(m_panel.name);
         m_bagView = (UI_Bag_BagWin)m_panel.ui;
