@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<component size="400,400" opaque="false">
+  <displayList>
+    <text id="n3_n2d7" name="txt" xy="135,44" size="164,61" fontSize="12" color="#ccff00" autoSize="none" text="sdfsdf"/>
+    <component id="n4_n2d7" name="btn_ok" src="n2d73" fileName="Button1.xml" xy="12,8">
+      <Button title="showNormal" selectedTitle="ok"/>
+    </component>
+    <component id="n5_n2d7" name="btn_cancel" src="n2d73" fileName="Button1.xml" xy="12,40">
+      <Button title="hideNormal" selectedTitle="cancle"/>
+    </component>
+    <component id="n6_n2d7" name="btn_show_auto_code_ui" src="n2d73" fileName="Button1.xml" xy="13,104">
+      <Button title="showAutoCodeUI" selectedTitle="ok"/>
+    </component>
+    <component id="n7_n2d7" name="btn_hide_auto_code_ui" src="n2d73" fileName="Button1.xml" xy="13,136">
+      <Button title="hideAutoCodeUI" selectedTitle="cancle"/>
+    </component>
+  </displayList>
+</component>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<packageDescription id="edbftjex" jpegQuality="80" compressPNG="true">
+  <resources>
+    <component id="n2d70" name="Test3_View.xml" path="/" exported="true"/>
+    <component id="n2d72" name="Button1.xml" path="/"/>
+  </resources>
+  <publish name="Test3" genCode="true"/>
+</packageDescription>

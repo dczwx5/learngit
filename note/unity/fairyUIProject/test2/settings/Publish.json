@@ -1,0 +1,15 @@
+{
+	"codeGeneration":{
+		"classNamePrefix":"UI_",
+		"codePath":"F:\\auto\\autoGit\\learngit\\note\\unity\\myUnityCode\\Assets\\fairyUI\\Code",
+		"codeType":"",
+		"getMemberByName":true,
+		"ignoreNoname":true,
+		"memberNamePrefix":"m_",
+		"packageName":""
+	},
+	"compressDesc":true,
+	"fileExtension":"",
+	"packageCount":2,
+	"path":"F:\\auto\\autoGit\\learngit\\note\\unity\\myUnityCode\\Assets\\fairyUI\\Resources\\Test2"
+}
