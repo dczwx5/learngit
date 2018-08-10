@@ -13,14 +13,14 @@ namespace GameFramework {
     class MainEntry {
         static void Main(string[] args) {
 
-            // __my.gameFrameWorkTest.testFSM2.Usage();
+            __my.gameFrameWorkTest.testFSM2.Usage();
 
             // GenericsCommon.Usage();
 
             // MyFunction.Usage();
 
 
-            PoolTest1.Usage();
+            // PoolTest1.Usage();
 
             // TestProcedure.Usage();
             

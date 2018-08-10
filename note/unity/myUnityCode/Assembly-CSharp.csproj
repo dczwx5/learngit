@@ -59,6 +59,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Example\ProcedureExample.cs" />
     <Compile Include="Assets\FairyGUI\Examples\Bag\BagMain.cs" />
     <Compile Include="Assets\FairyGUI\Examples\Bag\BagWindow.cs" />
     <Compile Include="Assets\FairyGUI\Examples\Bag\IconManager.cs" />
@@ -298,8 +299,10 @@
     <None Include="Assets\PostProcessing\Shaders\API\PSSL.hlsl" />
     <None Include="Assets\PostProcessing\Shaders\Debug\Vectorscope.shader" />
     <None Include="Assets\PostProcessing\Shaders\Builtins\GaussianDownsample.compute" />
+    <None Include="Assets\GameFramework\Libraries\link.xml" />
     <None Include="Assets\FairyGUI\Resources\Shaders\FairyGUI-Text.shader" />
     <None Include="Assets\FairyGUI\Examples\Resources\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
+    <None Include="Assets\GameFramework\Libraries\GameFramework.xml" />
     <None Include="Assets\FairyGUI\Resources\Shaders\FairyGUI-Text-Brighter.shader" />
     <None Include="Assets\PostProcessing\Shaders\Builtins\ScreenSpaceReflections.hlsl" />
     <None Include="Assets\PostProcessing\Shaders\Builtins\DepthOfField.shader" />
@@ -567,6 +570,12 @@
     <Reference Include="UnityEngine.StandardEvents">
       <HintPath>C:/Users/Administrator/AppData/Local/Unity/cache/packages/packages.unity.com/com.unity.standardevents@1.0.13/UnityEngine.StandardEvents.dll</HintPath>
     </Reference>
+    <Reference Include="GameFramework">
+      <HintPath>F:/auto/autoGit/learngit/note/unity/myUnityCode/Assets/GameFramework/Libraries/GameFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>F:/auto/autoGit/learngit/note/unity/myUnityCode/Assets/GameFramework/Libraries/ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="mscorlib">
       <HintPath>C:/Program Files/Unity/Editor/Data/MonoBleedingEdge/lib/mono/unity/mscorlib.dll</HintPath>
     </Reference>
@@ -603,6 +612,14 @@
     <ProjectReference Include="Unity.Postprocessing.Runtime.csproj">
       <Project>{EAA6AE6A-B26D-8852-7D3F-FE39898A5920}</Project>
       <Name>Unity.Postprocessing.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityGameFramework.Runtime.csproj">
+      <Project>{4296F5D3-1794-23D5-7F8D-567F1A8A3CA9}</Project>
+      <Name>UnityGameFramework.Runtime</Name>
+    </ProjectReference>
+    <ProjectReference Include="UnityGameFramework.Editor.csproj">
+      <Project>{ECCF1A8C-C225-B779-16F7-C7B34705A940}</Project>
+      <Name>UnityGameFramework.Editor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
