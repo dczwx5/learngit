@@ -326,7 +326,8 @@ namespace GameFramework.Resource
                     throw new GameFrameworkException(errorMessage);
                 }
 
-                LoadSceneTask mainTask = new LoadSceneTask(sceneAssetName, resourceInfo.Value, dependencyAssetNames, scatteredDependencyAssetNames, resourceChildName, loadSceneCallbacks, userData);
+                LoadSceneTask mainTask = new LoadSceneTask(sceneAssetName, resourceInfo.Value, dependencyAssetNames, scatteredDependenc
+                    yAssetNames, resourceChildName, loadSceneCallbacks, userData);
                 foreach (string dependencyAssetName in dependencyAssetNames)
                 {
                     if (!LoadDependencyAsset(dependencyAssetName, mainTask, userData))

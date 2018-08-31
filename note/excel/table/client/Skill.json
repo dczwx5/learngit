@@ -1,0 +1,344 @@
+﻿[
+    {
+        "ID" : 10001,
+        "Name" : "Skill_0002_Name",
+        "Description" : "Skill_0002_Desc",
+        "IconName" : "Skill0002",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 0,
+        "Target" : 0,
+        "Range" : 0,
+        "NumAddAttacks" : 0,
+        "AddAttackTargetType" : 0,
+        "NumTargets" : 0,
+        "RestoredRP" : 5,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 20,
+        "AttackAddStrength" : .1,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 10002,
+        "Name" : "Skill_0003_Name",
+        "Description" : "Skill_0003_Desc",
+        "IconName" : "Skill0003",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 0,
+        "Target" : 0,
+        "Range" : 2,
+        "NumAddAttacks" : 0,
+        "AddAttackTargetType" : 0,
+        "NumTargets" : 0,
+        "RestoredRP" : 10,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 30,
+        "AttackAddStrength" : .2,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 10003,
+        "Name" : "Skill_0004_Name",
+        "Description" : "Skill_0004_Desc",
+        "IconName" : "Skill0004",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 0,
+        "Target" : 0,
+        "Range" : 2,
+        "NumAddAttacks" : 0,
+        "AddAttackTargetType" : 0,
+        "NumTargets" : 0,
+        "RestoredRP" : 10,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 40,
+        "AttackAddStrength" : .3,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 10004,
+        "Name" : "Skill_0005_Name",
+        "Description" : "Skill_0005_Desc",
+        "IconName" : "Skill0005",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 0,
+        "Target" : 0,
+        "Range" : 4,
+        "NumAddAttacks" : 0,
+        "AddAttackTargetType" : 0,
+        "NumTargets" : 0,
+        "RestoredRP" : 15,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 50,
+        "AttackAddStrength" : .4,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 20000,
+        "Name" : "Skill_0001_Name",
+        "Description" : "Skill_0001_Desc",
+        "IconName" : "SuperSkill0001",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 1,
+        "Target" : 0,
+        "Range" : 5,
+        "NumAddAttacks" : 1,
+        "AddAttackTargetType" : 0,
+        "NumTargets" : 0,
+        "RestoredRP" : 5,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 50,
+        "AttackAddStrength" : .6,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 20001,
+        "Name" : "Skill_0002_Name",
+        "Description" : "Skill_0002_Desc",
+        "IconName" : "SuperSkill0002",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 1,
+        "Target" : 0,
+        "Range" : 5,
+        "NumAddAttacks" : 2,
+        "AddAttackTargetType" : 0,
+        "NumTargets" : 0,
+        "RestoredRP" : 20,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 1,
+        "AttackType" : 0,
+        "TargetHP" : 50,
+        "AttackAddStrength" : .5,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 20002,
+        "Name" : "Skill_0003_Name",
+        "Description" : "Skill_0003_Desc",
+        "IconName" : "SuperSkill0003",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 2,
+        "Target" : 0,
+        "Range" : 5,
+        "NumAddAttacks" : 2,
+        "AddAttackTargetType" : 1,
+        "NumTargets" : 0,
+        "RestoredRP" : 20,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 1,
+        "AttackType" : 0,
+        "TargetHP" : 50,
+        "AttackAddStrength" : .5,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 20003,
+        "Name" : "Skill_0004_Name",
+        "Description" : "Skill_0004_Desc",
+        "IconName" : "SuperSkill0004",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 2,
+        "Target" : 0,
+        "Range" : 6,
+        "NumAddAttacks" : 2,
+        "AddAttackTargetType" : 1,
+        "NumTargets" : 0,
+        "RestoredRP" : 20,
+        "ConsumeHP" : 0,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 50,
+        "AttackAddStrength" : .5,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    },
+    {
+        "ID" : 20004,
+        "Name" : "Skill_0005_Name",
+        "Description" : "Skill_0005_Desc",
+        "IconName" : "SuperSkill0005",
+        "SFXName" : "sfx_skill000101",
+        "ProfessionConstrain" : 0,
+        "Type" : 3,
+        "Target" : 0,
+        "Range" : 6,
+        "NumAddAttacks" : 2,
+        "AddAttackTargetType" : 1,
+        "NumTargets" : 3,
+        "RestoredRP" : 20,
+        "ConsumeHP" : 10,
+        "TargetRP" : 5,
+        "TargetRPTargetType" : 0,
+        "AttackType" : 0,
+        "TargetHP" : 70,
+        "AttackAddStrength" : .5,
+        "SelfBuffID" : 0,
+        "SelfBuffAddChance" : 0,
+        "TargetBuffID" : 0,
+        "TargetBuffAddChance" : 0,
+        "RandomTarget" : 
+        {
+            "BuffID" : 0,
+            "BuffType" : 0,
+            "BuffChance" : 0
+        },
+        "SuckHPStrength" : 0,
+        "Overcome" : 
+        {
+            "TestStructs" : [ 0, 0, 0 ]
+        },
+        "OvercomeProfessions" : [ 0, 0, 0 ],
+        "ProfessionAddStrength" : 0
+    }
+]

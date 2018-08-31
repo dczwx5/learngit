@@ -1,0 +1,19 @@
+1,0.00,,0,Project command:e:\code\laya\GameFrame/.actionScriptProperties;iflash=false;windowshow=false;chromerun=false;quickcompile=true
+Project configuration:e:\code\laya\GameFrame/.actionScriptProperties.
+1,0.00,,0,output path:e:/code/laya/GameFrame/bin/h5/
+1,0.00,,0,Main Class:e:/code/laya/GameFrame/src/LayaUISample.as
+1,0.00,,0,output file:LayaUISample
+1,0.00,,0,compilerSourcePath e:/code/laya/GameFrame/libs/laya/src/
+
+1,0.00,,0,Compile Path:e:/code/laya/GameFrame/src/
+
+1,0.00,,0,Compile Path:e:/code/laya/GameFrame/libs/laya/src/
+
+1,0.00,e:/code/laya/GameFrame/src,0,Collect
+1,0.00,e:/code/laya/GameFrame/libs/laya/src,0,Collect
+1,2.00,,0,read class message
+1,89.85,,0,Disable Flash3D e:/code/laya/GameFrame/src/LayaUISample.as
+12,89.85,e:/code/laya/GameFrame/bin/h5/LayaUISample.max.js,1281084,
+11,89.85,e:/code/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
+******************************************************************************
+14,89.85,,0,
