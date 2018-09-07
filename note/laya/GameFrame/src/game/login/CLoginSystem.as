@@ -1,6 +1,7 @@
 package game.login
 {
 	import core.framework.CAppSystem;
+	import game.login.CLoginMenuView;
 
 	/**
 	 * ...
@@ -13,6 +14,8 @@ package game.login
 
 		protected override function onAwake() : void {
 			super.onAwake();
+
+			addBean(new CLoginMenuView());
 		}
 		protected override function onStart() : void {
 			super.onStart();
@@ -20,6 +23,13 @@ package game.login
 	
 		protected override function onDestroy() : void {
 			super.onDestroy();
+		}
+
+		public function showLoginMenu() : void {
+			(getBean(CLoginMenuView) as CLoginMenuView).show();
+		}
+		public function closeLoginMenu() : void {
+			(getBean(CLoginMenuView) as CLoginMenuView).hide();
 		}
 	}
 

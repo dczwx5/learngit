@@ -25,6 +25,7 @@ package core.sequentiaProcedure
 		// handler == null, checkFinishHandler != null, 则checkFinishHandler返回true, 通过 -> 用于等待某个条件完成
 		// handler != null, checkFinishHandler == null, 执行一次handler, 然后通过 -> 用于调用一次handler, 和普通函数调用一置
 		// handler != null, checkFinishHandler != null, 执行一次handler, 并等待checkFinishHandler返回true, 通过
+		// 注意checkFinishHandler的once要设成false
 		public function addSequential(handler:Handler, checkFinishHandler:Handler) : void {
 			m_procedureInfoList[m_procedureInfoList.length] = new _CProcedureInfo(handler, checkFinishHandler);
 			if (!m_isRunning) {

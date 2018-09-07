@@ -1,0 +1,47 @@
+﻿[
+    {
+        "ID" : 0,
+        "Name" : "主城",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 1,
+        "Name" : "主线副本",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 2,
+        "Name" : "精英副本",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 3,
+        "Name" : "竞技场",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 4,
+        "Name" : "排位",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 5,
+        "Name" : "无尽塔",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 6,
+        "Name" : "世界BOSS",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 7,
+        "Name" : "公会BOSS",
+        "AutoFight" : 0
+    },
+    {
+        "ID" : 8,
+        "Name" : "公会战",
+        "AutoFight" : 0
+    }
+]

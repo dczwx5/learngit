@@ -2,6 +2,7 @@ package game
 {
 	import laya.events.Event;
 	import game.CGameStage;
+	import core.framework.CAppStage;
 	// import usage.CFsmUsage;
 	// import usage.CProcedureUsage;
 
@@ -14,6 +15,7 @@ package game
 		public function CGameStageStart(){
 			m_duringTime = 0;
 
+			CAppStage.DEBUG = true;
 			m_gameStage = CGameStage.getInstance();
 			m_gameStage.awake();
 			m_gameStage.start();

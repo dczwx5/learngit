@@ -216,6 +216,9 @@ Laya.interface('core.framework.IUpdate');
 Laya.interface('laya.resource.IDispose');
 Laya.interface('laya.runtime.IConchNode');
 Laya.interface('laya.webgl.shapes.IShape');
+Laya.interface('core.framework.IUICanvas');
+Laya.interface('core.framework.IDatabase');
+Laya.interface('core.framework.IDataTable');
 Laya.interface('laya.webgl.submit.ISubmit');
 Laya.interface('core.framework.IFixUpdate');
 Laya.interface('laya.filters.IFilterAction');
@@ -440,6 +443,513 @@ var ___Laya=(function(){
 
 /**
 *...
+*@author auto
+m_dataMap :封装简单的 key :value
+m_childData :用于组装某个较大的数据集合,拆分成各个childData,在rootData使用addChild添加
+getChild
+m_listData :数组数据,如果一个数据为数组数据,则会使用该字段,
+getListData
+*/
+//class core.CBaseData
+var CBaseData=(function(){
+	function CBaseData(listDataClass){
+		this.m_needSync=false;
+		this.m_dataMap=null;
+		this.m_rootData=null;
+		this.m_childData=null;
+		// 子数据
+		this.m_listData=null;
+		// 数组元素
+		this.m_listDataClass=null;
+		// 数组元素类型
+		this.m_system=null;
+		this.m_dataMap=new Object();
+		this.m_listDataClass=listDataClass;
+	}
+
+	__class(CBaseData,'core.CBaseData');
+	var __proto=CBaseData.prototype;
+	__proto.dispose=function(){
+		if (this.m_childData){
+			var child;
+			for(var $each_child in this.m_childData){
+				child=this.m_childData[$each_child];
+				child.dispose();
+			}
+		}
+		if (this.m_listData){
+			var listChild;
+			for(var $each_listChild in this.m_listData){
+				listChild=this.m_listData[$each_listChild];
+				listChild.dispose();
+			}
+		}
+		this.clear();
+		this.m_dataMap=null;
+		this.m_childData=null;
+		this.m_listData=null;
+		this.m_system=null;
+		this.m_rootData=null;
+	}
+
+	__proto.clear=function(){
+		for (var key in this.m_dataMap){
+			delete this.m_dataMap[key];
+		}
+		if (this.m_childData){
+			this.m_childData.length=0;
+		}
+		if (this.m_listData){
+			this.m_listData.length=0;
+		}
+	}
+
+	// 增量更新
+	__proto.updateData=function(dataObj){
+		if ((dataObj instanceof Array)){
+			if (!this.m_listData){
+				this.m_listData=[];
+			};
+			var tempList=dataObj;
+			for (var i=0;i < tempList.length;i++){
+				var listChildData=new this.m_listDataClass();
+				this._setChildCommonData(listChildData);
+				this.m_listData[this.m_listData.length]=listChildData;
+				listChildData.updateData(tempList[i]);
+			}
+			}else {
+			for (var key in dataObj){
+				this.m_dataMap[key]=dataObj[key];
+			}
+		}
+	}
+
+	__proto.getData=function(key){
+		return this.m_dataMap[key];
+	}
+
+	__proto.getInt=function(key){
+		return this.getData(key);
+	}
+
+	__proto.getBoolean=function(key){
+		return this.getData(key);
+	}
+
+	__proto.getString=function(key){
+		if (this.m_dataMap.hasOwnProperty(key)){
+			return this.getData(key);
+			}else {
+			return null;
+		}
+	}
+
+	__proto.getNumber=function(key){
+		if (this.m_dataMap.hasOwnProperty(key)){
+			return this.getData(key);
+			}else {
+			return NaN;
+		}
+	}
+
+	//===================child
+	__proto.addChild=function(childData){
+		if (!this.m_childData){
+			this.m_childData=[];
+		}
+		this.m_childData[this.m_childData.length]=childData;
+		this._setChildCommonData(childData);
+	}
+
+	__proto.getChild=function(index){
+		return this.m_childData[index];
+	}
+
+	__proto.getChildByType=function(clazz){
+		var child;
+		for(var $each_child in this.m_childData){
+			child=this.m_childData[$each_child];
+			if (Laya.__typeof(child,clazz)){
+				return child;
+			}
+		}
+		return null;
+	}
+
+	__proto.getListChildData=function(key,value){
+		var child;
+		for(var $each_child in this.m_listData){
+			child=this.m_listData[$each_child];
+			if (child[key]==value){
+				return child
+			}
+		}
+		return null;
+	}
+
+	__proto._setChildCommonData=function(child){
+		if (this.isRootData){
+			child.m_rootData=this;
+			}else {
+			child.m_rootData=this.m_rootData;
+		}
+		child.m_system=child.m_rootData.m_system;
+	}
+
+	// listData
+	__getset(0,__proto,'list',function(){
+		return this.m_listData;
+	});
+
+	__getset(0,__proto,'isRootData',function(){
+		return this.m_rootData==null;
+	});
+
+	return CBaseData;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.CBaseDataCodeBuilder
+var CBaseDataCodeBuilder=(function(){
+	function CBaseDataCodeBuilder(){
+		this.m_prefix=null;
+		this.m_packageName=null;
+		this.m_dataObject=null;
+		this.m_childIndexObject=null;
+		// childData的index
+		this.m_simpleDataObject=null;
+		this.m_objDatas=null;
+		this.m_arrayDatas=null;
+		// 数组成员,如果是简单的数组,则放到 m_simpleArrayData
+		this.m_simpleArrayData=null;
+		this.m_listChildName=null;
+		this._t="\t";
+		this._n="\n";
+		this._t_t="\t\t";
+		this._n_n="\n\n";
+		this._n_t="\n\t";
+		this._BaseDataPath="core.CBaseData";
+		this._BaseData="CBaseData";
+	}
+
+	__class(CBaseDataCodeBuilder,'core.CBaseDataCodeBuilder');
+	var __proto=CBaseDataCodeBuilder.prototype;
+	__proto.testBuildCore=function(){
+		var heroData={
+			"skill":[
+			{"ID":1,"lv":2},{"ID":2,"lv":12,"obj":[1,2,3]},],
+			"ID":"1001",
+			"lv":13,
+			"attack":15.2,
+			"color":{
+				"ppt":"abcd",
+				"avg":true
+			},
+			"stone":{
+				"power":1000,
+				"count":20
+			},
+			"qq":{
+				"number":1000,
+				"age":20,
+				"wx":{
+					"qq":1111,
+					"wxNumber":22222,
+					"phone":1331112333
+				}
+			},
+			"friends":[
+			{"name":"auto","lv":2},{"name":"bob","lv":12},],
+			"vip":[
+			{"ID":11,"lv":2},{"ID":21,"lv":12,
+				"obj":{
+					"kk2b":[{"name":1},{"name":2}]
+				}
+			},]
+		};
+		var code=this.buildCore(heroData,"core.hero","Hero");
+		this.exportCode(code);
+	}
+
+	// 数组不会以key当成员名,而是以KeyList以成员名,并会生成两个类
+	__proto.buildCore=function(dataObject,packageName,prefix,listChildName){
+		this.m_prefix=prefix;
+		this.m_packageName=packageName;
+		this.m_dataObject=dataObject;
+		this.m_listChildName=listChildName;
+		if ((this.m_dataObject instanceof Array)){
+			this._analysisList();
+			}else {
+			this._analysisObject();
+		};
+		var code="";
+		code+=this._buildPackage();
+		code+=this._buildClass();
+		code+=this._buildConstruct(this.m_objDatas,this.m_arrayDatas,this.m_childIndexObject);
+		code+=this._n;
+		code+=this._buildUpdateData(this.m_objDatas,this.m_arrayDatas);
+		code+=this._buildSimpleProperty(this.m_simpleDataObject);
+		code+=this._buildObjectProperty(this.m_objDatas,this.m_childIndexObject);
+		code+=this._buildArrayProperty(this.m_arrayDatas,this.m_childIndexObject);
+		code+=this._buildSimpleArray();
+		code+=this._n+"}}";
+		var newCoder;
+		for (var key in this.m_objDatas){
+			var value=this.m_objDatas[key];
+			newCoder=new CBaseDataCodeBuilder();
+			var childCode=newCoder.buildCore(value,this.m_packageName,this.m_prefix+this.transFirstCharToUpCase(key));
+			this.exportCode(childCode);
+		}
+		for (key in this.m_arrayDatas){
+			value=this.m_arrayDatas[key];
+			newCoder=new CBaseDataCodeBuilder();
+			childCode=newCoder.buildCore(value,this.m_packageName,this.m_prefix+this.transFirstCharToUpCase(key));
+			this.exportCode(childCode);
+		}
+		return code;
+	}
+
+	__proto._analysisList=function(){
+		var array=this.m_dataObject;
+		var fullDataObject=new Object();
+		for (var i=0;i < array.length;i++){
+			var obj=array[i];
+			for (var key in obj){
+				fullDataObject[key]=obj[key];
+			}
+		}
+		this.m_dataObject=fullDataObject;
+		this._analysisObject();
+		var newCoder=new CBaseDataCodeBuilder();
+		var code=newCoder.buildCore({},this.m_packageName,this.m_prefix+"List",this.getClassName());
+		this.exportCode(code);
+	}
+
+	__proto._analysisObject=function(){
+		this.m_childIndexObject=new Object();
+		var childIndex=0;
+		this.m_simpleDataObject=new Object();
+		this.m_objDatas=new Object();
+		this.m_arrayDatas=new Object();
+		this.m_simpleArrayData=[];
+		for (var key in this.m_dataObject){
+			var value=this.m_dataObject[key];
+			if (this.isSimpleType(value)){
+				this.m_simpleDataObject[key]=value;
+				}else if ((value instanceof Array)){
+				var v0=value[0];
+				if (this.isSimpleType(v0)){
+					this.m_simpleArrayData.push(key);
+					}else {
+					this.m_arrayDatas[key]=value;
+					this.m_childIndexObject[key]=childIndex++;
+				}
+				}else {
+				this.m_objDatas[key]=value;
+				this.m_childIndexObject[key]=childIndex++;
+			}
+		}
+	}
+
+	__proto._buildPackage=function(){
+		var code="";
+		code+="package "+this.m_packageName+" {"
+		code+=this._n;
+		code+="import "+this._BaseDataPath+";";
+		code+=this._n_n;
+		return code;
+	}
+
+	__proto.getClassName=function(){
+		var className="C"+this.m_prefix+"Data";
+		return className;
+	}
+
+	__proto.getListClassName=function(){
+		var className="C"+this.m_prefix+"ListData";
+		return className;
+	}
+
+	__proto._buildClass=function(){
+		var className=this.getClassName();
+		var code="";
+		code+="public class "+className+" extends "+this._BaseData+" {";
+		return code;
+	}
+
+	__proto._buildConstruct=function(objDatas,arrDatas,childIndexObject){
+		var className=this.getClassName();
+		var code="";
+		code+=this._n;
+		code+=this._t;
+		code+="public function "+className+"() {";
+		if (this.m_listChildName && this.m_listChildName.length > 0){
+			code+=this._n+this._t_t;
+			code+="super("+this.m_listChildName+");"
+		}
+		code+=this._buildAddChild(objDatas,arrDatas,childIndexObject);
+		code+=this._n;
+		code+=this._t+"}"
+		return code;
+	}
+
+	__proto._buildUpdateData=function(objDatas,arrDatas){
+		var code="";
+		code+=this._t;
+		code+="public override function updateData(dataObj:Object) : void {"
+		code+=this._n;
+		code+=this._t_t;
+		code+="super.updateData(dataObj);";
+		for (var key in objDatas){
+			var propertyName=key+"Data";
+			code+=this._n;
+			code+=this._t_t;
+			code+=propertyName+".updateData(dataObj[\""+key+"\"]);";
+		}
+		for (key in arrDatas){
+			propertyName=key+"Data";
+			code+=this._n;
+			code+=this._t_t;
+			code+=propertyName+".updateData(dataObj[\""+key+"\"]);";
+		}
+		code+=this._n;
+		code+=this._t;
+		code+="}";
+		return code;
+	}
+
+	__proto._buildAddChild=function(objDatas,arrDatas,childIndexObject){
+		var ret=this._n;
+		var keyList=[];
+		var key;
+		var i=0;
+		for (i=0;i < 10000;i++){
+			var isOutRange=true;
+			for (key in childIndexObject){
+				var childIndex=childIndexObject[key];
+				if (childIndex==i){
+					isOutRange=false;
+					keyList[i]=key;
+					break ;
+				}
+			}
+			if (isOutRange){
+				break ;
+			}
+		}
+		for (i=0;i < keyList.length;i++){
+			ret+=this._t_t;
+			key=keyList[i];
+			var className;
+			if (arrDatas.hasOwnProperty(key)){
+				className=this.getPropertyListClassName(key);
+				ret+="addChild(new "+className+"());"
+				}else {
+				className=this.getPropertyClassName(key);
+				ret+="addChild(new "+className+"());"
+			}
+			ret+=this._n;
+		}
+		return ret;
+	}
+
+	__proto._buildSimpleProperty=function(datas){
+		var ret="";
+		for (var key in datas){
+			ret+=this._n;
+			ret+=this._t;
+			var value=datas[key];
+			if (((typeof value=='number')&& Math.floor(value)==value)){
+				ret+="public function get "+key+"() : int { return getInt(\""+key+"\"); }"
+				}else if ((typeof value=='boolean')){
+				ret+="public function get "+key+"() : Boolean { return getBoolean(\""+key+"\"); }"
+				}else if ((typeof value=='string')){
+				ret+="public function get "+key+"() : String { return getString(\""+key+"\"); }"
+				}else if ((typeof value=='number')){
+				ret+="public function get "+key+"() : Number { return getNumber(\""+key+"\"); }"
+			}
+		}
+		return ret;
+	}
+
+	__proto._buildObjectProperty=function(datas,childIndexObject){
+		var ret="";
+		for (var key in datas){
+			ret+=this._n;
+			ret+=this._t;
+			var value=datas[key];
+			var index=childIndexObject[key];
+			var propertyName=key+"Data";
+			var className=this.getPropertyClassName(key);
+			ret+="public function get "+propertyName+"() : "+className+" { return getChild("+index+") as "+className+"; }"
+		}
+		return ret;
+	}
+
+	__proto._buildArrayProperty=function(datas,childIndexObject){
+		var ret="";
+		for (var key in datas){
+			ret+=this._n;
+			ret+=this._t;
+			var value=datas[key];
+			var index=childIndexObject[key];
+			var propertyName=key+"ListData";
+			var className=this.getPropertyListClassName(key);
+			ret+="public function get "+propertyName+"() : "+className+" { return getChild("+index+") as "+className+"; }"
+		}
+		return ret;
+	}
+
+	__proto._buildSimpleArray=function(){
+		var code="";
+		if (this.m_simpleArrayData && this.m_simpleArrayData.length > 0){
+			for (var i=0;i < this.m_simpleArrayData.length;i++){
+				code+=this._n_t;
+				code+="public function get "+this.m_simpleArrayData[i]+"() : Array() { return getData(\""+this.m_simpleArrayData[i]+"\") as Array; } ";
+			}
+		}
+		return code;
+	}
+
+	__proto.transFirstCharToUpCase=function(key){
+		var tempKey=key.charAt(0);
+		tempKey=tempKey.toUpperCase()+key.substring(1);
+		return tempKey;
+	}
+
+	__proto.getPropertyClassName=function(key){
+		var tempKey=this.transFirstCharToUpCase(key);
+		var className="C"+this.m_prefix+tempKey+"Data";
+		return className;
+	}
+
+	__proto.getPropertyListClassName=function(key){
+		var tempKey=this.transFirstCharToUpCase(key);
+		var className="C"+this.m_prefix+tempKey+"ListData";
+		return className;
+	}
+
+	__proto.isSimpleType=function(value){
+		return (((typeof value=='number')&& Math.floor(value)==value)|| (typeof value=='boolean')|| (typeof value=='string')|| (typeof value=='number'));
+	}
+
+	//======================
+	__proto.exportCode=function(code){
+		console.log("\n\n=============================================");
+		console.log(code);
+		console.log("\n\n=============================================");
+	}
+
+	return CBaseDataCodeBuilder;
+})()
+
+
+/**
+*...
 *@author
 */
 //class core.ExtendsUtils
@@ -451,385 +961,6 @@ var ExtendsUtils=(function(){
 	}
 
 	return ExtendsUtils;
-})()
-
-
-/**
-*...
-*@author auto
-*/
-//class core.framework.CLifeCycle
-var CLifeCycle=(function(){
-	function CLifeCycle(){
-		this.m_state=0;
-		this.m_state=CLifeCycle.STATE_UNREADY;
-	}
-
-	__class(CLifeCycle,'core.framework.CLifeCycle');
-	var __proto=CLifeCycle.prototype;
-	Laya.imps(__proto,{"core.framework.ILifeCycle":true})
-	//=================================================
-	__proto.destroy=function(){
-		this.onDestroy();
-	}
-
-	__proto.awake=function(){
-		if (this.isUnReady){
-			this.onAwake();
-		}
-	}
-
-	__proto.start=function(){
-		if (this.isAwakeState){
-			this.onStart();
-		}
-	}
-
-	//=================================================
-	__proto.onAwake=function(){
-		this.m_state=0;
-		var typeName=ExtendsUtils.getQualifiedClassName(this);
-		console.log(typeName+" onAwake")
-	}
-
-	__proto.onStart=function(){
-		this.m_state=1;
-		var typeName=ExtendsUtils.getQualifiedClassName(this);
-		console.log(typeName+" onStart")
-	}
-
-	__proto.onDestroy=function(){
-		this.m_state=2;
-		var typeName=ExtendsUtils.getQualifiedClassName(this);
-		console.log(typeName+" onDestroy")
-	}
-
-	__getset(0,__proto,'isUnReady',function(){
-		return this.m_state==CLifeCycle.STATE_UNREADY;
-	});
-
-	//=================================================
-	__getset(0,__proto,'isAwakeState',function(){
-		return this.m_state==0;
-	});
-
-	__getset(0,__proto,'isAwaked',function(){
-		return this.m_state >=0;
-	});
-
-	__getset(0,__proto,'isDestoryed',function(){
-		return this.m_state==2;
-	});
-
-	__getset(0,__proto,'isStarted',function(){
-		return this.m_state==1;
-	});
-
-	CLifeCycle.STATE_UNREADY=-1;
-	CLifeCycle.STATE_AWAKED=0;
-	CLifeCycle.STATE_STARTED=1;
-	CLifeCycle.STATE_DESTORYED=2;
-	return CLifeCycle;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class core.fsm.CFsmBase
-var CFsmBase=(function(){
-	function CFsmBase(name){
-		this.m_name=null;
-		this.m_name=name;
-	}
-
-	__class(CFsmBase,'core.fsm.CFsmBase');
-	var __proto=CFsmBase.prototype;
-	// virtual interface
-	__proto.shutDown=function(){}
-	__proto.update=function(deltaTime){}
-	__getset(0,__proto,'currentStateTime',function(){
-		return-1;
-	});
-
-	__getset(0,__proto,'name',function(){
-		return this.m_name;
-	});
-
-	__getset(0,__proto,'currentStateName',function(){
-		return null;
-	});
-
-	__getset(0,__proto,'isRunning',function(){
-		return false;
-	});
-
-	__getset(0,__proto,'isDestroyed',function(){
-		return false;
-	});
-
-	__getset(0,__proto,'fsmStateCount',function(){
-		return-1;
-	});
-
-	return CFsmBase;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class core.fsm.CFsmState
-var CFsmState=(function(){
-	function CFsmState(){}
-	__class(CFsmState,'core.fsm.CFsmState');
-	var __proto=CFsmState.prototype;
-	__proto.initialize=function(fsm){
-		this.onInit(fsm);
-	}
-
-	__proto.onInit=function(fsm){}
-	__proto.enter=function(fsm){
-		this.onEnter(fsm);
-	}
-
-	__proto.onEnter=function(fsm){}
-	__proto.update=function(fsm,deltaTime){
-		this.onUpdate(fsm,deltaTime);
-	}
-
-	__proto.onUpdate=function(fsm,deltaTime){}
-	__proto.leave=function(fsm,isShutDown){
-		this.onLeave(fsm,isShutDown);
-	}
-
-	__proto.onLeave=function(fsm,isShutDown){}
-	__proto.destroy=function(fsm){
-		this.onDestroy(fsm);
-	}
-
-	__proto.onDestroy=function(fsm){}
-	__proto.changeState=function(fsm,stateType){
-		var fsmImp=fsm;
-		if (null==fsmImp){
-			throw new Error("fsm is invalid");
-		}
-		if (stateType==null){
-			throw new Error("state type is invalid");
-		}
-		fsmImp.changeState(stateType);
-	}
-
-	__proto.onEvent=function(fsm,sender,eventID,userData){}
-	return CFsmState;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class core.procedure.CProcedureManager
-var CProcedureManager=(function(){
-	function CProcedureManager(){
-		this.m_pFsmManager=null;
-		this.m_procedureFsm=null;
-	}
-
-	__class(CProcedureManager,'core.procedure.CProcedureManager');
-	var __proto=CProcedureManager.prototype;
-	Laya.imps(__proto,{"core.procedure.IProcedureManager":true})
-	__proto.initialize=function(name,fsmManager,procedures){
-		if (!fsmManager){
-			throw new Error("fsm manager is invalid");
-		}
-		this.m_pFsmManager=fsmManager;
-		this.m_procedureFsm=this.m_pFsmManager.createFsm(name,this,procedures);
-	}
-
-	__proto.startProcedure=function(typeProcedure){
-		if (this.m_procedureFsm==null){
-			throw new Error("you must iniialize procedure first");
-		}
-		this.m_procedureFsm.start(typeProcedure);
-	}
-
-	__proto.hasProcedure=function(typeProcedure){
-		if (this.m_procedureFsm==null){
-			throw new Error("you must iniialize procedure first");
-		}
-		return this.m_procedureFsm.hasState(typeProcedure);
-	}
-
-	__proto.getProcedure=function(typeProcedure){
-		if (this.m_procedureFsm==null){
-			throw new Error("you must iniialize procedure first");
-		}
-		return this.m_procedureFsm.getState(typeProcedure);
-	}
-
-	__proto.update=function(deltaTime){
-		console.log("CProcedureManager.update----------------");
-	}
-
-	__proto.shutDown=function(){
-		if (this.m_pFsmManager !=null){
-			if (this.m_procedureFsm !=null){
-				this.m_pFsmManager.destroyFsm(this.m_procedureFsm.name);
-				this.m_procedureFsm=null;
-			}
-			this.m_pFsmManager=null;
-		}
-	}
-
-	__getset(0,__proto,'currentProcedure',function(){
-		if (this.m_procedureFsm==null){
-			throw new Error("you must iniialize procedure first");
-		}
-		return this.m_procedureFsm.currentState;
-	});
-
-	__getset(0,__proto,'currentProcedureTime',function(){
-		if (this.m_procedureFsm==null){
-			throw new Error("you must iniialize procedure first");
-		}
-		return this.m_procedureFsm.currentStateTime;
-	});
-
-	return CProcedureManager;
-})()
-
-
-/**
-*...
-*@author auto
-串行流程
-*/
-//class core.sequentiaProcedure.CSequentialProcedureManager
-var CSequentialProcedureManager=(function(){
-	var _CProcedureInfo;
-	function CSequentialProcedureManager(){
-		this.m_procedureInfoList=null;
-		this.m_isRunning=false;
-		this.m_currentProcedureInfo=null;
-		this.m_isRunning=false;
-		this.m_procedureInfoList=[];
-		this.m_currentProcedureInfo=null;
-	}
-
-	__class(CSequentialProcedureManager,'core.sequentiaProcedure.CSequentialProcedureManager');
-	var __proto=CSequentialProcedureManager.prototype;
-	__proto.destroy=function(){
-		this.m_isRunning=false;
-		this.m_currentProcedureInfo=null;
-		this.m_procedureInfoList=null;
-		Laya.timer.clear(this,this._onUpdate);
-	}
-
-	// handler !=null,checkFinishHandler !=null,执行一次handler,并等待checkFinishHandler返回true,通过
-	__proto.addSequential=function(handler,checkFinishHandler){
-		this.m_procedureInfoList[this.m_procedureInfoList.length]=new _CProcedureInfo(handler,checkFinishHandler);
-		if (!this.m_isRunning){
-			this.m_isRunning=true;
-			Laya.timer.frameLoop(1,this,this._onUpdate);
-		}
-	}
-
-	__proto._onUpdate=function(){
-		if (!this.m_currentProcedureInfo && this.m_procedureInfoList.length > 0){
-			this.m_currentProcedureInfo=this.m_procedureInfoList.shift();
-			if (this.m_currentProcedureInfo.handler){
-				this.m_currentProcedureInfo.handler.run();
-			}
-		}
-		if (this.m_currentProcedureInfo){
-			if (this.m_currentProcedureInfo.checkFinishHandler){
-				if (this.m_currentProcedureInfo.checkFinishHandler.run()){
-					this.m_currentProcedureInfo=null;
-				}
-				}else {
-				this.m_currentProcedureInfo=null;
-			}
-		}
-		if (!this.m_currentProcedureInfo && this.m_procedureInfoList.length==0){
-			this.m_isRunning=false;
-			Laya.timer.clear(this,this._onUpdate);
-			return;
-		}
-	}
-
-	CSequentialProcedureManager.__init$=function(){
-		//class _CProcedureInfo
-		_CProcedureInfo=(function(){
-			function _CProcedureInfo(handler,checkFinishHandler){
-				this.handler=null;
-				this.checkFinishHandler=null;
-				this.handler=handler;
-				this.checkFinishHandler=checkFinishHandler;
-			}
-			__class(_CProcedureInfo,'');
-			return _CProcedureInfo;
-		})()
-	}
-
-	return CSequentialProcedureManager;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class game.CGameStageStart
-var CGameStageStart=(function(){
-	function CGameStageStart(){
-		// procedureUsage.update(deltaTime);
-		this.m_gameStage=null;
-		this.m_duringTime=NaN;
-		this.FIX_TIME=1/60;
-		this.m_duringTime=0;
-		this.m_gameStage=CGameStage.getInstance();
-		this.m_gameStage.awake();
-		this.m_gameStage.start();
-		Laya.timer.frameLoop(1,this,this._onEnterFrame);
-	}
-
-	__class(CGameStageStart,'game.CGameStageStart');
-	var __proto=CGameStageStart.prototype;
-	__proto._onEnterFrame=function(){
-		var deltaTime=Laya.timer.delta*0.001;
-		this.m_gameStage.update(deltaTime);
-		this.m_duringTime+=deltaTime;
-		while(this.m_duringTime >=this.FIX_TIME){
-			this.m_duringTime-=this.FIX_TIME;
-			this.m_gameStage.fixUpdate(this.FIX_TIME);
-		}
-	}
-
-	return CGameStageStart;
-})()
-
-
-//class LayaUISample
-var LayaUISample=(function(){
-	function LayaUISample(){
-		MiniAdpter.init();
-		Laya.init(600,400,WebGL);
-		ResourceVersion.enable("version.json",Handler.create(this,this._onStart),2);
-	}
-
-	__class(LayaUISample,'LayaUISample');
-	var __proto=LayaUISample.prototype;
-	__proto._onStart=function(){
-		new CGameStageStart();
-	}
-
-	__proto.beginLoad=function(){}
-	// Laya.loader.load("res/atlas/comp.atlas",Handler.create(this,onLoaded));
-	__proto.onLoaded=function(){}
-	return LayaUISample;
 })()
 
 
@@ -1133,6 +1264,704 @@ var Handler=(function(){
 	Handler._pool=[];
 	Handler._gid=1;
 	return Handler;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.fsm.CFsmBase
+var CFsmBase=(function(){
+	function CFsmBase(name){
+		this.m_name=null;
+		this.m_name=name;
+	}
+
+	__class(CFsmBase,'core.fsm.CFsmBase');
+	var __proto=CFsmBase.prototype;
+	__proto.initialize=function(){}
+	// virtual interface
+	__proto.shutDown=function(){}
+	__proto.update=function(deltaTime){}
+	__getset(0,__proto,'currentStateTime',function(){
+		return-1;
+	});
+
+	__getset(0,__proto,'name',function(){
+		return this.m_name;
+	});
+
+	__getset(0,__proto,'currentStateName',function(){
+		return null;
+	});
+
+	__getset(0,__proto,'isRunning',function(){
+		return false;
+	});
+
+	__getset(0,__proto,'isDestroyed',function(){
+		return false;
+	});
+
+	__getset(0,__proto,'fsmStateCount',function(){
+		return-1;
+	});
+
+	return CFsmBase;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.fsm.CFsmState
+var CFsmState=(function(){
+	function CFsmState(){}
+	__class(CFsmState,'core.fsm.CFsmState');
+	var __proto=CFsmState.prototype;
+	__proto.initialize=function(fsm){
+		this.onInit(fsm);
+	}
+
+	__proto.onInit=function(fsm){
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onInit",typeName)
+	}
+
+	__proto.enter=function(fsm){
+		this.onEnter(fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onEnter",typeName)
+	}
+
+	__proto.update=function(fsm,deltaTime){
+		this.onUpdate(fsm,deltaTime);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){}
+	__proto.leave=function(fsm,isShutDown){
+		this.onLeave(fsm,isShutDown);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onLeave",typeName)
+	}
+
+	__proto.destroy=function(fsm){
+		this.onDestroy(fsm);
+	}
+
+	__proto.onDestroy=function(fsm){
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onDestroy",typeName)
+	}
+
+	__proto.changeState=function(fsm,stateType){
+		var fsmImp=fsm;
+		if (null==fsmImp){
+			throw new Error("fsm is invalid");
+		}
+		if (stateType==null){
+			throw new Error("state type is invalid");
+		}
+		fsmImp.changeState(stateType);
+	}
+
+	__proto.onEvent=function(fsm,sender,eventID,userData){}
+	return CFsmState;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.game.data.CDataTable
+var CDataTable=(function(){
+	function CDataTable(strName,sIDKey){
+		this.m_Name=null;
+		this.m_tableMap=null;
+		this.m_tableList=null;
+		this.m_idKey=null;
+		(sIDKey===void 0)&& (sIDKey="ID");
+		this.m_Name=strName;
+		this.m_idKey=sIDKey;
+	}
+
+	__class(CDataTable,'core.game.data.CDataTable');
+	var __proto=CDataTable.prototype;
+	Laya.imps(__proto,{"core.framework.IDataTable":true})
+	__proto.dispose=function(){
+		if (this.m_tableMap){
+			for (var key in this.m_tableMap){
+				delete this.m_tableMap[key];
+			}
+			this.m_tableMap=null;
+		}
+		if (this.m_tableList){
+			this.m_tableList.length=0;
+			this.m_tableList=null;
+		}
+	}
+
+	__proto.initWithMap=function(pDataMap){
+		if (!pDataMap){
+			return false;
+		}
+		this.m_tableMap=pDataMap;
+		return true;
+	}
+
+	__proto.findByPrimaryKey=function(key){
+		if (null==key || undefined==key){
+			return null;
+		};
+		var ret=this.m_tableMap[key];
+		if (ret==undefined){
+			return null;
+		}
+		return ret;
+	}
+
+	__proto.findByProperty=function(sPropertyName,filterVal){
+		if (null==sPropertyName || sPropertyName.length==0){
+			return null;
+		}
+		if (null==filterVal || filterVal==undefined){
+			return null;
+		};
+		var ret=[];
+		var findValue;
+		var rowObj;
+		for(var $each_rowObj in this.m_tableMap){
+			rowObj=this.m_tableMap[$each_rowObj];
+			findValue=rowObj[sPropertyName];
+			if (findValue !=null && findValue !=undefined){
+				ret[ret.length]=rowObj;
+			}
+		}
+		return ret;
+	}
+
+	__proto.toArray=function(){
+		if (null==this.m_tableList){
+			this.m_tableList=[];
+			var value;
+			for(var $each_value in this.m_tableMap){
+				value=this.m_tableMap[$each_value];
+				this.m_tableList[this.m_tableList.length]=value;
+			}
+		}
+		return this.m_tableList;
+	}
+
+	__getset(0,__proto,'name',function(){
+		return this.m_Name;
+		},function(v){
+		this.m_Name=v;
+	});
+
+	__getset(0,__proto,'primaryKey',function(){
+		return this.m_idKey;
+	});
+
+	__getset(0,__proto,'tableMap',function(){
+		return this.m_tableMap;
+	});
+
+	__getset(0,__proto,'last',function(){
+		var array=this.toArray();
+		if (array && array.length > 0){
+			return array[array.length-1];
+		}
+		return null;
+	});
+
+	__getset(0,__proto,'first',function(){
+		var array=this.toArray();
+		if (array && array.length > 0){
+			return array[0];
+		}
+		return null;
+	});
+
+	return CDataTable;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.log.CLog
+var CLog=(function(){
+	function CLog(){}
+	__class(CLog,'core.log.CLog');
+	CLog.log=function(msg,__args){
+		var args=[];for(var i=1,sz=arguments.length;i<sz;i++)args.push(arguments[i]);
+		if (!CAppStage.DEBUG)return;
+		if (args && args.length > 0){
+			for (var i=0;i < args.length;i++){
+				var matchString="{"+i+"}";
+				var index=msg.indexOf(matchString);
+				if (index==-1){
+					msg+=args[i];
+					}else {
+					msg=msg.replace("{"+i+"}",args[i]);
+				}
+			}
+		}
+		console.log(msg);
+	}
+
+	return CLog;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.procedure.CProcedureManager
+var CProcedureManager=(function(){
+	function CProcedureManager(){
+		this.m_pFsmManager=null;
+		this.m_procedureFsm=null;
+	}
+
+	__class(CProcedureManager,'core.procedure.CProcedureManager');
+	var __proto=CProcedureManager.prototype;
+	Laya.imps(__proto,{"core.procedure.IProcedureManager":true})
+	__proto.initialize=function(name,fsmManager,procedures){
+		if (!fsmManager){
+			throw new Error("fsm manager is invalid");
+		}
+		this.m_pFsmManager=fsmManager;
+		this.m_procedureFsm=this.m_pFsmManager.createFsm(name,this,procedures);
+	}
+
+	__proto.startProcedure=function(typeProcedure){
+		if (this.m_procedureFsm==null){
+			throw new Error("you must iniialize procedure first");
+		}
+		this.m_procedureFsm.start(typeProcedure);
+	}
+
+	__proto.hasProcedure=function(typeProcedure){
+		if (this.m_procedureFsm==null){
+			throw new Error("you must iniialize procedure first");
+		}
+		return this.m_procedureFsm.hasState(typeProcedure);
+	}
+
+	__proto.getProcedure=function(typeProcedure){
+		if (this.m_procedureFsm==null){
+			throw new Error("you must iniialize procedure first");
+		}
+		return this.m_procedureFsm.getState(typeProcedure);
+	}
+
+	__proto.update=function(deltaTime){
+		console.log("CProcedureManager.update----------------");
+	}
+
+	__proto.shutDown=function(){
+		if (this.m_pFsmManager !=null){
+			if (this.m_procedureFsm !=null){
+				this.m_pFsmManager.destroyFsm(this.m_procedureFsm.name);
+				this.m_procedureFsm=null;
+			}
+			this.m_pFsmManager=null;
+		}
+	}
+
+	__getset(0,__proto,'currentProcedure',function(){
+		if (this.m_procedureFsm==null){
+			throw new Error("you must iniialize procedure first");
+		}
+		return this.m_procedureFsm.currentState;
+	});
+
+	__getset(0,__proto,'currentProcedureTime',function(){
+		if (this.m_procedureFsm==null){
+			throw new Error("you must iniialize procedure first");
+		}
+		return this.m_procedureFsm.currentStateTime;
+	});
+
+	return CProcedureManager;
+})()
+
+
+/**
+*...
+*@author auto
+串行流程
+*/
+//class core.sequentiaProcedure.CSequentialProcedureManager
+var CSequentialProcedureManager=(function(){
+	var _CProcedureInfo;
+	function CSequentialProcedureManager(){
+		this.m_procedureInfoList=null;
+		this.m_isRunning=false;
+		this.m_currentProcedureInfo=null;
+		this.m_isRunning=false;
+		this.m_procedureInfoList=[];
+		this.m_currentProcedureInfo=null;
+	}
+
+	__class(CSequentialProcedureManager,'core.sequentiaProcedure.CSequentialProcedureManager');
+	var __proto=CSequentialProcedureManager.prototype;
+	__proto.destroy=function(){
+		this.m_isRunning=false;
+		this.m_currentProcedureInfo=null;
+		this.m_procedureInfoList=null;
+		Laya.timer.clear(this,this._onUpdate);
+	}
+
+	// 注意checkFinishHandler的once要设成false
+	__proto.addSequential=function(handler,checkFinishHandler){
+		this.m_procedureInfoList[this.m_procedureInfoList.length]=new _CProcedureInfo(handler,checkFinishHandler);
+		if (!this.m_isRunning){
+			this.m_isRunning=true;
+			Laya.timer.frameLoop(1,this,this._onUpdate);
+		}
+	}
+
+	__proto._onUpdate=function(){
+		if (!this.m_currentProcedureInfo && this.m_procedureInfoList.length > 0){
+			this.m_currentProcedureInfo=this.m_procedureInfoList.shift();
+			if (this.m_currentProcedureInfo.handler){
+				this.m_currentProcedureInfo.handler.run();
+			}
+		}
+		if (this.m_currentProcedureInfo){
+			if (this.m_currentProcedureInfo.checkFinishHandler){
+				if (this.m_currentProcedureInfo.checkFinishHandler.run()){
+					this.m_currentProcedureInfo=null;
+				}
+				}else {
+				this.m_currentProcedureInfo=null;
+			}
+		}
+		if (!this.m_currentProcedureInfo && this.m_procedureInfoList.length==0){
+			this.m_isRunning=false;
+			Laya.timer.clear(this,this._onUpdate);
+			return;
+		}
+	}
+
+	CSequentialProcedureManager.__init$=function(){
+		//class _CProcedureInfo
+		_CProcedureInfo=(function(){
+			function _CProcedureInfo(handler,checkFinishHandler){
+				this.handler=null;
+				this.checkFinishHandler=null;
+				this.handler=handler;
+				this.checkFinishHandler=checkFinishHandler;
+			}
+			__class(_CProcedureInfo,'');
+			return _CProcedureInfo;
+		})()
+	}
+
+	return CSequentialProcedureManager;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class game.CGameStageStart
+var CGameStageStart=(function(){
+	function CGameStageStart(){
+		// procedureUsage.update(deltaTime);
+		this.m_gameStage=null;
+		this.m_duringTime=NaN;
+		this.FIX_TIME=1/60;
+		this.m_duringTime=0;
+		CAppStage.DEBUG=true;
+		this.m_gameStage=CGameStage.getInstance();
+		this.m_gameStage.awake();
+		this.m_gameStage.start();
+		Laya.timer.frameLoop(1,this,this._onEnterFrame);
+	}
+
+	__class(CGameStageStart,'game.CGameStageStart');
+	var __proto=CGameStageStart.prototype;
+	__proto._onEnterFrame=function(){
+		var deltaTime=Laya.timer.delta*0.001;
+		this.m_gameStage.update(deltaTime);
+		this.m_duringTime+=deltaTime;
+		while(this.m_duringTime >=this.FIX_TIME){
+			this.m_duringTime-=this.FIX_TIME;
+			this.m_gameStage.fixUpdate(this.FIX_TIME);
+		}
+	}
+
+	return CGameStageStart;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class game.CPathUtils
+var CPathUtils=(function(){
+	function CPathUtils(){}
+	__class(CPathUtils,'game.CPathUtils');
+	CPathUtils.getUIPath=function(uiName){
+		return "res/atlas/"+uiName+".atlas";
+	}
+
+	CPathUtils.getTablePath=function(tableName){
+		return "../../"+"runtime/table/client/"+tableName+".json";
+	}
+
+	CPathUtils.GAME_PATH="../../";
+	return CPathUtils;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class game.CTableConstant
+var CTableConstant=(function(){
+	function CTableConstant(){}
+	__class(CTableConstant,'game.CTableConstant');
+	CTableConstant.INSTANCE="Instance";
+	CTableConstant.CHAPTER="Chapter";
+	CTableConstant.INSTANCE_TYPE="InstanceType";
+	__static(CTableConstant,
+	['tableList',function(){return this.tableList=[
+		"Instance",
+		"Chapter",
+		"InstanceType"];}
+	]);
+	return CTableConstant;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.EProcedureKey
+var EProcedureKey=(function(){
+	function EProcedureKey(){}
+	__class(EProcedureKey,'game.procedure.EProcedureKey');
+	EProcedureKey.NEXT_SCENE_ID="nextSceneID";
+	return EProcedureKey;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class game.scene.ESceneID
+var ESceneID=(function(){
+	function ESceneID(){}
+	__class(ESceneID,'game.scene.ESceneID');
+	ESceneID.LOGIN_MENU=0;
+	ESceneID.GAMING=1;
+	return ESceneID;
+})()
+
+
+/**
+*...
+*@author auto
+*/
+//class game.view.EViewType
+var EViewType=(function(){
+	function EViewType(){}
+	__class(EViewType,'game.view.EViewType');
+	EViewType.LOBBY=1;
+	EViewType.LOGIN_MENU=2;
+	return EViewType;
+})()
+
+
+// sequntialProceudreManager不能只有一条线
+//class LayaUISample
+var LayaUISample=(function(){
+	function LayaUISample(){
+		MiniAdpter.init();
+		Laya.init(720,1280,WebGL);
+		Stat.show();
+		Laya.stage.scaleMode="exactfit";
+		ResourceVersion.enable("version.json",Handler.create(this,this._onStart),2);
+	}
+
+	__class(LayaUISample,'LayaUISample');
+	var __proto=LayaUISample.prototype;
+	__proto._onStart=function(){
+		new CGameStageStart();
+		Chapter;
+		var clazz=ClassTool.getClassByName("table.Chapter")
+		console.log("class : "+clazz);
+	}
+
+	__proto.beginLoad=function(){}
+	// Laya.loader.load("res/atlas/comp.atlas",Handler.create(this,onLoaded));
+	__proto.onLoaded=function(){}
+	return LayaUISample;
+})()
+
+
+//class table.Chapter
+var Chapter=(function(){
+	function Chapter(data){
+		this._data=null;
+		this._data=data;
+	}
+
+	__class(Chapter,'table.Chapter');
+	var __proto=Chapter.prototype;
+	__getset(0,__proto,'ID',function(){
+		return this._data.ID;
+	});
+
+	__getset(0,__proto,'Type',function(){
+		return this._data.Type;
+	});
+
+	__getset(0,__proto,'Name',function(){
+		return this._data.Name;
+	});
+
+	__getset(0,__proto,'OpenLevel',function(){
+		return this._data.OpenLevel;
+	});
+
+	__getset(0,__proto,'Reward',function(){
+		return this._data.Reward;
+	});
+
+	return Chapter;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class usage.CBaseDataUsage
+var CBaseDataUsage=(function(){
+	var RootData,StoneData,SkillListData,SkillData;
+	function CBaseDataUsage(){
+		var heroData={
+			"ID":1001,
+			"lv":13,
+			"attack":15,
+			"stone":{
+				"power":1000,
+				"count":20
+			},
+			"skill":[
+			{"ID":1,"lv":2},{"ID":2,"lv":12},]
+		};
+		var rootData=new RootData();
+		rootData.updateData(heroData);
+		console.log("ID : "+rootData.ID);
+		console.log("level : "+rootData.lv);
+		console.log("attack : "+rootData.attack);
+		console.log("________stoneData");
+		console.log("power : "+rootData.stoneData.power);
+		console.log("count : "+rootData.stoneData.count);
+		console.log("________skillData");
+		var skillData=rootData.skillListData.getByID(2);
+		console.log("ID : "+skillData.ID);
+		console.log("level : "+skillData.lv);
+	}
+
+	__class(CBaseDataUsage,'usage.CBaseDataUsage');
+	CBaseDataUsage.__init$=function(){
+		//class RootData extends core.CBaseData
+		RootData=(function(_super){
+			function RootData(){
+				RootData.__super.call(this);
+				this.addChild(new StoneData());
+				this.addChild(new SkillListData());
+			}
+			__class(RootData,'',_super);
+			var __proto=RootData.prototype;
+			__proto.updateData=function(dataObj){
+				_super.prototype.updateData.call(this,dataObj);
+				var obj=this.getData("stone");
+				this.stoneData.updateData(obj);
+				this.skillListData.updateData(dataObj["skill"]);
+			}
+			__getset(0,__proto,'ID',function(){return this.getInt("ID");});
+			__getset(0,__proto,'lv',function(){return this.getInt("lv");});
+			__getset(0,__proto,'attack',function(){return this.getInt("attack");});
+			__getset(0,__proto,'skillListData',function(){
+				return this.getChildByType(SkillListData);
+			});
+			__getset(0,__proto,'stoneData',function(){
+				return this.getChild(0);
+			});
+			RootData._Stone="stone";
+			RootData._ID="ID";
+			RootData._Level="lv";
+			RootData._Attack="attack";
+			return RootData;
+		})(CBaseData)
+		//class StoneData extends core.CBaseData
+		StoneData=(function(_super){
+			function StoneData(){
+				StoneData.__super.call(this);;
+			}
+			__class(StoneData,'',_super);
+			var __proto=StoneData.prototype;
+			__getset(0,__proto,'power',function(){return this.getInt("power");});
+			__getset(0,__proto,'count',function(){return this.getInt("count");});
+			StoneData._Power="power";
+			StoneData._Count="count";
+			return StoneData;
+		})(CBaseData)
+		//class SkillListData extends core.CBaseData
+		SkillListData=(function(_super){
+			function SkillListData(){
+				SkillListData.__super.call(this,SkillData);
+			}
+			__class(SkillListData,'',_super);
+			var __proto=SkillListData.prototype;
+			__proto.updateData=function(dataObj){
+				_super.prototype.updateData.call(this,dataObj);
+			}
+			__proto.getByID=function(id){
+				return this.getListChildData("ID",id);
+			}
+			return SkillListData;
+		})(CBaseData)
+		//class SkillData extends core.CBaseData
+		SkillData=(function(_super){
+			function SkillData(){
+				SkillData.__super.call(this);;
+			}
+			__class(SkillData,'',_super);
+			var __proto=SkillData.prototype;
+			__getset(0,__proto,'ID',function(){return this.getInt("ID");});
+			__getset(0,__proto,'lv',function(){return this.getInt("lv");});
+			SkillData._ID="ID";
+			SkillData._Level="lv";
+			return SkillData;
+		})(CBaseData)
+	}
+
+	return CBaseDataUsage;
 })()
 
 
@@ -2530,6 +3359,156 @@ var ClassTool=(function(){
 	['displayTypes',function(){return this.displayTypes={"boolean":true,"number":true,"string":true };}
 	]);
 	return ClassTool;
+})()
+
+
+/**
+*
+*@author ww
+*@version 1.0
+*
+*@created 2015-11-27 上午9:58:59
+*/
+//class laya.debug.tools.JsonTool
+var JsonTool=(function(){
+	function JsonTool(){}
+	__class(JsonTool,'laya.debug.tools.JsonTool');
+	JsonTool.getJsonString=function(obj,singleLine,split,depth,Width){
+		(singleLine===void 0)&& (singleLine=true);
+		(split===void 0)&& (split="\n");
+		(depth===void 0)&& (depth=0);
+		(Width===void 0)&& (Width=4);
+		var preStr="";
+		preStr=JsonTool.getEmptyStr(depth*Width);
+		var rst;
+		var keyValues;
+		keyValues={};
+		var tKey;
+		var tValue;
+		var type;
+		var keys;
+		keys=[];
+		for(tKey in obj){
+			keys.push(tKey);
+			tValue=obj[tKey];
+			if(JsonTool.singleLineKey[tKey]){
+				keyValues[tKey]=JsonTool.getValueStr(tValue,true,split,depth+1,Width);
+				}else{
+				keyValues[tKey]=JsonTool.getValueStr(tValue,singleLine,split,depth+1,Width);
+			}
+		};
+		var i=0,len=0;
+		len=keys.length;
+		keys.sort();
+		keys=keys.reverse();
+		var keyPreStr;
+		keyPreStr=JsonTool.getEmptyStr((depth+1)*Width);
+		if(singleLine){
+			split="";
+			preStr="";
+			keyPreStr="";
+		};
+		var keyValueStrArr;
+		keyValueStrArr=[];
+		for(i=0;i<len;i++){
+			tKey=keys[i];
+			keyValueStrArr.push(keyPreStr+JsonTool.wrapValue(tKey)+":"+keyValues[tKey]);
+		}
+		rst="{"+split+keyValueStrArr.join(","+split)+split+preStr+"}";
+		return rst;
+	}
+
+	JsonTool.wrapValue=function(value,wraper){
+		(wraper===void 0)&& (wraper="\"");
+		return wraper+value+wraper;
+	}
+
+	JsonTool.getArrStr=function(arr,singleLine,split,depth,Width){
+		(singleLine===void 0)&& (singleLine=true);
+		(split===void 0)&& (split="\n");
+		(depth===void 0)&& (depth=0);
+		(Width===void 0)&& (Width=4);
+		var rst;
+		var i=0,len=0;
+		len=arr.length;
+		var valueStrArr;
+		valueStrArr=[];
+		for(i=0;i<len;i++){
+			valueStrArr.push(JsonTool.getValueStr(arr[i],singleLine,split,depth+1,Width));
+		};
+		var preStr="";
+		preStr=JsonTool.getEmptyStr((depth+1)*Width);
+		if(singleLine){
+			split="";
+			preStr="";
+		}
+		rst="["+split+preStr+valueStrArr.join(","+split+preStr)+"]";
+		return rst;
+	}
+
+	JsonTool.quote=function(string){
+		JsonTool.escapable.lastIndex=0;
+		return JsonTool.escapable.test(string)? '"'+string.replace(JsonTool.escapable,function(a){
+			var c=JsonTool.meta[a];
+			return typeof c==='string' ? c :
+			'\\u'+('0000'+a.charCodeAt(0).toString(16)).slice(-4);
+		})+'"' :'"'+string+'"';
+	}
+
+	JsonTool.getValueStr=function(tValue,singleLine,split,depth,Width){
+		(singleLine===void 0)&& (singleLine=true);
+		(split===void 0)&& (split="\n");
+		(depth===void 0)&& (depth=0);
+		(Width===void 0)&& (Width=0);
+		var rst;
+		if((typeof tValue=='string')){
+			rst=JsonTool.quote(tValue);
+			}else if(tValue==null){
+			rst="null";
+			}else if((typeof tValue=='number')|| ((typeof tValue=='number')&& Math.floor(tValue)==tValue)|| (typeof tValue=='boolean')){
+			rst=tValue;
+			}else if((tValue instanceof Array)){
+			rst=JsonTool.getArrStr(tValue,singleLine,split,depth,Width);
+			}else if((typeof tValue=='object')){
+			rst=JsonTool.getJsonString(tValue,singleLine,split,depth,Width);
+			}else{
+			rst=tValue;
+		}
+		return rst;
+	}
+
+	JsonTool.getEmptyStr=function(width){
+		if(!JsonTool.emptyDic.hasOwnProperty(width)){
+			var i=0;
+			var len=0;
+			len=width;
+			var rst;
+			rst="";
+			for(i=0;i<len;i++){
+				rst+=" ";
+			}
+			JsonTool.emptyDic[width]=rst;
+		}
+		return JsonTool.emptyDic[width];
+	}
+
+	JsonTool.emptyDic={};
+	__static(JsonTool,
+	['singleLineKey',function(){return this.singleLineKey={
+			"props":true
+		};},'escapable',function(){return this.escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;},'meta',function(){return this.meta = {   
+		'\b':'\\b',
+		'\t':'\\t',
+		'\n':'\\n',
+		'\f':'\\f',
+		'\r':'\\r',
+		'"' :'\\"',
+		'\\':'\\\\'
+};}
+
+
+]);
+return JsonTool;
 })()
 
 
@@ -17697,41 +18676,25 @@ var UIConfig=(function(){
 *...
 *@author auto
 */
-//class core.framework.CContainerLifeCycle extends core.framework.CLifeCycle
-var CContainerLifeCycle=(function(_super){
-	function CContainerLifeCycle(){
-		this.m_beanList=null;
-		this.m_unReadyBeanList=null;
-		this.m_unStartBeanList=null;
-		CContainerLifeCycle.__super.call(this);
-		this.m_beanList=[];
-		this.m_unReadyBeanList=[];
-		this.m_unStartBeanList=[];
+//class core.framework.CLifeCycle extends laya.events.EventDispatcher
+var CLifeCycle=(function(_super){
+	function CLifeCycle(){
+		this.m_state=0;
+		CLifeCycle.__super.call(this);
+		this.m_state=CLifeCycle.STATE_UNREADY;
 	}
 
-	__class(CContainerLifeCycle,'core.framework.CContainerLifeCycle',_super);
-	var __proto=CContainerLifeCycle.prototype;
+	__class(CLifeCycle,'core.framework.CLifeCycle',_super);
+	var __proto=CLifeCycle.prototype;
+	Laya.imps(__proto,{"core.framework.ILifeCycle":true})
 	//=================================================
 	__proto.destroy=function(){
-		_super.prototype.destroy.call(this);
-		for (var i=this.m_beanList.length-1;i >=0;i--){
-			var o=this.m_beanList[i];
-			o.destroy();
-		}
+		this.onDestroy();
 	}
 
 	__proto.awake=function(){
-		_super.prototype.awake.call(this);
-		if (this.m_unReadyBeanList.length > 0){
-			for (var i=0;i < this.m_unReadyBeanList.length;i++){
-				var o=this.m_unReadyBeanList[i];
-				o.awake();
-				if (o.isAwaked){
-					this.m_unReadyBeanList.splice(i,1);
-					i--;
-					this.m_unStartBeanList.push(o);
-				}
-			}
+		if (this.isUnReady){
+			this.onAwake();
 		}
 	}
 
@@ -17739,94 +18702,54 @@ var CContainerLifeCycle=(function(_super){
 		if (this.isAwakeState){
 			this.onStart();
 		}
-		if (this.m_unStartBeanList.length > 0){
-			for (var i=0;i < this.m_unStartBeanList.length;i++){
-				var o=this.m_unStartBeanList[i];
-				o.start();
-				if (o.isStarted){
-					this.m_unStartBeanList.splice(i,1);
-					i--;
-				}
-			}
-		}
 	}
 
 	//=================================================
 	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
+		this.m_state=0;
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onAwake",typeName);
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		this.m_state=1;
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onStart",typeName);
 	}
 
 	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
+		this.m_state=2;
+		var typeName=ExtendsUtils.getQualifiedClassName(this);
+		CLog.log("{0} onDestroy",typeName);
 	}
+
+	__getset(0,__proto,'isUnReady',function(){
+		return this.m_state==CLifeCycle.STATE_UNREADY;
+	});
 
 	//=================================================
-	__proto.getBean=function(clz){
-		if (this.m_beanList){
-			var o;
-			for(var $each_o in this.m_beanList){
-				o=this.m_beanList[$each_o];
-				if (Laya.__typeof(o,clz)){
-					return o;
-				}
-			}
-		}
-		return null;
-	}
+	__getset(0,__proto,'isAwakeState',function(){
+		return this.m_state==0;
+	});
 
-	__proto.getBeans=function(){
-		return this.m_beanList;
-	}
+	__getset(0,__proto,'isAwaked',function(){
+		return this.m_state >=0;
+	});
 
-	__proto.removeBean=function(b){
-		if (!b){
-			return false;
-		};
-		var index=this.m_beanList.indexOf(b);
-		if (-1==index){
-			return false;
-		}
-		this.m_beanList.splice(index,1);
-		index=this.m_unReadyBeanList.indexOf(b);
-		if (-1 !=index){
-			this.m_unReadyBeanList.splice(index,1);
-		}
-		index=this.m_unStartBeanList.indexOf(b);
-		if (-1 !=index){
-			this.m_unStartBeanList.splice(index,1);
-		}
-		return true;
-	}
+	__getset(0,__proto,'isDestoryed',function(){
+		return this.m_state==2;
+	});
 
-	__proto.addBean=function(o){
-		if (!o){
-			return false;
-		}
-		if (this.contains(o)){
-			return false;
-		}
-		this.m_beanList.push(o);
-		this.m_unReadyBeanList.push(o);
-		return true;
-	}
+	__getset(0,__proto,'isStarted',function(){
+		return this.m_state==1;
+	});
 
-	__proto.contains=function(o){
-		var b;
-		for(var $each_b in this.m_beanList){
-			b=this.m_beanList[$each_b];
-			if (b==o){
-				return true;
-			}
-		}
-		return false;
-	}
-
-	return CContainerLifeCycle;
-})(CLifeCycle)
+	CLifeCycle.STATE_UNREADY=-1;
+	CLifeCycle.STATE_AWAKED=0;
+	CLifeCycle.STATE_STARTED=1;
+	CLifeCycle.STATE_DESTORYED=2;
+	return CLifeCycle;
+})(EventDispatcher)
 
 
 /**
@@ -17852,7 +18775,6 @@ var CFsm=(function(_super){
 		for(var $each_fsmState in stateList){
 			fsmState=stateList[$each_fsmState];
 			this.m_states[i++]=fsmState;
-			fsmState.initialize(this);
 		}
 		this.m_currentStateTime=0;
 		this.m_currentState=null;
@@ -17862,6 +18784,18 @@ var CFsm=(function(_super){
 	__class(CFsm,'core.fsm.CFsm',_super);
 	var __proto=CFsm.prototype;
 	Laya.imps(__proto,{"core.fsm.IFsm":true})
+	__proto.initialize=function(){
+		var i=0;
+		var fsmState;
+		for(var $each_fsmState in this.m_states){
+			fsmState=this.m_states[$each_fsmState];
+			fsmState.initialize(this);
+		}
+		this.m_currentStateTime=0;
+		this.m_currentState=null;
+		this.m_isDestroyed=false;
+	}
+
 	__proto.start=function(stateType){
 		if (this.isRunning){
 			throw new Error("fsm is running, can nott start again");
@@ -17964,7 +18898,7 @@ var CFsm=(function(_super){
 	__getset(0,__proto,'system',function(){
 		return this.m_pSystem;
 		},function(v){
-		this.m_pSystem=null;
+		this.m_pSystem=v;
 	});
 
 	__getset(0,__proto,'isRunning',function(){
@@ -21113,33 +22047,6 @@ var AutoBitmap=(function(_super){
 })(Graphics)
 
 
-//class laya.webgl.display.GraphicsGL extends laya.display.Graphics
-var GraphicsGL=(function(_super){
-	function GraphicsGL(){
-		GraphicsGL.__super.call(this);
-	}
-
-	__class(GraphicsGL,'laya.webgl.display.GraphicsGL',_super);
-	var __proto=GraphicsGL.prototype;
-	__proto.setShader=function(shader){
-		this._saveToCmd(Render.context._setShader,[shader]);
-	}
-
-	__proto.setIBVB=function(x,y,ib,vb,numElement,shader){
-		this._saveToCmd(Render.context._setIBVB,[x,y,ib,vb,numElement,shader]);
-	}
-
-	__proto.drawParticle=function(x,y,ps){
-		var pt=RunDriver.createParticleTemplate2D(ps);
-		pt.x=x;
-		pt.y=y;
-		this._saveToCmd(Render.context._drawParticle,[pt]);
-	}
-
-	return GraphicsGL;
-})(Graphics)
-
-
 /**@private **/
 //class laya.wx.mini.MiniLoader extends laya.events.EventDispatcher
 var MiniLoader=(function(_super){
@@ -21411,6 +22318,33 @@ var MiniSound=(function(_super){
 	MiniSound._audioCache={};
 	return MiniSound;
 })(EventDispatcher)
+
+
+//class laya.webgl.display.GraphicsGL extends laya.display.Graphics
+var GraphicsGL=(function(_super){
+	function GraphicsGL(){
+		GraphicsGL.__super.call(this);
+	}
+
+	__class(GraphicsGL,'laya.webgl.display.GraphicsGL',_super);
+	var __proto=GraphicsGL.prototype;
+	__proto.setShader=function(shader){
+		this._saveToCmd(Render.context._setShader,[shader]);
+	}
+
+	__proto.setIBVB=function(x,y,ib,vb,numElement,shader){
+		this._saveToCmd(Render.context._setIBVB,[x,y,ib,vb,numElement,shader]);
+	}
+
+	__proto.drawParticle=function(x,y,ps){
+		var pt=RunDriver.createParticleTemplate2D(ps);
+		pt.x=x;
+		pt.y=y;
+		this._saveToCmd(Render.context._drawParticle,[pt]);
+	}
+
+	return GraphicsGL;
+})(Graphics)
 
 
 /**
@@ -24628,51 +25562,63 @@ var MeshTexture=(function(_super){
 
 /**
 *...
-1.update/fixUpdate :继承IUpdate/IFixUpdate的system,会自动调用update与fixUpdate,并不会往下自动调用(避免调用太多无用的update)
-2.在OnAwake中addBean的节点,会自动启动,其他的需要自行调用awake与start:
-如 :(在awake之外添加)
-addBean(b);
-b.awake();
-b.start();
 *@author auto
 */
-//class core.framework.CAppStage extends core.framework.CContainerLifeCycle
-var CAppStage=(function(_super){
-	function CAppStage(){
-		CAppStage.__super.call(this);
+//class core.framework.CContainerLifeCycle extends core.framework.CLifeCycle
+var CContainerLifeCycle=(function(_super){
+	function CContainerLifeCycle(){
+		this.m_beanList=null;
+		this.m_unReadyBeanList=null;
+		this.m_unStartBeanList=null;
+		CContainerLifeCycle.__super.call(this);
+		this.m_beanList=[];
+		this.m_unReadyBeanList=[];
+		this.m_unStartBeanList=[];
 	}
 
-	__class(CAppStage,'core.framework.CAppStage',_super);
-	var __proto=CAppStage.prototype;
-	Laya.imps(__proto,{"core.framework.IUpdate":true,"core.framework.IFixUpdate":true})
-	__proto.update=function(deltaTime){
-		var b;
-		var beans=this.getBeans();
-		var iCount=beans.length;
-		for (var i=0;i < iCount;i++){
-			b=beans[i];
-			if (b.isStarted){
-				if (Laya.__typeof(b,'core.framework.IUpdate')){
-					(b).update(deltaTime);
+	__class(CContainerLifeCycle,'core.framework.CContainerLifeCycle',_super);
+	var __proto=CContainerLifeCycle.prototype;
+	//=================================================
+	__proto.destroy=function(){
+		_super.prototype.destroy.call(this);
+		for (var i=this.m_beanList.length-1;i >=0;i--){
+			var o=this.m_beanList[i];
+			o.destroy();
+		}
+	}
+
+	__proto.awake=function(){
+		_super.prototype.awake.call(this);
+		if (this.m_unReadyBeanList.length > 0){
+			for (var i=0;i < this.m_unReadyBeanList.length;i++){
+				var o=this.m_unReadyBeanList[i];
+				o.awake();
+				if (o.isAwaked){
+					this.m_unReadyBeanList.splice(i,1);
+					i--;
+					this.m_unStartBeanList.push(o);
 				}
 			}
 		}
 	}
 
-	__proto.fixUpdate=function(fixTime){
-		var b;
-		var beans=this.getBeans();
-		var iCount=beans.length;
-		for (var i=0;i < iCount;i++){
-			b=beans[i];
-			if (b.isStarted){
-				if (Laya.__typeof(b,'core.framework.IFixUpdate')){
-					(b).fixUpdate(fixTime);
+	__proto.start=function(){
+		if (this.isAwakeState){
+			this.onStart();
+		}
+		if (this.m_unStartBeanList.length > 0){
+			for (var i=0;i < this.m_unStartBeanList.length;i++){
+				var o=this.m_unStartBeanList[i];
+				o.start();
+				if (o.isStarted){
+					this.m_unStartBeanList.splice(i,1);
+					i--;
 				}
 			}
 		}
 	}
 
+	//=================================================
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
 	}
@@ -24685,103 +25631,382 @@ var CAppStage=(function(_super){
 		_super.prototype.onDestroy.call(this);
 	}
 
-	__proto.getSystem=function(clazz){
-		return this.getBean(clazz);
+	//=================================================
+	__proto.getBean=function(clz){
+		if (this.m_beanList){
+			var o;
+			for(var $each_o in this.m_beanList){
+				o=this.m_beanList[$each_o];
+				if (Laya.__typeof(o,clz)){
+					return o;
+				}
+			}
+		}
+		return null;
 	}
 
-	__proto.addSystem=function(sys){
-		if (this.addBean(sys)){
-			sys.stage=this;
+	__proto.getBeans=function(){
+		return this.m_beanList;
+	}
+
+	__proto.removeBean=function(b){
+		if (!b){
+			return false;
+		};
+		var index=this.m_beanList.indexOf(b);
+		if (-1==index){
+			return false;
+		}
+		this.m_beanList.splice(index,1);
+		index=this.m_unReadyBeanList.indexOf(b);
+		if (-1 !=index){
+			this.m_unReadyBeanList.splice(index,1);
+		}
+		index=this.m_unStartBeanList.indexOf(b);
+		if (-1 !=index){
+			this.m_unStartBeanList.splice(index,1);
+		}
+		return true;
+	}
+
+	__proto.addBean=function(o){
+		if (!o){
+			return false;
+		}
+		if (this.contains(o)){
+			return false;
+		}
+		this.m_beanList.push(o);
+		this.m_unReadyBeanList.push(o);
+		return true;
+	}
+
+	__proto.contains=function(o){
+		var b;
+		for(var $each_b in this.m_beanList){
+			b=this.m_beanList[$each_b];
+			if (b==o){
+				return true;
+			}
 		}
 		return false;
 	}
 
-	__proto.removeSystem=function(sys){
-		return this.removeBean(sys);
-	}
-
-	return CAppStage;
-})(CContainerLifeCycle)
-
-
-/**
-*...
-*@author auto
-*/
-//class core.framework.CAppSystem extends core.framework.CContainerLifeCycle
-var CAppSystem=(function(_super){
-	function CAppSystem(){
-		this.m_stage=null;
-		CAppSystem.__super.call(this);
-	}
-
-	__class(CAppSystem,'core.framework.CAppSystem',_super);
-	var __proto=CAppSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		this.m_stage=null;
-		_super.prototype.onDestroy.call(this);
-	}
-
-	__proto.addBean=function(o){
-		var ret=_super.prototype.addBean.call(this,o);
-		if (ret){
-			(o).system=this;
-		}
-		return ret;
-	}
-
-	__getset(0,__proto,'stage',function(){
-		return this.m_stage;
-		},function(v){
-		this.m_stage=v;
-	});
-
-	return CAppSystem;
-})(CContainerLifeCycle)
+	return CContainerLifeCycle;
+})(CLifeCycle)
 
 
 /**
 *...
 *@author
 */
-//class core.framework.CBean extends core.framework.CContainerLifeCycle
-var CBean=(function(_super){
-	function CBean(){
-		this.m_system=null;
-		CBean.__super.call(this);
+//class game.procedure.CProcedureChangeScene extends core.procedure.CProcedureBase
+var CProcedureChangeScene=(function(_super){
+	function CProcedureChangeScene(){
+		CProcedureChangeScene.__super.call(this);
 	}
 
-	__class(CBean,'core.framework.CBean',_super);
-	var __proto=CBean.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
+	__class(CProcedureChangeScene,'game.procedure.CProcedureChangeScene',_super);
+	var __proto=CProcedureChangeScene.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
 	}
 
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
 	}
 
-	__proto.onDestroy=function(){
-		this.m_system=null;
-		_super.prototype.onDestroy.call(this);
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+		if (fsm.getData("nextSceneID")==0){
+			this.changeProcedure(fsm,CProcedureLoginMenu);
+			}else {
+			this.changeProcedure(fsm,CProcedureGaming);
+		}
 	}
 
-	__getset(0,__proto,'system',function(){
-		return this.m_system;
-		},function(v){
-		this.m_system=v;
-	});
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
 
-	return CBean;
-})(CContainerLifeCycle)
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureChangeScene;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureCheckVersion extends core.procedure.CProcedureBase
+var CProcedureCheckVersion=(function(_super){
+	function CProcedureCheckVersion(){
+		CProcedureCheckVersion.__super.call(this);
+	}
+
+	__class(CProcedureCheckVersion,'game.procedure.CProcedureCheckVersion',_super);
+	var __proto=CProcedureCheckVersion.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+		this.changeProcedure(fsm,CProcedureLoadDataTable);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureCheckVersion;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureEntry extends core.procedure.CProcedureBase
+var CProcedureEntry=(function(_super){
+	function CProcedureEntry(){
+		CProcedureEntry.__super.call(this);
+	}
+
+	__class(CProcedureEntry,'game.procedure.CProcedureEntry',_super);
+	var __proto=CProcedureEntry.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+		this.changeProcedure(fsm,CProcedureLaunch);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureEntry;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureGaming extends core.procedure.CProcedureBase
+var CProcedureGaming=(function(_super){
+	function CProcedureGaming(){
+		CProcedureGaming.__super.call(this);
+	}
+
+	__class(CProcedureGaming,'game.procedure.CProcedureGaming',_super);
+	var __proto=CProcedureGaming.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	// var loginSystem=fsm.system.stage.getSystem(CLoginSystem)as CLoginSystem;
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureGaming;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureLaunch extends core.procedure.CProcedureBase
+var CProcedureLaunch=(function(_super){
+	function CProcedureLaunch(){
+		CProcedureLaunch.__super.call(this);
+	}
+
+	__class(CProcedureLaunch,'game.procedure.CProcedureLaunch',_super);
+	var __proto=CProcedureLaunch.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+		this.changeProcedure(fsm,CProcedureCheckVersion);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureLaunch;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureLoadDataTable extends core.procedure.CProcedureBase
+var CProcedureLoadDataTable=(function(_super){
+	function CProcedureLoadDataTable(){
+		CProcedureLoadDataTable.__super.call(this);
+	}
+
+	__class(CProcedureLoadDataTable,'game.procedure.CProcedureLoadDataTable',_super);
+	var __proto=CProcedureLoadDataTable.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+		this.changeProcedure(fsm,CProcedureStageStart);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureLoadDataTable;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureLoginMenu extends core.procedure.CProcedureBase
+var CProcedureLoginMenu=(function(_super){
+	function CProcedureLoginMenu(){
+		CProcedureLoginMenu.__super.call(this);
+	}
+
+	__class(CProcedureLoginMenu,'game.procedure.CProcedureLoginMenu',_super);
+	var __proto=CProcedureLoginMenu.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+		var loginSystem=fsm.system.stage.getSystem(CLoginSystem);
+		var loginMenuView=loginSystem.getBean(CLoginMenuView);
+		loginMenuView.on("ok",this,this._onStartClick,[fsm]);
+		loginSystem.showLoginMenu();
+	}
+
+	__proto._onStartClick=function(fsm){
+		var loginSystem=fsm.system.stage.getSystem(CLoginSystem);
+		var loginMenuView=loginSystem.getBean(CLoginMenuView);
+		loginMenuView.off("ok",this,this._onStartClick);
+		loginSystem.closeLoginMenu();
+		fsm.setData("nextSceneID",1);
+		this.changeProcedure(fsm,CProcedureChangeScene);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureLoginMenu;
+})(CProcedureBase)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureStageStart extends core.procedure.CProcedureBase
+var CProcedureStageStart=(function(_super){
+	function CProcedureStageStart(){
+		CProcedureStageStart.__super.call(this);
+	}
+
+	__class(CProcedureStageStart,'game.procedure.CProcedureStageStart',_super);
+	var __proto=CProcedureStageStart.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+		fsm.setData("nextSceneID",0);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm);
+		this.changeProcedure(fsm,CProcedureChangeScene);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CProcedureStageStart;
+})(CProcedureBase)
 
 
 /**
@@ -27248,428 +28473,362 @@ var PrimitiveSV=(function(_super){
 
 /**
 *...
+1.update/fixUpdate :继承IUpdate/IFixUpdate的system,会自动调用update与fixUpdate,并不会往下自动调用(避免调用太多无用的update)
+2.在OnAwake中addBean的节点,会自动启动,其他的需要自行调用awake与start:
+如 :(在awake之外添加)
+addBean(b);
+b.awake();
+b.start();
 *@author auto
 */
-//class core.framework.CViewBean extends core.framework.CBean
-var CViewBean=(function(_super){
-	function CViewBean(){
-		CViewBean.__super.call(this);
+//class core.framework.CAppStage extends core.framework.CContainerLifeCycle
+var CAppStage=(function(_super){
+	function CAppStage(){
+		CAppStage.__super.call(this);
 	}
 
-	__class(CViewBean,'core.framework.CViewBean',_super);
-	var __proto=CViewBean.prototype;
-	__proto.show=function(){}
-	__proto.hide=function(){}
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	return CViewBean;
-})(CBean)
-
-
-/**
-*...
-*@author
-*/
-//class core.fsm.CFsmManager extends core.framework.CBean
-var CFsmManager=(function(_super){
-	function CFsmManager(){
-		this.m_fsms=null;
-		CFsmManager.__super.call(this);
-		this.m_fsms=new Dictionary();
-	}
-
-	__class(CFsmManager,'core.fsm.CFsmManager',_super);
-	var __proto=CFsmManager.prototype;
-	Laya.imps(__proto,{"core.fsm.IFsmManager":true})
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-		var temp=this.m_fsms.values;
-		for (var i=0;i < temp.length;i++){
-			var fsm=temp[i];
-			if (fsm.isDestroyed){
-				continue ;
-			}
-			fsm.shutDown();
-		}
-		this.m_fsms.clear();
-	}
-
+	__class(CAppStage,'core.framework.CAppStage',_super);
+	var __proto=CAppStage.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true,"core.framework.IFixUpdate":true})
 	__proto.update=function(deltaTime){
-		var temp=this.m_fsms.values;
-		for (var i=0;i < temp.length;i++){
-			var fsm=temp[i];
-			if (fsm.isDestroyed){
-				continue ;
-			}
-			fsm.update(deltaTime);
-		}
-	}
-
-	__proto.getAllFsms=function(){
-		return this.m_fsms.values;
-	}
-
-	__proto.getFsm=function(name){
-		return this.m_fsms.get(name);
-	}
-
-	__proto.getFsmByOwnerType=function(clazz){
-		var values=this.m_fsms.values;
-		var fsm;
-		var $each_fsm;
-		for($each_fsm in values){
-			fsm=values[$each_fsm];
-			if (Laya.__typeof(fsm.owner,clazz)){
-				return fsm;
+		var b;
+		var beans=this.getBeans();
+		var iCount=beans.length;
+		for (var i=0;i < iCount;i++){
+			b=beans[i];
+			if (b.isStarted){
+				if (Laya.__typeof(b,'core.framework.IUpdate')){
+					(b).update(deltaTime);
+				}
 			}
 		}
-		return null;
 	}
 
-	__proto.createFsm=function(name,owner,stateList){
-		if (this.hasFsm(name)){
-			throw new Error("already exist FSM "+name);
-		};
-		var fsm=new CFsm(name,owner,stateList);
-		fsm.system=this.system;
-		this.m_fsms.set(name,fsm);
-		return fsm;
+	__proto.fixUpdate=function(fixTime){
+		var b;
+		var beans=this.getBeans();
+		var iCount=beans.length;
+		for (var i=0;i < iCount;i++){
+			b=beans[i];
+			if (b.isStarted){
+				if (Laya.__typeof(b,'core.framework.IFixUpdate')){
+					(b).fixUpdate(fixTime);
+				}
+			}
+		}
 	}
 
-	__proto.destroyFsm=function(name){
-		var fsm=this.m_fsms.get(name);
-		if (fsm){
-			fsm.shutDown();
-			return this.m_fsms.remove(name);
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__proto.getSystem=function(clazz){
+		return this.getBean(clazz);
+	}
+
+	__proto.addSystem=function(sys){
+		if (this.addBean(sys)){
+			sys.stage=this;
 		}
 		return false;
 	}
 
-	__proto.hasFsm=function(name){
-		return this.m_fsms.get(name)!=null;
+	__proto.removeSystem=function(sys){
+		return this.removeBean(sys);
 	}
 
-	__getset(0,__proto,'count',function(){
-		return this.m_fsms.keys.length;
-	});
-
-	return CFsmManager;
-})(CBean)
-
-
-/**
-*...
-*@author
-*/
-//class core.game.fsm.CFsmSystem extends core.framework.CAppSystem
-var CFsmSystem=(function(_super){
-	function CFsmSystem(){
-		this.m_fsmManager=null;
-		this.m_proceudres=null;
-		CFsmSystem.__super.call(this);
-	}
-
-	__class(CFsmSystem,'core.game.fsm.CFsmSystem',_super);
-	var __proto=CFsmSystem.prototype;
-	Laya.imps(__proto,{"core.framework.IUpdate":true})
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-		this.m_proceudres=new Dictionary();
-		this.m_fsmManager=new CFsmManager();
-		this.addBean(this.m_fsmManager);
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-		this.m_proceudres.clear();
-		this.m_proceudres=null;
-		this.m_fsmManager=null;
-	}
-
-	__proto.createFsm=function(name,owner,stateList){
-		var fsm=this.m_fsmManager.createFsm(name,owner,stateList);
-		return fsm;
-	}
-
-	__proto.getFsm=function(name){
-		return this.m_fsmManager.getFsm(name);
-	}
-
-	__proto.destroyFsm=function(name){
-		return this.m_fsmManager.destroyFsm(name);
-	}
-
-	__proto.hasFsm=function(name){
-		return this.m_fsmManager.hasFsm(name);
-	}
-
-	__proto.update=function(deltaTime){
-		this.m_fsmManager.update(deltaTime);
-	}
-
-	// 流程
-	__proto.createProcedure=function(name,procedures){
-		var procedureManager=new CProcedureManager();
-		procedureManager.initialize(name,this.m_fsmManager,procedures);
-		this.m_proceudres.set(name,procedureManager);
-		return procedureManager;
-	}
-
-	__proto.getProcedure=function(name){
-		return this.m_proceudres.get(name);
-	}
-
-	return CFsmSystem;
-})(CAppSystem)
-
-
-/**
-*...
-*@author
-*/
-//class core.game.sequentiaProcedure.CSequentiaProcedureSystem extends core.framework.CAppSystem
-var CSequentiaProcedureSystem=(function(_super){
-	function CSequentiaProcedureSystem(){
-		this.m_procedureManager=null;
-		CSequentiaProcedureSystem.__super.call(this);
-	}
-
-	__class(CSequentiaProcedureSystem,'core.game.sequentiaProcedure.CSequentiaProcedureSystem',_super);
-	var __proto=CSequentiaProcedureSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-		this.m_procedureManager=new CSequentialProcedureManager();
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-		this.m_procedureManager.destroy();
-		this.m_procedureManager=null;
-	}
-
-	__proto.addSequential=function(handler,checkFinishHandler){
-		this.m_procedureManager.addSequential(handler,checkFinishHandler);
-	}
-
-	return CSequentiaProcedureSystem;
-})(CAppSystem)
+	CAppStage.DEBUG=false;
+	return CAppStage;
+})(CContainerLifeCycle)
 
 
 /**
 *...
 *@author auto
 */
-//class game.CGameStage extends core.framework.CAppStage
-var CGameStage=(function(_super){
-	function CGameStage(){
-		CGameStage.__super.call(this);
-		if (CGameStage.m_stage){
-			throw new Error("gamestage is exist");
+//class core.framework.CAppSystem extends core.framework.CContainerLifeCycle
+var CAppSystem=(function(_super){
+	function CAppSystem(){
+		this.m_stage=null;
+		CAppSystem.__super.call(this);
+	}
+
+	__class(CAppSystem,'core.framework.CAppSystem',_super);
+	var __proto=CAppSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		this.m_stage=null;
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__proto.addBean=function(o){
+		var ret=_super.prototype.addBean.call(this,o);
+		if (ret){
+			(o).system=this;
+		}
+		return ret;
+	}
+
+	__getset(0,__proto,'stage',function(){
+		return this.m_stage;
+		},function(v){
+		this.m_stage=v;
+	});
+
+	return CAppSystem;
+})(CContainerLifeCycle)
+
+
+/**
+*...
+*@author
+*/
+//class core.framework.CBean extends core.framework.CContainerLifeCycle
+var CBean=(function(_super){
+	function CBean(){
+		this.m_system=null;
+		CBean.__super.call(this);
+	}
+
+	__class(CBean,'core.framework.CBean',_super);
+	var __proto=CBean.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		this.m_system=null;
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__getset(0,__proto,'system',function(){
+		return this.m_system;
+		},function(v){
+		this.m_system=v;
+	});
+
+	return CBean;
+})(CContainerLifeCycle)
+
+
+/**
+*<code>DialogManager</code> 对话框管理容器，所有的对话框都在该容器内，并且受管理器管理。
+*任意对话框打开和关闭，都会出发管理类的open和close事件
+*可以通过UIConfig设置弹出框背景透明度，模式窗口点击边缘是否关闭，点击窗口是否切换层次等
+*通过设置对话框的zOrder属性，可以更改弹出的层次
+*/
+//class laya.ui.DialogManager extends laya.display.Sprite
+var DialogManager=(function(_super){
+	function DialogManager(){
+		/**锁屏层*/
+		this.lockLayer=null;
+		/**@private 全局默认弹出对话框效果，可以设置一个效果代替默认的弹出效果，如果不想有任何效果，可以赋值为null*/
+		this.popupEffect=function(dialog){
+			dialog.scale(1,1);
+			Tween.from(dialog,{x:Laya.stage.width / 2,y:Laya.stage.height / 2,scaleX:0,scaleY:0},300,Ease.backOut,Handler.create(this,this.doOpen,[dialog]));
+		}
+		/**@private 全局默认关闭对话框效果，可以设置一个效果代替默认的关闭效果，如果不想有任何效果，可以赋值为null*/
+		this.closeEffect=function(dialog,type){
+			Tween.to(dialog,{x:Laya.stage.width / 2,y:Laya.stage.height / 2,scaleX:0,scaleY:0},300,Ease.strongOut,Handler.create(this,this.doClose,[dialog,type]));
+		}
+		DialogManager.__super.call(this);
+		this.maskLayer=new Sprite();
+		this.popupEffectHandler=new Handler(this,this.popupEffect);
+		this.closeEffectHandler=new Handler(this,this.closeEffect);
+		this.mouseEnabled=this.maskLayer.mouseEnabled=true;
+		this.zOrder=1000;
+		Laya.stage.addChild(this);
+		Laya.stage.on("resize",this,this._onResize);
+		if (UIConfig.closeDialogOnSide)this.maskLayer.on("click",this,this._closeOnSide);
+		this._onResize(null);
+	}
+
+	__class(DialogManager,'laya.ui.DialogManager',_super);
+	var __proto=DialogManager.prototype;
+	__proto._closeOnSide=function(){
+		var dialog=this.getChildAt(this.numChildren-1);
+		if ((dialog instanceof laya.ui.Dialog ))dialog.close("side");
+	}
+
+	/**设置锁定界面，如果为空则什么都不显示*/
+	__proto.setLockView=function(value){
+		if (!this.lockLayer){
+			this.lockLayer=new Box();
+			this.lockLayer.mouseEnabled=true;
+			this.lockLayer.size(Laya.stage.width,Laya.stage.height);
+		}
+		this.lockLayer.removeChildren();
+		if (value){
+			value.centerX=value.centerY=0;
+			this.lockLayer.addChild(value);
 		}
 	}
 
-	__class(CGameStage,'game.CGameStage',_super);
-	var __proto=CGameStage.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-		this.addSystem(new CFsmSystem());
-		this.addSystem(new CSequentiaProcedureSystem());
-		this.addSystem(new CLoginSystem());
-		this.addSystem(new CPlayerSystem());
-		this.addSystem(new CLobbySystem());
-		this.addSystem(new CSceneSystem());
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	CGameStage.getInstance=function(){
-		if (CGameStage.m_stage==null){
-			CGameStage.m_stage=new CGameStage();
+	/**@private */
+	__proto._onResize=function(e){
+		var width=this.maskLayer.width=Laya.stage.width;
+		var height=this.maskLayer.height=Laya.stage.height;
+		if (this.lockLayer)this.lockLayer.size(width,height);
+		this.maskLayer.graphics.clear();
+		this.maskLayer.graphics.drawRect(0,0,width,height,UIConfig.popupBgColor);
+		this.maskLayer.alpha=UIConfig.popupBgAlpha;
+		for (var i=this.numChildren-1;i >-1;i--){
+			var item=this.getChildAt(i);
+			if (item.popupCenter)this._centerDialog(item);
 		}
-		return CGameStage.m_stage;
 	}
 
-	CGameStage.m_stage=null;
-	return CGameStage;
-})(CAppStage)
-
-
-/**
-*...
-*@author
-*/
-//class game.CUISystem extends core.framework.CAppSystem
-var CUISystem=(function(_super){
-	function CUISystem(){
-		this.m_uiRoot=null;
-		this.m_dialogLayer=null;
-		this.m_tipsLayer=null;
-		this.m_effectLayer=null;
-		this.m_tutorLayer=null;
-		CUISystem.__super.call(this);
+	__proto._centerDialog=function(dialog){
+		dialog.x=Math.round(((Laya.stage.width-dialog.width)>> 1)+dialog.pivotX);
+		dialog.y=Math.round(((Laya.stage.height-dialog.height)>> 1)+dialog.pivotY);
 	}
 
-	__class(CUISystem,'game.CUISystem',_super);
-	var __proto=CUISystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
+	/**
+	*显示对话框(非模式窗口类型)。
+	*@param dialog 需要显示的对象框 <code>Dialog</code> 实例。
+	*@param closeOther 是否关闭其它对话框，若值为ture，则关闭其它的对话框。
+	*@param showEffect 是否显示弹出效果
+	*/
+	__proto.open=function(dialog,closeOther,showEffect){
+		(closeOther===void 0)&& (closeOther=false);
+		(showEffect===void 0)&& (showEffect=false);
+		if (closeOther)this._closeAll();
+		if (dialog.popupCenter)this._centerDialog(dialog);
+		this.addChild(dialog);
+		if (dialog.isModal || this._$P["hasZorder"])this.timer.callLater(this,this._checkMask);
+		if (showEffect && dialog.popupEffect !=null)dialog.popupEffect.runWith(dialog);
+		else this.doOpen(dialog);
+		this.event("open");
 	}
 
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+	/**
+	*执行打开对话框。
+	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
+	*@param type 关闭的类型，默认为空
+	*/
+	__proto.doOpen=function(dialog){
+		dialog.onOpened();
 	}
 
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
+	/**
+	*锁定所有层，显示加载条信息，防止双击
+	*/
+	__proto.lock=function(value){
+		if (this.lockLayer){
+			if (value)this.addChild(this.lockLayer);
+			else this.lockLayer.removeSelf();
+		}
 	}
 
-	return CUISystem;
-})(CAppSystem)
-
-
-/**
-*...
-*@author
-*/
-//class game.lobby.CLobbySystem extends core.framework.CAppSystem
-var CLobbySystem=(function(_super){
-	function CLobbySystem(){
-		CLobbySystem.__super.call(this);
+	/**
+	*关闭对话框。
+	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
+	*@param type 关闭的类型，默认为空
+	*@param showEffect 是否显示弹出效果
+	*/
+	__proto.close=function(dialog,type,showEffect){
+		(showEffect===void 0)&& (showEffect=false);
+		if (showEffect && dialog.closeEffect !=null)dialog.closeEffect.runWith([dialog,type]);
+		else this.doClose(dialog,type);
+		this.event("close");
 	}
 
-	__class(CLobbySystem,'game.lobby.CLobbySystem',_super);
-	var __proto=CLobbySystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-		this.addBean(new CLobbyView());
+	/**
+	*执行关闭对话框。
+	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
+	*@param type 关闭的类型，默认为空
+	*/
+	__proto.doClose=function(dialog,type){
+		dialog.removeSelf();
+		dialog.isModal && this._checkMask();
+		dialog.closeHandler && dialog.closeHandler.runWith(type);
+		dialog.onClosed(type);
 	}
 
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+	/**
+	*关闭所有的对话框。
+	*/
+	__proto.closeAll=function(){
+		this._closeAll();
+		this.event("close");
 	}
 
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
+	/**@private */
+	__proto._closeAll=function(){
+		for (var i=this.numChildren-1;i >-1;i--){
+			var item=this.getChildAt(i);
+			if (item && item.close !=null){
+				this.doClose(item);
+			}
+		}
 	}
 
-	return CLobbySystem;
-})(CAppSystem)
-
-
-/**
-*...
-*@author
-*/
-//class game.login.CLoginSystem extends core.framework.CAppSystem
-var CLoginSystem=(function(_super){
-	function CLoginSystem(){
-		CLoginSystem.__super.call(this);
+	/**
+	*根据组获取所有对话框
+	*@param group 组名称
+	*@return 对话框数组
+	*/
+	__proto.getDialogsByGroup=function(group){
+		var arr=[];
+		for (var i=this.numChildren-1;i >-1;i--){
+			var item=this.getChildAt(i);
+			if (item && item.group===group){
+				arr.push(item);
+			}
+		}
+		return arr;
 	}
 
-	__class(CLoginSystem,'game.login.CLoginSystem',_super);
-	var __proto=CLoginSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
+	/**
+	*根据组关闭所有弹出框
+	*@param group 需要关闭的组名称
+	*@return 需要关闭的对话框数组
+	*/
+	__proto.closeByGroup=function(group){
+		var arr=[];
+		for (var i=this.numChildren-1;i >-1;i--){
+			var item=this.getChildAt(i);
+			if (item && item.group===group){
+				item.close();
+				arr.push(item);
+			}
+		}
+		return arr;
 	}
 
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+	/**@private 发生层次改变后，重新检查遮罩层是否正确*/
+	__proto._checkMask=function(){
+		this.maskLayer.removeSelf();
+		for (var i=this.numChildren-1;i >-1;i--){
+			var dialog=this.getChildAt(i);
+			if (dialog && dialog.isModal){
+				this.addChildAt(this.maskLayer,i);
+				return;
+			}
+		}
 	}
 
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	return CLoginSystem;
-})(CAppSystem)
-
-
-/**
-*...
-*@author
-*/
-//class game.player.CPlayerSystem extends core.framework.CAppSystem
-var CPlayerSystem=(function(_super){
-	function CPlayerSystem(){
-		CPlayerSystem.__super.call(this);
-	}
-
-	__class(CPlayerSystem,'game.player.CPlayerSystem',_super);
-	var __proto=CPlayerSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	return CPlayerSystem;
-})(CAppSystem)
-
-
-/**
-*...
-*@author
-*/
-//class game.scene.CSceneSystem extends core.framework.CAppSystem
-var CSceneSystem=(function(_super){
-	function CSceneSystem(){
-		CSceneSystem.__super.call(this);
-	}
-
-	__class(CSceneSystem,'game.scene.CSceneSystem',_super);
-	var __proto=CSceneSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	return CSceneSystem;
-})(CAppSystem)
+	return DialogManager;
+})(Sprite)
 
 
 /**
@@ -29995,207 +31154,6 @@ var Stage=(function(_super){
 })(Sprite)
 
 
-/**
-*<code>DialogManager</code> 对话框管理容器，所有的对话框都在该容器内，并且受管理器管理。
-*任意对话框打开和关闭，都会出发管理类的open和close事件
-*可以通过UIConfig设置弹出框背景透明度，模式窗口点击边缘是否关闭，点击窗口是否切换层次等
-*通过设置对话框的zOrder属性，可以更改弹出的层次
-*/
-//class laya.ui.DialogManager extends laya.display.Sprite
-var DialogManager=(function(_super){
-	function DialogManager(){
-		/**锁屏层*/
-		this.lockLayer=null;
-		/**@private 全局默认弹出对话框效果，可以设置一个效果代替默认的弹出效果，如果不想有任何效果，可以赋值为null*/
-		this.popupEffect=function(dialog){
-			dialog.scale(1,1);
-			Tween.from(dialog,{x:Laya.stage.width / 2,y:Laya.stage.height / 2,scaleX:0,scaleY:0},300,Ease.backOut,Handler.create(this,this.doOpen,[dialog]));
-		}
-		/**@private 全局默认关闭对话框效果，可以设置一个效果代替默认的关闭效果，如果不想有任何效果，可以赋值为null*/
-		this.closeEffect=function(dialog,type){
-			Tween.to(dialog,{x:Laya.stage.width / 2,y:Laya.stage.height / 2,scaleX:0,scaleY:0},300,Ease.strongOut,Handler.create(this,this.doClose,[dialog,type]));
-		}
-		DialogManager.__super.call(this);
-		this.maskLayer=new Sprite();
-		this.popupEffectHandler=new Handler(this,this.popupEffect);
-		this.closeEffectHandler=new Handler(this,this.closeEffect);
-		this.mouseEnabled=this.maskLayer.mouseEnabled=true;
-		this.zOrder=1000;
-		Laya.stage.addChild(this);
-		Laya.stage.on("resize",this,this._onResize);
-		if (UIConfig.closeDialogOnSide)this.maskLayer.on("click",this,this._closeOnSide);
-		this._onResize(null);
-	}
-
-	__class(DialogManager,'laya.ui.DialogManager',_super);
-	var __proto=DialogManager.prototype;
-	__proto._closeOnSide=function(){
-		var dialog=this.getChildAt(this.numChildren-1);
-		if ((dialog instanceof laya.ui.Dialog ))dialog.close("side");
-	}
-
-	/**设置锁定界面，如果为空则什么都不显示*/
-	__proto.setLockView=function(value){
-		if (!this.lockLayer){
-			this.lockLayer=new Box();
-			this.lockLayer.mouseEnabled=true;
-			this.lockLayer.size(Laya.stage.width,Laya.stage.height);
-		}
-		this.lockLayer.removeChildren();
-		if (value){
-			value.centerX=value.centerY=0;
-			this.lockLayer.addChild(value);
-		}
-	}
-
-	/**@private */
-	__proto._onResize=function(e){
-		var width=this.maskLayer.width=Laya.stage.width;
-		var height=this.maskLayer.height=Laya.stage.height;
-		if (this.lockLayer)this.lockLayer.size(width,height);
-		this.maskLayer.graphics.clear();
-		this.maskLayer.graphics.drawRect(0,0,width,height,UIConfig.popupBgColor);
-		this.maskLayer.alpha=UIConfig.popupBgAlpha;
-		for (var i=this.numChildren-1;i >-1;i--){
-			var item=this.getChildAt(i);
-			if (item.popupCenter)this._centerDialog(item);
-		}
-	}
-
-	__proto._centerDialog=function(dialog){
-		dialog.x=Math.round(((Laya.stage.width-dialog.width)>> 1)+dialog.pivotX);
-		dialog.y=Math.round(((Laya.stage.height-dialog.height)>> 1)+dialog.pivotY);
-	}
-
-	/**
-	*显示对话框(非模式窗口类型)。
-	*@param dialog 需要显示的对象框 <code>Dialog</code> 实例。
-	*@param closeOther 是否关闭其它对话框，若值为ture，则关闭其它的对话框。
-	*@param showEffect 是否显示弹出效果
-	*/
-	__proto.open=function(dialog,closeOther,showEffect){
-		(closeOther===void 0)&& (closeOther=false);
-		(showEffect===void 0)&& (showEffect=false);
-		if (closeOther)this._closeAll();
-		if (dialog.popupCenter)this._centerDialog(dialog);
-		this.addChild(dialog);
-		if (dialog.isModal || this._$P["hasZorder"])this.timer.callLater(this,this._checkMask);
-		if (showEffect && dialog.popupEffect !=null)dialog.popupEffect.runWith(dialog);
-		else this.doOpen(dialog);
-		this.event("open");
-	}
-
-	/**
-	*执行打开对话框。
-	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
-	*@param type 关闭的类型，默认为空
-	*/
-	__proto.doOpen=function(dialog){
-		dialog.onOpened();
-	}
-
-	/**
-	*锁定所有层，显示加载条信息，防止双击
-	*/
-	__proto.lock=function(value){
-		if (this.lockLayer){
-			if (value)this.addChild(this.lockLayer);
-			else this.lockLayer.removeSelf();
-		}
-	}
-
-	/**
-	*关闭对话框。
-	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
-	*@param type 关闭的类型，默认为空
-	*@param showEffect 是否显示弹出效果
-	*/
-	__proto.close=function(dialog,type,showEffect){
-		(showEffect===void 0)&& (showEffect=false);
-		if (showEffect && dialog.closeEffect !=null)dialog.closeEffect.runWith([dialog,type]);
-		else this.doClose(dialog,type);
-		this.event("close");
-	}
-
-	/**
-	*执行关闭对话框。
-	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
-	*@param type 关闭的类型，默认为空
-	*/
-	__proto.doClose=function(dialog,type){
-		dialog.removeSelf();
-		dialog.isModal && this._checkMask();
-		dialog.closeHandler && dialog.closeHandler.runWith(type);
-		dialog.onClosed(type);
-	}
-
-	/**
-	*关闭所有的对话框。
-	*/
-	__proto.closeAll=function(){
-		this._closeAll();
-		this.event("close");
-	}
-
-	/**@private */
-	__proto._closeAll=function(){
-		for (var i=this.numChildren-1;i >-1;i--){
-			var item=this.getChildAt(i);
-			if (item && item.close !=null){
-				this.doClose(item);
-			}
-		}
-	}
-
-	/**
-	*根据组获取所有对话框
-	*@param group 组名称
-	*@return 对话框数组
-	*/
-	__proto.getDialogsByGroup=function(group){
-		var arr=[];
-		for (var i=this.numChildren-1;i >-1;i--){
-			var item=this.getChildAt(i);
-			if (item && item.group===group){
-				arr.push(item);
-			}
-		}
-		return arr;
-	}
-
-	/**
-	*根据组关闭所有弹出框
-	*@param group 需要关闭的组名称
-	*@return 需要关闭的对话框数组
-	*/
-	__proto.closeByGroup=function(group){
-		var arr=[];
-		for (var i=this.numChildren-1;i >-1;i--){
-			var item=this.getChildAt(i);
-			if (item && item.group===group){
-				item.close();
-				arr.push(item);
-			}
-		}
-		return arr;
-	}
-
-	/**@private 发生层次改变后，重新检查遮罩层是否正确*/
-	__proto._checkMask=function(){
-		this.maskLayer.removeSelf();
-		for (var i=this.numChildren-1;i >-1;i--){
-			var dialog=this.getChildAt(i);
-			if (dialog && dialog.isModal){
-				this.addChildAt(this.maskLayer,i);
-				return;
-			}
-		}
-	}
-
-	return DialogManager;
-})(Sprite)
-
-
 //class laya.webgl.shader.Shader extends laya.webgl.shader.BaseShader
 var Shader=(function(_super){
 	function Shader(vs,ps,saveName,nameMap){
@@ -31926,16 +32884,614 @@ var TextSV=(function(_super){
 
 /**
 *...
-*@author
+*@author auto
 */
-//class game.lobby.CLobbyView extends core.framework.CViewBean
-var CLobbyView=(function(_super){
-	function CLobbyView(){
-		CLobbyView.__super.call(this);
+//class core.framework.CViewBean extends core.framework.CBean
+var CViewBean=(function(_super){
+	function CViewBean(){
+		this.m_showHandler=null;
+		this.m_state=0;
+		this.m_pUISystem=null;
+		CViewBean.__super.call(this);
+		this._$4_m_state=CViewBean.STATE_UNREADY;
 	}
 
-	__class(CLobbyView,'game.lobby.CLobbyView',_super);
-	var __proto=CLobbyView.prototype;
+	__class(CViewBean,'core.framework.CViewBean',_super);
+	var __proto=CViewBean.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.uiSystem.registry(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		this.m_pUISystem=null;
+		this.m_showHandler=null;
+		this._$4_m_state=CViewBean.STATE_UNREADY;
+	}
+
+	__proto._viewRes=function(){
+		return null;
+	}
+
+	__proto._soundRes=function(){
+		return null;
+	}
+
+	__proto.show=function(pShowHandler){
+		this._$4_m_state=0;
+		this.showHandler=pShowHandler;
+		var loadRes;
+		var viewRes=this._viewRes();
+		loadRes=viewRes;
+		var soundRes=this._soundRes();
+		if (soundRes && soundRes.length > 0){
+			var soundData;
+			for(var $each_soundData in soundRes){
+				soundData=soundRes[$each_soundData];
+				if (false==soundData.hasOwnProperty("type")){
+					soundData["type"]="sound";
+				}
+			}
+			if (loadRes){
+				loadRes.concat(soundRes);
+				}else {
+				loadRes=soundRes;
+			}
+		}
+		if (loadRes && loadRes.length > 0){
+			Laya.loader.load(loadRes,Handler.create(this,this._onComplete),Handler.create(this,this._onProgress));
+			}else {
+			this._onComplete();
+		}
+	}
+
+	/**
+	*游戏资源加载完成
+	*/
+	__proto._onComplete=function(){
+		this._onShow();
+		this.event("showed");
+		this._$4_m_state=1;
+	}
+
+	__proto._onShow=function(){}
+	/**
+	*游戏资源加载进度
+	*@param loadNum 进度
+	*/
+	__proto._onProgress=function(loadNum){
+		this.event("load_progress");
+	}
+
+	__proto.hide=function(){
+		this._onHide();
+		this.event("hided");
+		this._$4_m_state=2;
+	}
+
+	__proto._onHide=function(){}
+	//==========================================================================
+	__proto.addToRoot=function(comp){
+		this.uiSystem.addToRoot(comp);
+	}
+
+	__proto.addToView=function(comp){
+		this.uiSystem.addToView(comp);
+	}
+
+	__proto.addToDialog=function(dialog){
+		this.uiSystem.addToDialog(dialog);
+	}
+
+	__proto.addToPopupDialog=function(dialog){
+		this.uiSystem.addToPopupDialog(dialog);
+	}
+
+	__proto.addToLoading=function(comp){
+		this.uiSystem.addToLoading(comp);
+	}
+
+	//==========================================================================
+	__getset(0,__proto,'viewID',function(){
+		return-1;
+	});
+
+	__getset(0,__proto,'isUnReadyState',function(){
+		return CViewBean.STATE_UNREADY==this._$4_m_state;
+	});
+
+	__getset(0,__proto,'uiSystem',function(){
+		if (this.m_pUISystem==null){
+			this.m_pUISystem=this.system.stage.getSystem(core.framework.IUICanvas);
+		}
+		return this.m_pUISystem;
+	});
+
+	__getset(0,__proto,'showHandler',function(){
+		return this.m_showHandler;
+		},function(v){
+		this.m_showHandler=v;
+	});
+
+	__getset(0,__proto,'isLoadingState',function(){
+		return 0==this._$4_m_state;
+	});
+
+	__getset(0,__proto,'isShowingState',function(){
+		return 1==this._$4_m_state;
+	});
+
+	__getset(0,__proto,'isHidedState',function(){
+		return 2==this._$4_m_state;
+	});
+
+	CViewBean.EVENT_OK="ok";
+	CViewBean.EVENT_CANCEL="cancel";
+	CViewBean.EVENT_LOAD_PROGRESS="load_progress";
+	CViewBean.EVENT_SHOWED="showed";
+	CViewBean.EVENT_HIDED="hided";
+	CViewBean.STATE_UNREADY=-1;
+	CViewBean.STATE_LOADING=0;
+	CViewBean.STATE_SHOWING=1;
+	CViewBean.STATE_HIDED=2;
+	return CViewBean;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
+//class core.fsm.CFsmManager extends core.framework.CBean
+var CFsmManager=(function(_super){
+	function CFsmManager(){
+		this.m_fsms=null;
+		CFsmManager.__super.call(this);
+		this.m_fsms=new Dictionary();
+	}
+
+	__class(CFsmManager,'core.fsm.CFsmManager',_super);
+	var __proto=CFsmManager.prototype;
+	Laya.imps(__proto,{"core.fsm.IFsmManager":true})
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		var temp=this.m_fsms.values;
+		for (var i=0;i < temp.length;i++){
+			var fsm=temp[i];
+			if (fsm.isDestroyed){
+				continue ;
+			}
+			fsm.shutDown();
+		}
+		this.m_fsms.clear();
+	}
+
+	__proto.update=function(deltaTime){
+		var temp=this.m_fsms.values;
+		for (var i=0;i < temp.length;i++){
+			var fsm=temp[i];
+			if (fsm.isDestroyed){
+				continue ;
+			}
+			fsm.update(deltaTime);
+		}
+	}
+
+	__proto.getAllFsms=function(){
+		return this.m_fsms.values;
+	}
+
+	__proto.getFsm=function(name){
+		return this.m_fsms.get(name);
+	}
+
+	__proto.getFsmByOwnerType=function(clazz){
+		var values=this.m_fsms.values;
+		var fsm;
+		var $each_fsm;
+		for($each_fsm in values){
+			fsm=values[$each_fsm];
+			if (Laya.__typeof(fsm.owner,clazz)){
+				return fsm;
+			}
+		}
+		return null;
+	}
+
+	__proto.createFsm=function(name,owner,stateList){
+		if (this.hasFsm(name)){
+			throw new Error("already exist FSM "+name);
+		};
+		var fsm=new CFsm(name,owner,stateList);
+		fsm.system=this.system;
+		fsm.initialize();
+		this.m_fsms.set(name,fsm);
+		return fsm;
+	}
+
+	__proto.destroyFsm=function(name){
+		var fsm=this.m_fsms.get(name);
+		if (fsm){
+			fsm.shutDown();
+			return this.m_fsms.remove(name);
+		}
+		return false;
+	}
+
+	__proto.hasFsm=function(name){
+		return this.m_fsms.get(name)!=null;
+	}
+
+	__getset(0,__proto,'count',function(){
+		return this.m_fsms.keys.length;
+	});
+
+	return CFsmManager;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
+//class core.game.data.CDatabaseSystem extends core.framework.CAppSystem
+var CDatabaseSystem=(function(_super){
+	function CDatabaseSystem(mainfest){
+		this.m_pMainfest=null;
+		this.m_isLoadCompleted=false;
+		this.m_pDatabase=null;
+		this.m_loadedCount=0;
+		CDatabaseSystem.__super.call(this);
+		this.m_pMainfest=mainfest;
+		this.m_isLoadCompleted=false;
+		this.m_pDatabase=new Object();
+	}
+
+	__class(CDatabaseSystem,'core.game.data.CDatabaseSystem',_super);
+	var __proto=CDatabaseSystem.prototype;
+	Laya.imps(__proto,{"core.framework.IDatabase":true})
+	__proto.destroy=function(){
+		core.framework.CContainerLifeCycle.prototype.destroy.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+		this.loadConfigFile();
+	}
+
+	__proto.loadConfigFile=function(){
+		var tableName;
+		for (var i=0;i < this.m_pMainfest.length;i++){
+			tableName=this.m_pMainfest[i];
+			this._loadConfigData(tableName);
+		}
+	}
+
+	__proto._loadConfigData=function(tableName){
+		if (!tableName || tableName.length==0){
+			return;
+		};
+		var url=CPathUtils.getTablePath(tableName);
+		Laya.loader.load(url,Handler.create(this,this._onFinished,[url,tableName]),null,"json");
+	}
+
+	__proto._onFinished=function(url,tableName){
+		var clazz=ClassTool.getClassByName("table."+tableName);
+		var jsonObj=Loader.getRes(url);
+		var pTable;
+		pTable=new CDataTable(tableName);
+		if (this.m_pDatabase.hasOwnProperty(tableName)){
+			throw new Error("table "+tableName+" is exist");
+		}
+		pTable[tableName]=pTable;
+		var recordMap=new Object();
+		var KEY=pTable.primaryKey;
+		var keyValue;
+		var jsonObjList=jsonObj;
+		for (var i=0;i < jsonObjList.length;i++){
+			var itemObject=jsonObjList[i];
+			keyValue=itemObject[KEY];
+			recordMap[keyValue]=new clazz(itemObject);
+		}
+		pTable.initWithMap(recordMap);
+		this.m_loadedCount++;
+		if (this.m_loadedCount >=this.m_pMainfest.length){
+			this.m_isLoadCompleted=true;
+		}
+	}
+
+	__proto.getTable=function(sTableName){
+		var ret=this.m_pDatabase[sTableName];
+		if (ret==undefined){
+			return null;
+		}
+		return ret;
+	}
+
+	__getset(0,__proto,'isReady',function(){
+		return this.m_isLoadCompleted;
+	});
+
+	return CDatabaseSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.game.fsm.CFsmSystem extends core.framework.CAppSystem
+var CFsmSystem=(function(_super){
+	function CFsmSystem(){
+		this.m_fsmManager=null;
+		this.m_proceudres=null;
+		CFsmSystem.__super.call(this);
+	}
+
+	__class(CFsmSystem,'core.game.fsm.CFsmSystem',_super);
+	var __proto=CFsmSystem.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.m_proceudres=new Dictionary();
+		this.m_fsmManager=new CFsmManager();
+		this.addBean(this.m_fsmManager);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		this.m_proceudres.clear();
+		this.m_proceudres=null;
+		this.m_fsmManager=null;
+	}
+
+	__proto.createFsm=function(name,owner,stateList){
+		var fsm=this.m_fsmManager.createFsm(name,owner,stateList);
+		return fsm;
+	}
+
+	__proto.getFsm=function(name){
+		return this.m_fsmManager.getFsm(name);
+	}
+
+	__proto.destroyFsm=function(name){
+		return this.m_fsmManager.destroyFsm(name);
+	}
+
+	__proto.hasFsm=function(name){
+		return this.m_fsmManager.hasFsm(name);
+	}
+
+	__proto.update=function(deltaTime){
+		this.m_fsmManager.update(deltaTime);
+	}
+
+	// 流程
+	__proto.createProcedure=function(name,procedures){
+		var procedureManager=new CProcedureManager();
+		procedureManager.initialize(name,this.m_fsmManager,procedures);
+		this.m_proceudres.set(name,procedureManager);
+		return procedureManager;
+	}
+
+	__proto.getProcedure=function(name){
+		return this.m_proceudres.get(name);
+	}
+
+	return CFsmSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.game.sequentiaProcedure.CSequentiaProcedureSystem extends core.framework.CAppSystem
+var CSequentiaProcedureSystem=(function(_super){
+	function CSequentiaProcedureSystem(){
+		this.m_procedureManager=null;
+		CSequentiaProcedureSystem.__super.call(this);
+	}
+
+	__class(CSequentiaProcedureSystem,'core.game.sequentiaProcedure.CSequentiaProcedureSystem',_super);
+	var __proto=CSequentiaProcedureSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.m_procedureManager=new CSequentialProcedureManager();
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		this.m_procedureManager.destroy();
+		this.m_procedureManager=null;
+	}
+
+	__proto.addSequential=function(handler,checkFinishHandler){
+		this.m_procedureManager.addSequential(handler,checkFinishHandler);
+	}
+
+	return CSequentiaProcedureSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author auto
+*/
+//class game.CGameStage extends core.framework.CAppStage
+var CGameStage=(function(_super){
+	function CGameStage(){
+		CGameStage.__super.call(this);
+		if (CGameStage.m_stage){
+			throw new Error("gamestage is exist");
+		}
+	}
+
+	__class(CGameStage,'game.CGameStage',_super);
+	var __proto=CGameStage.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.addSystem(new CFsmSystem());
+		this.addSystem(new CSequentiaProcedureSystem());
+		this.addSystem(new CDatabaseSystem(CTableConstant.tableList));
+		this.addSystem(new CUISystem());
+		this.addSystem(new CLoginSystem());
+		this.addSystem(new CPlayerSystem());
+		this.addSystem(new CLobbySystem());
+		this.addSystem(new CSceneSystem());
+		this.addSystem(new CInstanceSystem());
+		this.addSystem(new CProcedureSystem());
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	CGameStage.getInstance=function(){
+		if (CGameStage.m_stage==null){
+			CGameStage.m_stage=new CGameStage();
+		}
+		return CGameStage.m_stage;
+	}
+
+	CGameStage.m_stage=null;
+	return CGameStage;
+})(CAppStage)
+
+
+/**
+*...
+*@author auto
+*/
+//class game.instance.CInstanceSystem extends core.framework.CAppSystem
+var CInstanceSystem=(function(_super){
+	function CInstanceSystem(){
+		CInstanceSystem.__super.call(this);
+	}
+
+	__class(CInstanceSystem,'game.instance.CInstanceSystem',_super);
+	var __proto=CInstanceSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	// this.addBean(new CLobbyView());
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__proto.enterInstance=function(instanceID){}
+	return CInstanceSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.lobby.CLobbySystem extends core.framework.CAppSystem
+var CLobbySystem=(function(_super){
+	function CLobbySystem(){
+		CLobbySystem.__super.call(this);
+	}
+
+	__class(CLobbySystem,'game.lobby.CLobbySystem',_super);
+	var __proto=CLobbySystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.addBean(new CLobbyView());
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	return CLobbySystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.login.CLoginSystem extends core.framework.CAppSystem
+var CLoginSystem=(function(_super){
+	function CLoginSystem(){
+		CLoginSystem.__super.call(this);
+	}
+
+	__class(CLoginSystem,'game.login.CLoginSystem',_super);
+	var __proto=CLoginSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.addBean(new CLoginMenuView());
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__proto.showLoginMenu=function(){
+		(this.getBean(CLoginMenuView)).show();
+	}
+
+	__proto.closeLoginMenu=function(){
+		(this.getBean(CLoginMenuView)).hide();
+	}
+
+	return CLoginSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.player.CPlayerSystem extends core.framework.CAppSystem
+var CPlayerSystem=(function(_super){
+	function CPlayerSystem(){
+		CPlayerSystem.__super.call(this);
+	}
+
+	__class(CPlayerSystem,'game.player.CPlayerSystem',_super);
+	var __proto=CPlayerSystem.prototype;
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
 	}
@@ -31948,8 +33504,237 @@ var CLobbyView=(function(_super){
 		_super.prototype.onDestroy.call(this);
 	}
 
-	return CLobbyView;
-})(CViewBean)
+	return CPlayerSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureSystem extends core.framework.CAppSystem
+var CProcedureSystem=(function(_super){
+	function CProcedureSystem(){
+		this.m_procedureManager=null;
+		CProcedureSystem.__super.call(this);
+	}
+
+	__class(CProcedureSystem,'game.procedure.CProcedureSystem',_super);
+	var __proto=CProcedureSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		var fsmSystem=this.stage.getSystem(CFsmSystem);
+		var procedureList=[
+		new CProcedureEntry(),new CProcedureLaunch(),new CProcedureCheckVersion(),new CProcedureLoadDataTable,
+		new CProcedureStageStart(),new CProcedureChangeScene(),
+		new CProcedureLoginMenu(),new CProcedureGaming()];
+		this.m_procedureManager=fsmSystem.createProcedure("gameProcedure",procedureList);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+		this.m_procedureManager.startProcedure(CProcedureEntry);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	return CProcedureSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.scene.CSceneSystem extends core.framework.CAppSystem
+var CSceneSystem=(function(_super){
+	function CSceneSystem(){
+		CSceneSystem.__super.call(this);
+	}
+
+	__class(CSceneSystem,'game.scene.CSceneSystem',_super);
+	var __proto=CSceneSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	return CSceneSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.view.CUISystem extends core.framework.CAppSystem
+var CUISystem=(function(_super){
+	function CUISystem(){
+		this.m_uiRoot=null;
+		this.m_viewLayer=null;
+		this.m_dialogLayer=null;
+		//private var m_msgLayer:Box;
+		this.m_loadingLayer=null;
+		this.m_layerList=null;
+		//
+		this.m_viewList=null;
+		CUISystem.__super.call(this);
+		this.m_viewList=[];
+	}
+
+	__class(CUISystem,'game.view.CUISystem',_super);
+	var __proto=CUISystem.prototype;
+	Laya.imps(__proto,{"core.framework.IUICanvas":true})
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+		this.m_layerList=[];
+		this._addNewLayer(this.m_uiRoot=new Box());
+		this._addNewLayer(this.m_viewLayer=new Box());
+		Dialog.manager;
+		this._addNewLayer(this.m_loadingLayer=new Box());
+	}
+
+	__proto._addNewLayer=function(layer){
+		var stage=Laya.stage;
+		stage.addChild(layer);
+		this.m_layerList[this.m_layerList.length]=Box;
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		for (var i=0;i < this.m_layerList.length;i++){
+			var layer=this.m_layerList[i];
+			layer.removeSelf();
+			layer=null;
+		}
+		this.m_layerList=null;
+	}
+
+	// 允许多个相同ＩＤ的view ,自行管理
+	__proto.registry=function(view){
+		this.m_viewList.push(view);
+	}
+
+	__proto.getView=function(viewID){
+		if (viewID==-1){
+			throw new Error("CUISystem.getView : viewID is invalid")
+			return null;
+		}
+		var view;
+		for(var $each_view in this.m_viewList){
+			view=this.m_viewList[$each_view];
+			if (view.viewID==viewID){
+				return view;
+			}
+		}
+		return null;
+	}
+
+	__proto.hasView=function(viewID){
+		return this.getView(viewID)!=null;
+	}
+
+	__proto.isViewShowing=function(viewID){
+		var view=this.getView(viewID);
+		var ret=view && view.isShowingState;
+		return ret;
+	}
+
+	__proto.isViewLoading=function(viewID){
+		var view=this.getView(viewID);
+		var ret=view && view.isLoadingState;
+		return ret;
+	}
+
+	__proto.isViewHided=function(viewID){
+		var view=this.getView(viewID);
+		var ret=view && view.isHidedState;
+		return ret;
+	}
+
+	//============================================================
+	__proto.addToRoot=function(comp){
+		this.m_uiRoot.addChild(comp);
+	}
+
+	__proto.addToView=function(comp){
+		this.m_viewLayer.addChild(comp);
+	}
+
+	__proto.addToDialog=function(dialg,closeOther,showEffect){
+		(closeOther===void 0)&& (closeOther=false);
+		(showEffect===void 0)&& (showEffect=true);
+		dialg.show(closeOther,showEffect)
+	}
+
+	__proto.addToPopupDialog=function(dialg,closeOther,showEffect){
+		(closeOther===void 0)&& (closeOther=false);
+		(showEffect===void 0)&& (showEffect=true);
+		dialg.popup(closeOther,showEffect);
+	}
+
+	__proto.addToLoading=function(comp){
+		this.m_loadingLayer.addChild(comp);
+	}
+
+	__proto.closeDialog=function(dialog){
+		dialog.close();
+	}
+
+	return CUISystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.view.CDialogLayer extends laya.ui.DialogManager
+var CDialogLayer=(function(_super){
+	function CDialogLayer(){
+		CDialogLayer.__super.call(this);
+	}
+
+	__class(CDialogLayer,'game.view.CDialogLayer',_super);
+	var __proto=CDialogLayer.prototype;
+	/**
+	*显示对话框(非模式窗口类型)。
+	*@param dialog 需要显示的对象框 <code>Dialog</code> 实例。
+	*@param closeOther 是否关闭其它对话框，若值为ture，则关闭其它的对话框。
+	*@param showEffect 是否显示弹出效果
+	*/
+	__proto.open=function(dialog,closeOther,showEffect){
+		(closeOther===void 0)&& (closeOther=false);
+		(showEffect===void 0)&& (showEffect=false);
+		_super.prototype.open.call(this,dialog,closeOther,showEffect);
+	}
+
+	/**
+	*关闭对话框。
+	*@param dialog 需要关闭的对象框 <code>Dialog</code> 实例。
+	*@param type 关闭的类型，默认为空
+	*@param showEffect 是否显示弹出效果
+	*/
+	__proto.close=function(dialog,type,showEffect){
+		(showEffect===void 0)&& (showEffect=false);
+		_super.prototype.close.call(this,dialog,type,showEffect);
+	}
+
+	return CDialogLayer;
+})(DialogManager)
 
 
 /**
@@ -37111,6 +38896,108 @@ var VertexBuffer2D=(function(_super){
 
 	return VertexBuffer2D;
 })(Buffer2D)
+
+
+/**
+*...
+*@author
+*/
+//class game.lobby.CLobbyView extends core.framework.CViewBean
+var CLobbyView=(function(_super){
+	function CLobbyView(){
+		CLobbyView.__super.call(this);
+	}
+
+	__class(CLobbyView,'game.lobby.CLobbyView',_super);
+	var __proto=CLobbyView.prototype;
+	__proto._viewRes=function(){
+		return null;
+	}
+
+	__proto._soundRes=function(){
+		return null;
+	}
+
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__proto._onShow=function(){}
+	__proto._onHide=function(){}
+	__getset(0,__proto,'viewID',function(){
+		return 1;
+	});
+
+	return CLobbyView;
+})(CViewBean)
+
+
+/**
+*...
+*@author
+*/
+//class game.login.CLoginMenuView extends core.framework.CViewBean
+var CLoginMenuView=(function(_super){
+	function CLoginMenuView(){
+		this.m_view=null;
+		CLoginMenuView.__super.call(this);
+	}
+
+	__class(CLoginMenuView,'game.login.CLoginMenuView',_super);
+	var __proto=CLoginMenuView.prototype;
+	__proto._viewRes=function(){
+		return [CPathUtils.getUIPath("gameUI")];
+	}
+
+	__proto._soundRes=function(){
+		return null;
+	}
+
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		_super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		if (this.m_view){
+			this.uiSystem.closeDialog(this.m_view);
+			this.uiSystem.closeDialog(this.m_view);
+		}
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__proto._onShow=function(){
+		this.m_view=new GameStartUI();
+		this.uiSystem.addToDialog(this.m_view);
+		this.m_view.btn_start.on("mouseup",this,this._onStart);
+	}
+
+	__proto._onHide=function(){
+		this.m_view.btn_start.off("mouseup",this,this._onStart);
+		this.uiSystem.closeDialog(this.m_view);
+	}
+
+	__proto._onStart=function(){
+		this.event("ok");
+	}
+
+	__getset(0,__proto,'viewID',function(){
+		return 2;
+	});
+
+	return CLoginMenuView;
+})(CViewBean)
 
 
 /**
@@ -42588,29 +44475,28 @@ var TextArea=(function(_super){
 })(TextInput)
 
 
-//class ui.GameOverUI extends laya.ui.Dialog
-var GameOverUI=(function(_super){
-	function GameOverUI(){
-		this.ani_restart=null;
-		this.txt_score=null;
-		this.btn_restart=null;
-		GameOverUI.__super.call(this);
+//class ui.GameStartUI extends laya.ui.Dialog
+var GameStartUI=(function(_super){
+	function GameStartUI(){
+		this.txt_load=null;
+		this.btn_start=null;
+		GameStartUI.__super.call(this);
 	}
 
-	__class(GameOverUI,'ui.GameOverUI',_super);
-	var __proto=GameOverUI.prototype;
+	__class(GameStartUI,'ui.GameStartUI',_super);
+	var __proto=GameStartUI.prototype;
 	__proto.createChildren=function(){
 		View.regComponent("Text",Text);
 		laya.ui.Component.prototype.createChildren.call(this);
-		this.createView(GameOverUI.uiView);
+		this.createView(GameStartUI.uiView);
 	}
 
-	GameOverUI.uiView={"type":"Dialog","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"width":720,"skin":"gameUI/bg.jpg","sizeGrid":"4,4,4,4","height":1280}},{"type":"Image","props":{"y":378,"x":229,"skin":"gameUI/gameOver.png"}},{"type":"Text","props":{"y":1200,"x":19,"width":681,"text":"LayaAir1.7.3引擎教学演示版","height":29,"fontSize":26,"font":"SimHei","color":"#7c7979","bold":true,"align":"center"}},{"type":"Text","props":{"y":575,"x":244,"width":144,"text":"本局积分：","height":29,"fontSize":30,"font":"SimHei","color":"#7c7979","bold":true,"align":"center"}},{"type":"Text","props":{"y":575,"x":363,"width":128,"var":"txt_score","text":"1200","height":29,"fontSize":30,"font":"SimHei","color":"#7c7979","bold":true,"align":"center"}},{"type":"Box","props":{"y":960,"x":239,"var":"btn_restart"},"compId":10,"child":[{"type":"Button","props":{"y":0,"x":1,"width":240,"stateNum":2,"skin":"gameUI/btn_bg.png","sizeGrid":"10,10,10,10","height":80}},{"type":"Image","props":{"y":18,"x":41,"skin":"gameUI/restart.png"}}]}],"animations":[{"nodes":[{"target":10,"keyframes":{"y":[{"value":970,"tweenMethod":"elasticOut","tween":true,"target":10,"key":"y","index":0},{"value":960,"tweenMethod":"linearNone","tween":true,"target":10,"key":"y","index":8}]}}],"name":"ani_restart","id":1,"frameRate":24,"action":0}]};
-	return GameOverUI;
+	GameStartUI.uiView={"type":"Dialog","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"width":720,"skin":"gameUI/bg.jpg","sizeGrid":"4,4,4,4","height":1280}},{"type":"Image","props":{"y":378,"x":179,"skin":"gameUI/logo.png"}},{"type":"Text","props":{"y":587,"x":20,"width":681,"var":"txt_load","text":"游戏资源加载进度","height":29,"fontSize":30,"font":"SimHei","color":"#1c1c1c","align":"center"}},{"type":"Text","props":{"y":1200,"x":20,"width":681,"text":"LayaAir1.7.3引擎教学演示版","height":29,"fontSize":26,"font":"SimHei","color":"#7c7979","bold":true,"align":"center"}},{"type":"Box","props":{"y":960,"x":240,"visible":true,"var":"btn_start"},"child":[{"type":"Button","props":{"y":0,"x":0,"width":240,"visible":true,"stateNum":2,"skin":"gameUI/btn_bg.png","sizeGrid":"20,20,20,20","height":80}},{"type":"Image","props":{"y":19,"x":41,"skin":"gameUI/start.png"}}]}]};
+	return GameStartUI;
 })(Dialog)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,Timer,DrawText,Render,View,Browser,WebGLContext2D,ShaderCompile,CSequentialProcedureManager,GraphicAnimation,LocalStorage,AtlasGrid]);
+	Laya.__init([LoaderManager,EventDispatcher,Timer,DrawText,Render,WebGLContext2D,CBaseDataUsage,Browser,View,ShaderCompile,GraphicAnimation,LocalStorage,CSequentialProcedureManager,AtlasGrid]);
 	/**LayaGameStart**/
 	new LayaUISample();
 

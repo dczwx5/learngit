@@ -1,12 +1,14 @@
 package core.framework
 {
 	import core.ExtendsUtils;
+	import core.log.CLog;
+	import laya.events.EventDispatcher;
 
 	/**
 	 * ...
 	 * @author auto
 	 */
-	public class CLifeCycle implements ILifeCycle {
+	public class CLifeCycle extends EventDispatcher implements ILifeCycle {
 		public function CLifeCycle(){
 			m_state = STATE_UNREADY;
 		}
@@ -32,19 +34,20 @@ package core.framework
 		protected virtual function onAwake() : void {
 			m_state = STATE_AWAKED;
 			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
-			trace(typeName + " onAwake")
+			CLog.log("{0} onAwake", typeName);
 		}
 		protected virtual function onStart() : void {
 			m_state = STATE_STARTED;
 			
 			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
-			trace(typeName + " onStart")
+			CLog.log("{0} onStart", typeName);
+
 		}
 		
 		protected virtual function onDestroy() : void {
 			m_state = STATE_DESTORYED;
 			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
-			trace(typeName + " onDestroy")
+			CLog.log("{0} onDestroy", typeName);
 		}
 
 		// =================================================

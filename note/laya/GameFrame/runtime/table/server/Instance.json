@@ -1,0 +1,65 @@
+﻿[
+    {
+        "ID" : 10001,
+        "Name" : "副本1",
+        "Description" : "副本描述1",
+        "IconName" : "Skill0002",
+        "Chapter" : 10001
+    },
+    {
+        "ID" : 10002,
+        "Name" : "副本2",
+        "Description" : "副本描述2",
+        "IconName" : "Skill0003",
+        "Chapter" : 10001
+    },
+    {
+        "ID" : 10003,
+        "Name" : "副本3",
+        "Description" : "副本描述3",
+        "IconName" : "Skill0004",
+        "Chapter" : 10001
+    },
+    {
+        "ID" : 10004,
+        "Name" : "副本4",
+        "Description" : "副本描述4",
+        "IconName" : "Skill0005",
+        "Chapter" : 10001
+    },
+    {
+        "ID" : 10005,
+        "Name" : "副本5",
+        "Description" : "副本描述5",
+        "IconName" : "SuperSkill0001",
+        "Chapter" : 10001
+    },
+    {
+        "ID" : 10006,
+        "Name" : "副本6",
+        "Description" : "副本描述6",
+        "IconName" : "SuperSkill0002",
+        "Chapter" : 10002
+    },
+    {
+        "ID" : 10007,
+        "Name" : "副本7",
+        "Description" : "副本描述7",
+        "IconName" : "SuperSkill0003",
+        "Chapter" : 10002
+    },
+    {
+        "ID" : 10008,
+        "Name" : "副本8",
+        "Description" : "副本描述8",
+        "IconName" : "SuperSkill0004",
+        "Chapter" : 10002
+    },
+    {
+        "ID" : 10009,
+        "Name" : "副本9",
+        "Description" : "副本描述9",
+        "IconName" : "SuperSkill0005",
+        "Chapter" : 10002
+    }
+]

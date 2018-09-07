@@ -2,6 +2,10 @@ package game.procedure
 {
 	import core.procedure.CProcedureBase;
 	import core.fsm.IFsm;
+	import game.procedure.CProcedureLoginMenu;
+	import game.procedure.EProcedureKey;
+	import game.scene.ESceneID;
+	import game.procedure.CProcedureGaming;
 
 	/**
 	 * ...
@@ -21,7 +25,11 @@ package game.procedure
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
 			super.onUpdate(fsm);
 
-			changeProcedure(fsm, CProcedureChangeScene);
+			if (fsm.getData(EProcedureKey.NEXT_SCENE_ID) == ESceneID.LOGIN_MENU) {
+				changeProcedure(fsm, CProcedureLoginMenu);
+			} else {
+				changeProcedure(fsm, CProcedureGaming);
+			}
 
 		}
 		protected override function onLeave(fsm:IFsm, isShutDown:Boolean) : void {

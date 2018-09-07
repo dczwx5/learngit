@@ -2,6 +2,13 @@ package game.procedure
 {
 	import core.procedure.CProcedureBase;
 	import core.fsm.IFsm;
+	import game.login.CLoginSystem;
+	import core.framework.CViewBean;
+	import game.procedure.CProcedureChangeScene;
+	import core.log.CLog;
+	import game.login.CLoginMenuView;
+	import game.procedure.EProcedureKey;
+	import game.scene.ESceneID;
 
 	/**
 	 * ...
@@ -17,6 +24,21 @@ package game.procedure
 		}
 		protected override function onEnter(fsm:IFsm) : void {
 			super.onEnter(fsm);
+
+			var loginSystem:CLoginSystem = fsm.system.stage.getSystem(CLoginSystem) as CLoginSystem;
+			var loginMenuView:CLoginMenuView = loginSystem.getBean(CLoginMenuView) as CLoginMenuView;
+			loginMenuView.on(CViewBean.EVENT_OK, this, _onStartClick, [fsm]);
+			loginSystem.showLoginMenu();
+		}
+		private function _onStartClick(fsm:IFsm) : void {
+			var loginSystem:CLoginSystem = fsm.system.stage.getSystem(CLoginSystem) as CLoginSystem;
+			var loginMenuView:CLoginMenuView = loginSystem.getBean(CLoginMenuView) as CLoginMenuView;
+			loginMenuView.off(CViewBean.EVENT_OK, this, _onStartClick);
+			loginSystem.closeLoginMenu();
+
+			fsm.setData(EProcedureKey.NEXT_SCENE_ID, ESceneID.GAMING);
+			changeProcedure(fsm, CProcedureChangeScene);
+
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
 			super.onUpdate(fsm);

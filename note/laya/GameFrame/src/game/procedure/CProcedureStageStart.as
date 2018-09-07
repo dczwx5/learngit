@@ -3,6 +3,8 @@ package game.procedure
 	import core.procedure.CProcedureBase;
 	import core.fsm.IFsm;
 	import game.procedure.CProcedureChangeScene;
+	import game.procedure.EProcedureKey;
+	import game.scene.ESceneID;
 
 	/**
 	 * ...
@@ -18,6 +20,8 @@ package game.procedure
 		}
 		protected override function onEnter(fsm:IFsm) : void {
 			super.onEnter(fsm);
+
+			fsm.setData(EProcedureKey.NEXT_SCENE_ID, ESceneID.LOGIN_MENU);
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
 			super.onUpdate(fsm);

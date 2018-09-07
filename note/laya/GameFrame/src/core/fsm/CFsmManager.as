@@ -74,6 +74,7 @@ package core.fsm
 
 			var fsm:CFsm = new CFsm(name, owner, stateList);
 			fsm.system = system;
+			fsm.initialize();
 			m_fsms.set(name, fsm);
 			return fsm;
 		}

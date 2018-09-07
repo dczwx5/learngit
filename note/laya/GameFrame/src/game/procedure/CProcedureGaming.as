@@ -17,6 +17,9 @@ package game.procedure
 		}
 		protected override function onEnter(fsm:IFsm) : void {
 			super.onEnter(fsm);
+
+			// var loginSystem = fsm.system.stage.getSystem(CLoginSystem) as CLoginSystem;
+
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
 			super.onUpdate(fsm);

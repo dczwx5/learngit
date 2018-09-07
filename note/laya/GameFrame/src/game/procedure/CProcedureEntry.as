@@ -5,6 +5,7 @@ package game.procedure
 	import game.procedure.CProcedureLaunch;
 	import core.procedure.CProcedureManager;
 	import game.procedure.CProcedureSystem;
+	import core.framework.CAppStage;
 
 	/**
 	 * ...
@@ -17,7 +18,8 @@ package game.procedure
 
 		protected override function onInit(fsm:IFsm) : void {
 			super.onInit(fsm);
-			(fsm.system.stage.getSystem(CProcedureSystem));
+
+			
 		}
 		protected override function onEnter(fsm:IFsm) : void {
 			super.onEnter(fsm);

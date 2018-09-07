@@ -20,9 +20,18 @@ package core.fsm
 			var i:int = 0;
 			for each (var fsmState:CFsmState in stateList) {
 				m_states[i++] = fsmState;
-				fsmState.initialize(this);
 			}
 
+			m_currentStateTime = 0;
+			m_currentState = null;
+			m_isDestroyed = false;
+		}
+
+		internal override function initialize() : void {
+			var i:int = 0;
+			for each (var fsmState:CFsmState in m_states) {
+				fsmState.initialize(this);
+			}
 			m_currentStateTime = 0;
 			m_currentState = null;
 			m_isDestroyed = false;
@@ -153,7 +162,7 @@ package core.fsm
 			return m_pSystem;
 		}
 		public function set system(v:CAppSystem) : void {
-			m_pSystem = null;
+			m_pSystem = v;
 		}
 		private var m_pSystem:CAppSystem;
 

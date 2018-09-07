@@ -10,7 +10,11 @@ package game
 	import laya.display.Stage;
 	import core.game.sequentiaProcedure.CSequentiaProcedureSystem;
 	import core.game.fsm.CFsmSystem;
-
+	import game.procedure.CProcedureSystem;
+	import game.instance.CInstanceSystem;
+	import game.view.CUISystem;
+	import core.game.data.CDatabaseSystem;
+	import game.CTableConstant;
 	/**
 	 * ...
 	 * @author auto
@@ -29,7 +33,7 @@ package game
 		public function CGameStage() {
 			if (m_stage) {
 				throw new Error("gamestage is exist");
-			}
+			} 
 		}
 
 		protected override function onAwake() : void {
@@ -37,12 +41,16 @@ package game
 
 			this.addSystem(new CFsmSystem());
 			this.addSystem(new CSequentiaProcedureSystem());
+			this.addSystem(new CDatabaseSystem(CTableConstant.tableList));
+			this.addSystem(new CUISystem());
 
 			this.addSystem(new CLoginSystem());
 			this.addSystem(new CPlayerSystem());
 			this.addSystem(new CLobbySystem());
 			this.addSystem(new CSceneSystem());
-			
+			this.addSystem(new CInstanceSystem());
+
+			this.addSystem(new CProcedureSystem());
 		}
 		protected override function onStart() : void {
 			super.onStart();

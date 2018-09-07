@@ -12,6 +12,8 @@ package core.framework
 	 * @author auto
 	 */
 	public class CAppStage extends CContainerLifeCycle implements IUpdate, IFixUpdate {
+		public static var DEBUG:Boolean;
+
 		public function CAppStage(){
 			
 		}

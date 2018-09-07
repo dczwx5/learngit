@@ -36,7 +36,7 @@ package game.procedure
 		protected override function onStart() : void {
 			super.onStart();
 
-			
+			m_procedureManager.startProcedure(CProcedureEntry);
 		}
 	
 		protected override function onDestroy() : void {

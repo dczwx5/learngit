@@ -30,6 +30,9 @@ package core.fsm
 		public virtual function get currentStateTime() : Number {
 			return -1;
 		}
+		
+		internal virtual function initialize() : void {
+		}
 
 		// virtual interface
 		internal virtual function shutDown() : void {

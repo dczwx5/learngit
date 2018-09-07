@@ -2,6 +2,8 @@ package core.fsm
 {
 	import core.fsm.CFsm;
 	import core.fsm.IFsm;
+	import core.log.CLog;
+	import core.ExtendsUtils;
 
 	/**
 	 * ...
@@ -16,7 +18,8 @@ package core.fsm
 			onInit(fsm);
 		}
 		protected virtual function onInit(fsm:IFsm) : void {
-
+			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			CLog.log("{0} onInit", typeName)
 		}
 
 
@@ -24,7 +27,8 @@ package core.fsm
 			onEnter(fsm);
 		}
 		protected virtual function onEnter(fsm:IFsm) : void {
-
+			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			CLog.log("{0} onEnter", typeName)
 		}
 
 		internal function update(fsm:IFsm, deltaTime:Number) : void {
@@ -36,16 +40,19 @@ package core.fsm
 
 		internal function leave(fsm:IFsm, isShutDown:Boolean) : void {
 			onLeave(fsm, isShutDown);
+			
 		}
 		protected virtual function onLeave(fsm:IFsm, isShutDown:Boolean) : void {
-
+			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			CLog.log("{0} onLeave", typeName)
 		}
 
 		internal function destroy(fsm:IFsm) : void {
 			onDestroy(fsm);
 		}
 		protected virtual function onDestroy(fsm:IFsm) : void {
-
+			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			CLog.log("{0} onDestroy", typeName)
 		}
 
 		protected function changeState(fsm:IFsm, stateType:Class) : void {
