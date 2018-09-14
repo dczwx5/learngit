@@ -23,10 +23,8 @@ package core.framework
 				onAwake();
 			}
 		}
-		public function start() : void {
-			if (isAwakeState) {
-				onStart();
-			}
+		public function start() : Boolean {
+			return onStart();
 		}
 
 		// =================================================
@@ -36,12 +34,13 @@ package core.framework
 			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
 			CLog.log("{0} onAwake", typeName);
 		}
-		protected virtual function onStart() : void {
+		protected virtual function onStart() : Boolean {
 			m_state = STATE_STARTED;
 			
 			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
 			CLog.log("{0} onStart", typeName);
 
+			return true;
 		}
 		
 		protected virtual function onDestroy() : void {

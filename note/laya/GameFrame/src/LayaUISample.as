@@ -14,9 +14,11 @@
 	import laya.utils.ClassUtils;
 	import laya.debug.tools.ClassTool;
 	import table.Chapter;
+	import table.Instance;
+	import usage.CPoolUsage;
+	import core.framework.CAppStage;
 	
 	// sequntialProceudreManager不能只有一条线
-	// table 的加载要完了。才能开始后面的系统
 	public class LayaUISample {
 		
 		public function LayaUISample() {
@@ -36,10 +38,6 @@
 
 		private function _onStart() : void {
 			new CGameStageStart();
-			Chapter
-			var clazz:Class = ClassTool.getClassByName("table.Chapter")
-			
-			trace("class : " + clazz);
 		}
 	 
 		

@@ -23,8 +23,8 @@ package game.view
 		protected override function onAwake() : void {
 			super.onAwake();
 		}
-		protected override function onStart() : void {
-			super.onStart();
+		protected override function onStart() : Boolean {
+			var ret:Boolean = super.onStart();
 			
 			m_layerList = new Array();
 
@@ -38,6 +38,8 @@ package game.view
 			// _addNewLayer(m_tutorLayer = new Box());
 			// _addNewLayer(m_msgLayer = new Box());
 			_addNewLayer(m_loadingLayer = new Box());
+
+			return true;
 		}
 		private function _addNewLayer(layer:Box) : void {
 			var stage:Stage = Laya.stage;

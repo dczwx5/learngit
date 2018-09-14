@@ -2,6 +2,7 @@ package core.sequentiaProcedure
 {
 	import laya.utils.Handler;
 	import laya.utils.Timer;
+	import avmplus.finish;
 
 	/**
 	 * ...
@@ -10,9 +11,15 @@ package core.sequentiaProcedure
 	 */
 	public class CSequentialProcedureManager{
 		public function CSequentialProcedureManager(){
+			reset();
+		}
+
+		public function reset() : void {
 			m_isRunning = false;
-			m_procedureInfoList = new Vector.<_CProcedureInfo>();
+			m_procedureInfoList.length = 0;
 			m_currentProcedureInfo = null;
+			m_finishCallback = null;
+			Laya.timer.clear(this, _onUpdate);
 		}
 
 		public function destroy() : void {
@@ -54,16 +61,25 @@ package core.sequentiaProcedure
 			}
 
 			if (!m_currentProcedureInfo && m_procedureInfoList.length == 0) {
-					// stop
-					m_isRunning = false;
-					Laya.timer.clear(this, _onUpdate);
-					return ;
+				// stop
+				m_isRunning = false;
+				Laya.timer.clear(this, _onUpdate);
+				if (null != m_finishCallback) {
+					m_finishCallback.run();
+				}
+				return ;
 			}
+		}
+
+		public function set finishCallback(v:Handler) : void {
+			m_finishCallback = v;
 		}
 
 		private var m_procedureInfoList:Vector.<_CProcedureInfo>;
 		private var m_isRunning:Boolean;
 		private var m_currentProcedureInfo:_CProcedureInfo;
+
+		private var m_finishCallback:Handler;
 	}
 
 }

@@ -18,7 +18,7 @@ package core.game.data
 	 * @author
 	 */
 	public class CDatabaseSystem extends CAppSystem implements IDatabase {
-		private var m_pMainfest:Array;
+		private var m_pMainfest:Array; // [tableName, clazz] ; 需要传入clazz是因为ClassTool.getClassByName虽然可以获得类, 但必须先引用类
 		public function CDatabaseSystem(mainfest:Array){
 			m_pMainfest = mainfest;
 			m_isLoadCompleted = false;
@@ -30,35 +30,39 @@ package core.game.data
 
 		}
 
-		protected override function onStart() : void {
-			super.onStart();
+		private var m_bIntialized:Boolean = false;
+		protected override function onStart() : Boolean {
+			var ret:Boolean = super.onStart();
 
-			loadConfigFile();
+			if (!m_bIntialized) {
+				loadConfigFile();
+				m_bIntialized = true;
+			}
+
+			return isReady;
 		}
 
 		private function loadConfigFile() : void {
 			var tableName:String;
+			var tableClazz:Class;
 
 			for (var i:int = 0; i < m_pMainfest.length; i++) {
-				tableName = m_pMainfest[i];
-				_loadConfigData(tableName);
-				
+				tableName = m_pMainfest[i][0];
+				tableClazz = m_pMainfest[i][1]
+				_loadConfigData(tableName, tableClazz);
 			}
 		}
 
-		private function _loadConfigData(tableName:String) : void {
+		private function _loadConfigData(tableName:String, tableClazz:Class) : void {
 			if (!tableName || tableName.length == 0) {
 				return ;
 			}
 		
-			// startLoadFile(filePath + ".json", _onFinished);
 			var url:String = CPathUtils.getTablePath(tableName);
-			Laya.loader.load(url, Handler.create(this, _onFinished, [url, tableName]), null, Loader.JSON);
+			Laya.loader.load(url, Handler.create(this, _onFinished, [url, tableName, tableClazz]), null, Loader.JSON);
 
 		}
-		private function _onFinished(url:String, tableName:String) : void {
-			var clazz:Class = ClassTool.getClassByName("table." + tableName);
-
+		private function _onFinished(url:String, tableName:String, clazz:Class) : void {
 			var jsonObj:Object = Loader.getRes(url);
 			var pTable:CDataTable;
 			pTable = new CDataTable(tableName);
@@ -66,7 +70,7 @@ package core.game.data
 				throw new Error("table " + tableName + " is exist");
 			}
 
-			pTable[tableName] = pTable;
+			m_pDatabase[tableName] = pTable;
 
 			var recordMap:Object = new Object();
 			var KEY:String = pTable.primaryKey;

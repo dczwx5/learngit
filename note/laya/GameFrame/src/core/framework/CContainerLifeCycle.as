@@ -40,14 +40,21 @@ package core.framework
 
 			}
 		}
-		public override function start() : void {
-			if (isAwakeState) {
-				onStart();
+
+		// 
+		public override function start() : Boolean {
+			var ret:Boolean = super.start();
+			if (!ret) {
+				return ret;
 			}
+
 			if (m_unStartBeanList.length > 0) {
 				for (var i:int = 0; i < m_unStartBeanList.length; i++) {
 					var o:CLifeCycle = m_unStartBeanList[i];
-					o.start();
+					ret = o.start();
+					if (!ret) {
+						return ret;
+					}
 
 					if (o.isStarted) {
 						m_unStartBeanList.splice(i, 1);
@@ -55,6 +62,7 @@ package core.framework
 					}
 				}
 			}
+			return true;
 		}
 
 		// =================================================
@@ -63,8 +71,9 @@ package core.framework
 		protected override function onAwake() : void {
 			super.onAwake();
 		}
-		protected override function onStart() : void {
-			super.onStart();
+		// onStart如果return false, 则会多次调用直到为true
+		protected override function onStart() : Boolean {
+			return super.onStart();
 		}
 		protected override function onDestroy() : void {
 			super.onDestroy();

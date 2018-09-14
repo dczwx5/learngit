@@ -18,19 +18,18 @@ package game
 			CAppStage.DEBUG = true;
 			m_gameStage = CGameStage.getInstance();
 			m_gameStage.awake();
-			m_gameStage.start();
-
-
-			// fsmUsage = new CFsmUsage();
-			// fsmUsage.start();
-
-			// procedureUsage = new CProcedureUsage();
-
-			Laya.timer.frameLoop(1, this, _onEnterFrame);
 			
+			Laya.timer.frameLoop(1, this, _waitStart);
 		}
-
+		private function _waitStart() : void {
+			var isStarted:Boolean = m_gameStage.start();
+			if (isStarted) {
+				Laya.timer.clear(this, _waitStart);
+				Laya.timer.frameLoop(1, this, _onEnterFrame);
+			}
+		}
 		private function _onEnterFrame() : void {
+
 			var deltaTime:Number = Laya.timer.delta*0.001;
 			m_gameStage.update(deltaTime);
 
@@ -39,17 +38,11 @@ package game
 				m_duringTime -= FIX_TIME;
 				m_gameStage.fixUpdate(FIX_TIME);
 			}
-
-			// fsmUsage.update(deltaTime);
-			// procedureUsage.update(deltaTime);
 		}
 
 		private var m_gameStage:CGameStage;
 		private var m_duringTime:Number;
 		private const FIX_TIME:Number = 1/60;
-
-		// private var fsmUsage:CFsmUsage;
-		// private var procedureUsage:CProcedureUsage;
 	}
 
 }

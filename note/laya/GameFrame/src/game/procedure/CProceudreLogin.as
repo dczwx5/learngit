@@ -2,6 +2,11 @@ package game.procedure
 {
 	import core.procedure.CProcedureBase;
 	import core.fsm.IFsm;
+	import core.game.data.CDatabaseSystem;
+	import game.CTableConstant;
+	import core.game.data.CDataTable;
+	import core.framework.IDataTable;
+	import table.Chapter;
 
 	/**
 	 * ...
@@ -17,6 +22,8 @@ package game.procedure
 		}
 		protected override function onEnter(fsm:IFsm) : void {
 			super.onEnter(fsm);
+
+			
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
 			super.onUpdate(fsm);

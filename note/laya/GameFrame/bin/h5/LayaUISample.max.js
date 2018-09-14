@@ -1611,13 +1611,20 @@ var CSequentialProcedureManager=(function(){
 		this.m_procedureInfoList=null;
 		this.m_isRunning=false;
 		this.m_currentProcedureInfo=null;
-		this.m_isRunning=false;
-		this.m_procedureInfoList=[];
-		this.m_currentProcedureInfo=null;
+		this.m_finishCallback=null;
+		this.reset();
 	}
 
 	__class(CSequentialProcedureManager,'core.sequentiaProcedure.CSequentialProcedureManager');
 	var __proto=CSequentialProcedureManager.prototype;
+	__proto.reset=function(){
+		this.m_isRunning=false;
+		this.m_procedureInfoList.length=0;
+		this.m_currentProcedureInfo=null;
+		this.m_finishCallback=null;
+		Laya.timer.clear(this,this._onUpdate);
+	}
+
 	__proto.destroy=function(){
 		this.m_isRunning=false;
 		this.m_currentProcedureInfo=null;
@@ -1653,9 +1660,16 @@ var CSequentialProcedureManager=(function(){
 		if (!this.m_currentProcedureInfo && this.m_procedureInfoList.length==0){
 			this.m_isRunning=false;
 			Laya.timer.clear(this,this._onUpdate);
+			if (null !=this.m_finishCallback){
+				this.m_finishCallback.run();
+			}
 			return;
 		}
 	}
+
+	__getset(0,__proto,'finishCallback',null,function(v){
+		this.m_finishCallback=v;
+	});
 
 	CSequentialProcedureManager.__init$=function(){
 		//class _CProcedureInfo
@@ -1682,7 +1696,6 @@ var CSequentialProcedureManager=(function(){
 //class game.CGameStageStart
 var CGameStageStart=(function(){
 	function CGameStageStart(){
-		// procedureUsage.update(deltaTime);
 		this.m_gameStage=null;
 		this.m_duringTime=NaN;
 		this.FIX_TIME=1/60;
@@ -1690,12 +1703,19 @@ var CGameStageStart=(function(){
 		CAppStage.DEBUG=true;
 		this.m_gameStage=CGameStage.getInstance();
 		this.m_gameStage.awake();
-		this.m_gameStage.start();
-		Laya.timer.frameLoop(1,this,this._onEnterFrame);
+		Laya.timer.frameLoop(1,this,this._waitStart);
 	}
 
 	__class(CGameStageStart,'game.CGameStageStart');
 	var __proto=CGameStageStart.prototype;
+	__proto._waitStart=function(){
+		var isStarted=this.m_gameStage.start();
+		if (isStarted){
+			Laya.timer.clear(this,this._waitStart);
+			Laya.timer.frameLoop(1,this,this._onEnterFrame);
+		}
+	}
+
 	__proto._onEnterFrame=function(){
 		var deltaTime=Laya.timer.delta*0.001;
 		this.m_gameStage.update(deltaTime);
@@ -1744,9 +1764,9 @@ var CTableConstant=(function(){
 	CTableConstant.INSTANCE_TYPE="InstanceType";
 	__static(CTableConstant,
 	['tableList',function(){return this.tableList=[
-		"Instance",
-		"Chapter",
-		"InstanceType"];}
+		["Instance",Instance],
+		["Chapter",Chapter],
+		["InstanceType",InstanceType]];}
 	]);
 	return CTableConstant;
 })()
@@ -1808,9 +1828,7 @@ var LayaUISample=(function(){
 	var __proto=LayaUISample.prototype;
 	__proto._onStart=function(){
 		new CGameStageStart();
-		Chapter;
-		var clazz=ClassTool.getClassByName("table.Chapter")
-		console.log("class : "+clazz);
+		new CPoolUsage(CGameStage.getInstance());
 	}
 
 	__proto.beginLoad=function(){}
@@ -1850,6 +1868,64 @@ var Chapter=(function(){
 	});
 
 	return Chapter;
+})()
+
+
+//class table.Instance
+var Instance=(function(){
+	function Instance(data){
+		this._data=null;
+		this._data=data;
+	}
+
+	__class(Instance,'table.Instance');
+	var __proto=Instance.prototype;
+	__getset(0,__proto,'ID',function(){
+		return this._data.ID;
+	});
+
+	__getset(0,__proto,'Name',function(){
+		return this._data.Name;
+	});
+
+	__getset(0,__proto,'Description',function(){
+		return this._data.Description;
+	});
+
+	__getset(0,__proto,'IconName',function(){
+		return this._data.IconName;
+	});
+
+	__getset(0,__proto,'Chapter',function(){
+		return this._data.Chapter;
+	});
+
+	return Instance;
+})()
+
+
+//class table.InstanceType
+var InstanceType=(function(){
+	function InstanceType(data){
+		this._data=null;
+		this._data=data;
+	}
+
+	__class(InstanceType,'table.InstanceType');
+	var __proto=InstanceType.prototype;
+	__getset(0,__proto,'AutoFight',function(){
+		return this._data.AutoFight;
+	});
+
+	__getset(0,__proto,'ID',function(){
+		return this._data.ID;
+	});
+
+	__getset(0,__proto,'Name',function(){
+		return this._data.Name;
+	});
+
+	return InstanceType;
 })()
 
 
@@ -1962,6 +2038,38 @@ var CBaseDataUsage=(function(){
 	}
 
 	return CBaseDataUsage;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class usage.CPoolUsage
+var CPoolUsage=(function(){
+	var TestPoolObject;
+	function CPoolUsage(stage){
+		var poolSystem=stage.getSystem(CPoolSystem);
+		var poolBean=poolSystem.addPool("testPool",TestPoolObject);
+		var obj1=poolBean.createObject();
+		var obj2=poolBean.createObject();
+		var obj3=poolBean.createObject();
+		poolBean.recoverObject(obj1);
+		poolBean.recoverObject(obj2);
+		poolBean.recoverObject(obj3);
+	}
+
+	__class(CPoolUsage,'usage.CPoolUsage');
+	CPoolUsage.__init$=function(){
+		//class TestPoolObject
+		TestPoolObject=(function(){
+			function TestPoolObject(){}
+			__class(TestPoolObject,'');
+			return TestPoolObject;
+		})()
+	}
+
+	return CPoolUsage;
 })()
 
 
@@ -11928,6 +12036,60 @@ var Pool=(function(){
 
 
 /**
+*@private
+*基于个数的对象缓存管理器
+*/
+//class laya.utils.PoolCache
+var PoolCache=(function(){
+	function PoolCache(){
+		/**
+		*对象在Pool中的标识
+		*/
+		this.sign=null;
+		/**
+		*允许缓存的最大数量
+		*/
+		this.maxCount=1000;
+	}
+
+	__class(PoolCache,'laya.utils.PoolCache');
+	var __proto=PoolCache.prototype;
+	/**
+	*获取缓存的对象列表
+	*@return
+	*
+	*/
+	__proto.getCacheList=function(){
+		return Pool.getPoolBySign(this.sign);
+	}
+
+	/**
+	*尝试清理缓存
+	*@param force 是否强制清理
+	*
+	*/
+	__proto.tryDispose=function(force){
+		var list;
+		list=Pool.getPoolBySign(this.sign);
+		if (list.length > this.maxCount){
+			list.splice(this.maxCount,list.length-this.maxCount);
+		}
+	}
+
+	PoolCache.addPoolCacheManager=function(sign,maxCount){
+		(maxCount===void 0)&& (maxCount=100);
+		var cache;
+		cache=new PoolCache();
+		cache.sign=sign;
+		cache.maxCount=maxCount;
+		CacheManager.regCacheByFunction(Utils.bind(cache.tryDispose,cache),Utils.bind(cache.getCacheList,cache));
+	}
+
+	return PoolCache;
+})()
+
+
+/**
 *<p> <code>Stat</code> 是一个性能统计面板，可以实时更新相关的性能参数。</p>
 *<p>参与统计的性能参数如下（所有参数都是每大约1秒进行更新）：<br/>
 *FPS(Canvas)/FPS(WebGL)：Canvas 模式或者 WebGL 模式下的帧频，也就是每秒显示的帧数，值越高、越稳定，感觉越流畅；<br/>
@@ -18699,9 +18861,7 @@ var CLifeCycle=(function(_super){
 	}
 
 	__proto.start=function(){
-		if (this.isAwakeState){
-			this.onStart();
-		}
+		return this.onStart();
 	}
 
 	//=================================================
@@ -18715,6 +18875,7 @@ var CLifeCycle=(function(_super){
 		this.m_state=1;
 		var typeName=ExtendsUtils.getQualifiedClassName(this);
 		CLog.log("{0} onStart",typeName);
+		return true;
 	}
 
 	__proto.onDestroy=function(){
@@ -25602,20 +25763,26 @@ var CContainerLifeCycle=(function(_super){
 		}
 	}
 
+	//
 	__proto.start=function(){
-		if (this.isAwakeState){
-			this.onStart();
+		var ret=_super.prototype.start.call(this);
+		if (!ret){
+			return ret;
 		}
 		if (this.m_unStartBeanList.length > 0){
 			for (var i=0;i < this.m_unStartBeanList.length;i++){
 				var o=this.m_unStartBeanList[i];
-				o.start();
+				ret=o.start();
+				if (!ret){
+					return ret;
+				}
 				if (o.isStarted){
 					this.m_unStartBeanList.splice(i,1);
 					i--;
 				}
 			}
 		}
+		return true;
 	}
 
 	//=================================================
@@ -25623,8 +25790,9 @@ var CContainerLifeCycle=(function(_super){
 		_super.prototype.onAwake.call(this);
 	}
 
+	// onStart如果return false,则会多次调用直到为true
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -25944,6 +26112,14 @@ var CProcedureLoginMenu=(function(_super){
 		var loginMenuView=loginSystem.getBean(CLoginMenuView);
 		loginMenuView.on("ok",this,this._onStartClick,[fsm]);
 		loginSystem.showLoginMenu();
+		var database=fsm.system.stage.getSystem(CDatabaseSystem);
+		var pTable=database.getTable("Chapter");
+		var list=pTable.toArray();
+		var chapterRecord;
+		for(var $each_chapterRecord in list){
+			chapterRecord=list[$each_chapterRecord];
+			console.log(chapterRecord.Name+chapterRecord.OpenLevel);
+		}
 	}
 
 	__proto._onStartClick=function(fsm){
@@ -28523,7 +28699,7 @@ var CAppStage=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -28568,7 +28744,7 @@ var CAppSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -28612,7 +28788,7 @@ var CBean=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -32904,7 +33080,7 @@ var CViewBean=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33063,7 +33239,7 @@ var CFsmManager=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33151,6 +33327,7 @@ var CFsmManager=(function(_super){
 var CDatabaseSystem=(function(_super){
 	function CDatabaseSystem(mainfest){
 		this.m_pMainfest=null;
+		this.m_bIntialized=false;
 		this.m_isLoadCompleted=false;
 		this.m_pDatabase=null;
 		this.m_loadedCount=0;
@@ -33168,35 +33345,40 @@ var CDatabaseSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
-		this.loadConfigFile();
+		var ret=_super.prototype.onStart.call(this);
+		if (!this.m_bIntialized){
+			this.loadConfigFile();
+			this.m_bIntialized=true;
+		}
+		return this.isReady;
 	}
 
 	__proto.loadConfigFile=function(){
 		var tableName;
+		var tableClazz;
 		for (var i=0;i < this.m_pMainfest.length;i++){
-			tableName=this.m_pMainfest[i];
-			this._loadConfigData(tableName);
+			tableName=this.m_pMainfest[i][0];
+			tableClazz=this.m_pMainfest[i][1]
+			this._loadConfigData(tableName,tableClazz);
 		}
 	}
 
-	__proto._loadConfigData=function(tableName){
+	__proto._loadConfigData=function(tableName,tableClazz){
 		if (!tableName || tableName.length==0){
 			return;
 		};
 		var url=CPathUtils.getTablePath(tableName);
-		Laya.loader.load(url,Handler.create(this,this._onFinished,[url,tableName]),null,"json");
+		Laya.loader.load(url,Handler.create(this,this._onFinished,[url,tableName,tableClazz]),null,"json");
 	}
 
-	__proto._onFinished=function(url,tableName){
-		var clazz=ClassTool.getClassByName("table."+tableName);
+	__proto._onFinished=function(url,tableName,clazz){
 		var jsonObj=Loader.getRes(url);
 		var pTable;
 		pTable=new CDataTable(tableName);
 		if (this.m_pDatabase.hasOwnProperty(tableName)){
 			throw new Error("table "+tableName+" is exist");
 		}
-		pTable[tableName]=pTable;
+		this.m_pDatabase[tableName]=pTable;
 		var recordMap=new Object();
 		var KEY=pTable.primaryKey;
 		var keyValue;
@@ -33252,7 +33434,7 @@ var CFsmSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33305,8 +33487,9 @@ var CFsmSystem=(function(_super){
 */
 //class core.game.sequentiaProcedure.CSequentiaProcedureSystem extends core.framework.CAppSystem
 var CSequentiaProcedureSystem=(function(_super){
+	var ProcedureInfoList,ProcedureInfo;
 	function CSequentiaProcedureSystem(){
-		this.m_procedureManager=null;
+		this.m_list=null;
 		CSequentiaProcedureSystem.__super.call(this);
 	}
 
@@ -33314,25 +33497,243 @@ var CSequentiaProcedureSystem=(function(_super){
 	var __proto=CSequentiaProcedureSystem.prototype;
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
-		this.m_procedureManager=new CSequentialProcedureManager();
+		this.m_list=new ProcedureInfoList();
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
 		_super.prototype.onDestroy.call(this);
-		this.m_procedureManager.destroy();
-		this.m_procedureManager=null;
+		this.m_list.destroy();
+		this.m_list=null;
 	}
 
-	__proto.addSequential=function(handler,checkFinishHandler){
-		this.m_procedureManager.addSequential(handler,checkFinishHandler);
+	// checkFinishHandler 的once要为false
+	__proto.addSequential=function(caller,handler,checkFinishHandler){
+		var info=this.m_list.find(caller);
+		if (!info){
+			info=this.m_list.create();
+			info.isIdle=false;
+			info.procedureManager.finishCallback=Handler.create(this,this._onSequnentialFinish,[caller]);
+		}
+		info.procedureManager.addSequential(handler,checkFinishHandler);
+	}
+
+	__proto._onSequnentialFinish=function(caller){
+		this.m_list.recycle(caller);
+	}
+
+	CSequentiaProcedureSystem.__init$=function(){
+		//class ProcedureInfoList
+		ProcedureInfoList=(function(){
+			function ProcedureInfoList(){
+				this.m_list=null;
+				this.m_list=[];
+			}
+			__class(ProcedureInfoList,'');
+			var __proto=ProcedureInfoList.prototype;
+			__proto.destroy=function(){
+				var i=0;
+				var len=this.m_list.length;
+				var info;
+				for (;i < len;i++){
+					info=this.m_list[i];
+					info.procedureManager.destroy();
+					info.reset();
+					info.procedureManager=null;
+				}
+				this.m_list.length=0;
+				this.m_list=null;
+			}
+			__proto.remove=function(caller){
+				var i=0;
+				var len=this.m_list.length;
+				var info;
+				for (;i < len;i++){
+					info=this.m_list[i];
+					if (info.caller==caller){
+						this.m_list.splice(i,1);
+						break ;
+					}
+				}
+			}
+			__proto.find=function(caller){
+				var i=0;
+				var len=this.m_list.length;
+				var info;
+				for (;i < len;i++){
+					info=this.m_list[i];
+					if (info.caller==caller){
+						return info;
+					}
+				}
+				return null;
+			}
+			__proto.getIdle=function(){
+				var i=0;
+				var len=this.m_list.length;
+				var info;
+				for (;i < len;i++){
+					info=this.m_list[i];
+					if (info.isIdle){
+						return info;
+					}
+				}
+				return null;
+			}
+			__proto.create=function(){
+				var info=this.getIdle();
+				if (!info){
+					info=new ProcedureInfo();
+					var procedureManager=new CSequentialProcedureManager();
+					info.procedureManager=procedureManager;
+					this.m_list[this.m_list.length]=info;
+				}
+				return info;
+			}
+			__proto.recycle=function(caller){
+				if (this.m_list.length > 10){
+					this.remove(caller);
+					}else {
+					var info=this.find(caller);
+					info.reset();
+				}
+			}
+			return ProcedureInfoList;
+		})()
+		//class ProcedureInfo
+		ProcedureInfo=(function(){
+			function ProcedureInfo(){
+				this.caller=null;
+				this.handler=null;
+				this.checkFinishHandler=null;
+				this.procedureManager=null;
+				this.isIdle=true;
+			}
+			__class(ProcedureInfo,'');
+			var __proto=ProcedureInfo.prototype;
+			__proto.reset=function(){
+				this.caller=null;
+				this.handler=null;
+				this.checkFinishHandler=null;
+				this.isIdle=true;
+			}
+			return ProcedureInfo;
+		})()
 	}
 
 	return CSequentiaProcedureSystem;
 })(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.pool.CPoolSystem extends core.framework.CAppSystem
+var CPoolSystem=(function(_super){
+	function CPoolSystem(){
+		CPoolSystem.__super.call(this);
+	}
+
+	__class(CPoolSystem,'core.pool.CPoolSystem',_super);
+	var __proto=CPoolSystem.prototype;
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		CacheManager.stopCheck();
+		this.forceReleaseExternsPool();
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		CacheManager.beginCheck();
+		return ret;
+	}
+
+	__proto.addPool=function(sign,type,maxCount){
+		(maxCount===void 0)&& (maxCount=100);
+		var poolBean=this.getPool(sign);
+		if (!poolBean){
+			poolBean=new CPoolBean(sign,type);
+			this.addBean(poolBean);
+			poolBean.awake();
+			poolBean.start();
+		}
+		PoolCache.addPoolCacheManager(sign,maxCount);
+		return poolBean;
+	}
+
+	__proto.getPool=function(sign){
+		var beans=this.getBeans();
+		var bean;
+		for(var $each_bean in beans){
+			bean=beans[$each_bean];
+			if ((bean instanceof core.pool.CPoolBean )){
+				var poolBean=bean;
+				if (poolBean.sign==sign){
+					return poolBean;
+				}
+			}
+		}
+		return null;
+	}
+
+	// 创建对象和回收对象,与使用CPoolBean是一样的,只不过CPoolBean保存了pool的类型
+	__proto.createObject=function(flag,clazz){
+		var item=Pool.getItemByClass(flag,clazz);
+		return item;
+	}
+
+	__proto.recoverObject=function(flag,item){
+		Pool.recover(flag,item);
+	}
+
+	// 强制清除超出的pool,但内部没处理,只有清除超出maxCount的
+	__proto.forceReleaseExternsPool=function(){
+		CacheManager.forceDispose();
+	}
+
+	return CPoolSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.pool.CPoolBean extends core.framework.CBean
+var CPoolBean=(function(_super){
+	function CPoolBean(sign,type){
+		this.m_sign=null;
+		this.m_type=null;
+		CPoolBean.__super.call(this);
+		this.m_type=type;
+		this.m_sign=sign;
+	}
+
+	__class(CPoolBean,'core.pool.CPoolBean',_super);
+	var __proto=CPoolBean.prototype;
+	__proto.createObject=function(){
+		var item=Pool.getItemByClass(this.sign,this.type);
+		return item;
+	}
+
+	__proto.recoverObject=function(item){
+		Pool.recover(this.sign,item);
+	}
+
+	__getset(0,__proto,'sign',function(){
+		return this.m_sign;
+	});
+
+	__getset(0,__proto,'type',function(){
+		return this.m_type;
+	});
+
+	return CPoolBean;
+})(CBean)
 
 
 /**
@@ -33352,9 +33753,11 @@ var CGameStage=(function(_super){
 	var __proto=CGameStage.prototype;
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
+		this.addSystem(new CPoolSystem());
 		this.addSystem(new CFsmSystem());
 		this.addSystem(new CSequentiaProcedureSystem());
 		this.addSystem(new CDatabaseSystem(CTableConstant.tableList));
+		this.addSystem(new CSoundSystem());
 		this.addSystem(new CUISystem());
 		this.addSystem(new CLoginSystem());
 		this.addSystem(new CPlayerSystem());
@@ -33365,7 +33768,7 @@ var CGameStage=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33386,6 +33789,110 @@ var CGameStage=(function(_super){
 
 /**
 *...
+*@author
+*/
+//class core.sound.CSoundSystem extends core.framework.CAppSystem
+var CSoundSystem=(function(_super){
+	function CSoundSystem(){
+		CSoundSystem.__super.call(this);
+	}
+
+	__class(CSoundSystem,'core.sound.CSoundSystem',_super);
+	var __proto=CSoundSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		return ret;
+	}
+
+	/**
+	*播放音效。音效可以同时播放多个。
+	*@param url 声音文件地址。
+	*@param loops 循环次数,0表示无限循环。
+	*@param complete 声音播放完成回调 Handler对象。
+	*@param soundClass 使用哪个声音类进行播放，null表示自动选择。
+	*@param startTime 声音播放起始时间。
+	*@return SoundChannel对象，通过此对象可以对声音进行控制，以及获取声音信息。
+	*/
+	__proto.playSound=function(url,loops,complete,soundClass,startTime){
+		(loops===void 0)&& (loops=1);
+		(startTime===void 0)&& (startTime=0);
+		return SoundManager.playSound(url,loops,complete,soundClass,startTime);
+	}
+
+	// 停止音乐音效
+	__proto.stopSound=function(url){
+		SoundManager.stopSound(url);
+	}
+
+	__proto.stopAllSound=function(){
+		SoundManager.stopAllSound();
+	}
+
+	__proto.stopMusic=function(){
+		SoundManager.stopMusic();
+	}
+
+	// 释放声音资源(音效和音乐)
+	__proto.destroySound=function(url){
+		SoundManager.destroySound(url);
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		SoundManager.stopAll();
+	}
+
+	// 是否静音
+	__getset(0,__proto,'isMuted',function(){
+		return SoundManager.muted;
+		},function(v){
+		SoundManager.muted=v;
+	});
+
+	// 是否背景音乐静音
+	__getset(0,__proto,'isMusicMuted',function(){
+		return SoundManager.musicMuted;SoundManager.musicVolume
+		},function(v){
+		SoundManager.musicMuted=v;
+	});
+
+	// 是否音效静音
+	__getset(0,__proto,'isSoundMuted',function(){
+		return SoundManager.soundMuted;
+		},function(v){
+		SoundManager.soundMuted=v;
+	});
+
+	// 背景音乐音量
+	__getset(0,__proto,'musicVolume',function(){
+		return SoundManager.musicVolume;
+		},function(v){
+		SoundManager.setMusicVolume(v);
+	});
+
+	// 音效音量
+	__getset(0,__proto,'soundVolume',function(){
+		return SoundManager.soundVolume;
+		},function(v){
+		SoundManager.setSoundVolume(v);
+	});
+
+	CSoundSystem.playMusic=function(url,loops,complete,startTime){
+		(loops===void 0)&& (loops=0);
+		(startTime===void 0)&& (startTime=0);
+		return SoundManager.playMusic(url,loops,complete,startTime)
+	}
+
+	return CSoundSystem;
+})(CAppSystem)
+
+
+/**
+*...
 *@author auto
 */
 //class game.instance.CInstanceSystem extends core.framework.CAppSystem
@@ -33402,7 +33909,7 @@ var CInstanceSystem=(function(_super){
 
 	// this.addBean(new CLobbyView());
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33432,7 +33939,7 @@ var CLobbySystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33461,7 +33968,7 @@ var CLoginSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33497,7 +34004,7 @@ var CPlayerSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33532,8 +34039,9 @@ var CProcedureSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		var ret=_super.prototype.onStart.call(this);
 		this.m_procedureManager.startProcedure(CProcedureEntry);
+		return ret;
 	}
 
 	__proto.onDestroy=function(){
@@ -33561,7 +34069,7 @@ var CSceneSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -33599,12 +34107,13 @@ var CUISystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		var ret=_super.prototype.onStart.call(this);
 		this.m_layerList=[];
 		this._addNewLayer(this.m_uiRoot=new Box());
 		this._addNewLayer(this.m_viewLayer=new Box());
 		Dialog.manager;
 		this._addNewLayer(this.m_loadingLayer=new Box());
+		return true;
 	}
 
 	__proto._addNewLayer=function(layer){
@@ -38923,7 +39432,7 @@ var CLobbyView=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -38966,7 +39475,7 @@ var CLoginMenuView=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		_super.prototype.onStart.call(this);
+		return _super.prototype.onStart.call(this);
 	}
 
 	__proto.onDestroy=function(){
@@ -44496,7 +45005,7 @@ var GameStartUI=(function(_super){
 })(Dialog)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,Timer,DrawText,Render,WebGLContext2D,CBaseDataUsage,Browser,View,ShaderCompile,GraphicAnimation,LocalStorage,CSequentialProcedureManager,AtlasGrid]);
+	Laya.__init([LoaderManager,EventDispatcher,Timer,CSequentiaProcedureSystem,Browser,DrawText,Render,WebGLContext2D,CBaseDataUsage,CPoolUsage,View,ShaderCompile,LocalStorage,GraphicAnimation,AtlasGrid,CSequentialProcedureManager]);
 	/**LayaGameStart**/
 	new LayaUISample();
 

@@ -23,8 +23,8 @@ package core.game.fsm
 			addBean(m_fsmManager);
 			
 		}
-		protected override function onStart() : void {
-			super.onStart();
+		protected override function onStart() : Boolean {
+			return super.onStart();
 		}
 	
 		protected override function onDestroy() : void {

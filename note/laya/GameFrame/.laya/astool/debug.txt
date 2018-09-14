@@ -12,8 +12,8 @@ Project configuration:f:\auto\autoGit\learngit\note\laya\GameFrame/.actionScript
 1,0.00,f:/auto/autoGit/learngit/note/laya/GameFrame/src,0,Collect
 1,0.00,f:/auto/autoGit/learngit/note/laya/GameFrame/libs/laya/src,0,Collect
 1,2.00,,0,read class message
-1,89.95,,0,Disable Flash3D f:/auto/autoGit/learngit/note/laya/GameFrame/src/LayaUISample.as
-12,89.95,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.js,1328234,
-11,89.95,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
+1,89.75,,0,Disable Flash3D f:/auto/autoGit/learngit/note/laya/GameFrame/src/LayaUISample.as
+12,89.75,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.js,1340264,
+11,89.75,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
 ******************************************************************************
-14,89.95,,0,
+14,89.75,,0,

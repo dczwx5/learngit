@@ -12,7 +12,8 @@ package core.framework
 		// function onDestroy() : void;
 
 		function awake() : void ;
-		function start() : void ;
+		function start() : Boolean ;
+
 		// function update(deltaTime:Number) : void ;
 		// function fixUpdate(fixTime:Number) : void ;
 		function destroy() : void;

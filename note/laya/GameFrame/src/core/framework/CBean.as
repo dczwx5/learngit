@@ -12,8 +12,8 @@ package core.framework
 		protected override function onAwake() : void {
 			super.onAwake();
 		}
-		protected override function onStart() : void {
-			super.onStart();
+		protected override function onStart() : Boolean {
+			return super.onStart();
 		}
 		protected override function onDestroy() : void {
 			m_system = null;

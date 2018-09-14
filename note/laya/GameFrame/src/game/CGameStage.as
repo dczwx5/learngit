@@ -15,6 +15,8 @@ package game
 	import game.view.CUISystem;
 	import core.game.data.CDatabaseSystem;
 	import game.CTableConstant;
+	import core.sound.CSoundSystem;
+	import core.pool.CPoolSystem;
 	/**
 	 * ...
 	 * @author auto
@@ -39,9 +41,13 @@ package game
 		protected override function onAwake() : void {
 			super.onAwake();
 
+			this.addSystem(new CPoolSystem());
 			this.addSystem(new CFsmSystem());
 			this.addSystem(new CSequentiaProcedureSystem());
 			this.addSystem(new CDatabaseSystem(CTableConstant.tableList));
+
+			this.addSystem(new CSoundSystem());
+			
 			this.addSystem(new CUISystem());
 
 			this.addSystem(new CLoginSystem());
@@ -52,8 +58,8 @@ package game
 
 			this.addSystem(new CProcedureSystem());
 		}
-		protected override function onStart() : void {
-			super.onStart();
+		protected override function onStart() : Boolean {
+			return super.onStart();
 		}
 		protected override function onDestroy() : void {
 			super.onDestroy();

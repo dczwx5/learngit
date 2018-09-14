@@ -8,7 +8,7 @@ package core.framework
 		function get name() : String;
 		function get primaryKey() : String;
 		function get tableMap() : Object;
-		function findByPrimaryKey(key:*) : *;
+		function findByPrimaryKey(value:*) : *;
 		function findByProperty(sPropertyName:String, filterVal:*) : Array;
 		function first() : *;
 		function last() : *;

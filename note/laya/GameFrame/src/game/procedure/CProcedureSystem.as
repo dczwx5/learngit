@@ -33,10 +33,12 @@ package game.procedure
 			m_procedureManager = fsmSystem.createProcedure("gameProcedure", procedureList);
 			
 		}
-		protected override function onStart() : void {
-			super.onStart();
+		protected override function onStart() : Boolean {
+			var ret:Boolean = super.onStart();
 
 			m_procedureManager.startProcedure(CProcedureEntry);
+
+			return ret;
 		}
 	
 		protected override function onDestroy() : void {

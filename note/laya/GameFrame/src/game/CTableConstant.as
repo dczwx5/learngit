@@ -1,5 +1,9 @@
 package game
 {
+	import table.Instance;
+	import table.Chapter;
+	import table.InstanceType;
+
 	/**
 	 * ...
 	 * @author
@@ -10,9 +14,9 @@ package game
 		public static const INSTANCE_TYPE:String = "InstanceType";
 
 		public static const tableList:Array = [
-			INSTANCE, 
-			CHAPTER,
-			INSTANCE_TYPE
+			[INSTANCE, Instance],
+			[CHAPTER, Chapter],
+			[INSTANCE_TYPE, InstanceType]
 		]
 	}
 
