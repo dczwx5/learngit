@@ -1,20 +1,19 @@
-package game.instance
+package metro.scene
 {
-	import core.framework.CAppSystem;
+	import core.framework.CBean;
 
 	/**
 	 * ...
 	 * @author auto
 	 */
-	public class CInstanceSystem extends CAppSystem {
-		public function CInstanceSystem(){
+	public class CMetroSceneHandler extends CBean {
+		public function CMetroSceneHandler(){
 			
 		}
 
 		protected override function onAwake() : void {
 			super.onAwake();
 
-			// this.addBean(new CLobbyView());
 		}
 		protected override function onStart() : Boolean {
 			return super.onStart();
@@ -23,11 +22,7 @@ package game.instance
 			super.onDestroy();
 		}
 
-		public function enterInstance(instanceID:int) : void {
-			// create scene
-
-			
-		}
+		
 	}
 
 }
