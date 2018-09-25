@@ -27,7 +27,7 @@ package game.view
 			var ret:Boolean = super.onStart();
 			
 			m_layerList = new Array();
-
+			
 			_addNewLayer(m_uiRoot = new Box());
 			_addNewLayer(m_viewLayer = new Box());
 
@@ -116,6 +116,8 @@ package game.view
 			dialog.close();
 		}
 		
+		private var m_sceneLayer:Box;
+
 		private var m_uiRoot:Box;
 		private var m_viewLayer:Box;
 		private var m_dialogLayer:CDialogLayer;

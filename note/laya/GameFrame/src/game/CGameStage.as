@@ -17,6 +17,7 @@ package game
 	import game.CTableConstant;
 	import core.sound.CSoundSystem;
 	import core.pool.CPoolSystem;
+	import metro.scene.CMetroSceneSystem;
 	/**
 	 * ...
 	 * @author auto
@@ -53,7 +54,7 @@ package game
 			this.addSystem(new CLoginSystem());
 			this.addSystem(new CPlayerSystem());
 			this.addSystem(new CLobbySystem());
-			this.addSystem(new CSceneSystem());
+			this.addSystem(new CMetroSceneSystem());
 			this.addSystem(new CInstanceSystem());
 
 			this.addSystem(new CProcedureSystem());

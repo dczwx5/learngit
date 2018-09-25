@@ -26,7 +26,9 @@
 			MiniAdpter.init();
 
 			//初始化引擎，建议增加WebGl模式
-			Laya.init(720, 1280,WebGL);
+			// Laya.init(720, 1280,WebGL);
+			Laya.init(1136, 640,WebGL);
+
 
 			Stat.show();
 			//全屏不等比缩放模式

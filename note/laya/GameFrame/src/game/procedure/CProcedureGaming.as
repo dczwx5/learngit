@@ -2,6 +2,7 @@ package game.procedure
 {
 	import core.procedure.CProcedureBase;
 	import core.fsm.IFsm;
+	import game.scene.CSceneSystem;
 
 	/**
 	 * ...
@@ -18,7 +19,8 @@ package game.procedure
 		protected override function onEnter(fsm:IFsm) : void {
 			super.onEnter(fsm);
 
-			// var loginSystem = fsm.system.stage.getSystem(CLoginSystem) as CLoginSystem;
+			var pSceneSystem:CSceneSystem = fsm.system.stage.getSystem(CSceneSystem) as CSceneSystem;
+			pSceneSystem.createScene("1111");
 
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {

@@ -21,6 +21,10 @@ package game.scene
 		protected override function onDestroy() : void {
 			super.onDestroy();
 		}
+
+		public virtual function createScene(sceneID:String) : void {
+
+		}
 	}
 
 }

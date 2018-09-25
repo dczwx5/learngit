@@ -8,12 +8,25 @@ package game
 		// root path : bin\h5
 		// // bin\h5\res\atlas
 		public static const GAME_PATH:String = "../../";
+		public static const ATLAS_PATH:String = "res/atlas/";
 		public static function getUIPath(uiName:String) : String {
-			return "res/atlas/" + uiName + ".atlas";
+			return ATLAS_PATH + uiName + ".atlas";
 		}
 
 		public static function getTablePath(tableName:String) : String {
 			return GAME_PATH + "runtime/table/client/" + tableName + ".json";
+		}
+
+		public static function getScenePath(name:String) : String {
+			return "scene/" + name + ".png";
+		}
+
+		public static function getMonsterPath(name:String) : String {
+			return "monster/" + name + ".png";
+		}
+
+		public static function getMonsterAnimation(mID:String, ani:String) : String {
+			return ATLAS_PATH + "monster/" + mID + "/" + ani + ".atlas";
 		}
 	}
 

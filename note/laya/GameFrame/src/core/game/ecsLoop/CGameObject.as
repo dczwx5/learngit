@@ -30,7 +30,7 @@ package core.game.ecsLoop
         } 
 
         public function dispose() : void {
-            onRemoved();
+            // onRemoved();
 
             m_isRunning = false;
             m_data = null;
