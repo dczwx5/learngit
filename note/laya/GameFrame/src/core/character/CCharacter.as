@@ -1,17 +1,17 @@
 package core.character
 {
+	import core.character.CCharacterBase;
+
 	/**
 	 * ...
 	 * @author
 	 */
-	public class CCharacter {
+	public class CCharacter extends CCharacterBase {
 		public function CCharacter(){
 			
 		}
 
-		public function get displayObject() : * {
-			return null;
-		}
+	 
 	}
 
 }

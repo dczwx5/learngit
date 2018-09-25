@@ -1,6 +1,7 @@
 package core.game.ecsLoop
 {
     import laya.resource.IDispose;
+    import core.game.ecsLoop.CGameObject;
 
     public class CLinkList implements IDispose {
         public var head:CLinkEntity;
@@ -50,6 +51,15 @@ package core.game.ecsLoop
             tail.prev = current;
 
             m_size++;
+        }
+
+        final public function remove(obj:CGameObject) : void {
+            var findObject:CLinkEntity = find(obj);
+            if (findObject) {
+                findObject.remove();
+            }
+
+            m_size--;
         }
 
         final public function find(obj:CGameObject) : CLinkEntity {

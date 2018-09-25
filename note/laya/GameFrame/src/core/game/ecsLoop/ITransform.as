@@ -1,6 +1,7 @@
 package core.game.ecsLoop
 {
     import laya.d3.math.Vector3;
+    import laya.d3.math.Vector4;
 
     public interface ITransform extends IGameComponent {
         function get x() : Number;
@@ -26,6 +27,9 @@ package core.game.ecsLoop
 
         function get rotationW() : Number;
         function set rotationW(v:Number) : void;
+
+        function get rotation() : Vector4;
+        function set rotation(v:Vector4) : void;
 
         function get scale() : Vector3;
         function set scale(v:Vector3) : void;

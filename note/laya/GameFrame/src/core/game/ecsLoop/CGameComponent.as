@@ -80,9 +80,9 @@ package core.game.ecsLoop
             
         }
 
-        // public function get transform() : ITransform {
-        //     return onwer.transform;
-        // }
+        public function get transform() : ITransform {
+            return owner.transform;
+        }
 
         final internal function setEnter() : void {
             if (this.runningState != STATE_ENTERED) {

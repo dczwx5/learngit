@@ -953,106 +953,6 @@ var CBaseDataCodeBuilder=(function(){
 
 
 /**
-*...
-*@author auto
-这类不能用
-*/
-//class core.CMap
-var CMap=(function(){
-	function CMap(){}
-	__class(CMap,'core.CMap');
-	var __proto=CMap.prototype;
-	// }
-	__proto.add=function(key,value,bAllowReplace){
-		(bAllowReplace===void 0)&& (bAllowReplace=false);
-		if (this[key] !=null){
-			if (bAllowReplace){
-				this[key]=value;
-				}else {
-				var sKeyType=ExtendsUtils.getQualifiedClassName(key);
-				var sValueType=ExtendsUtils.getQualifiedClassName(value);
-				throw new Error("CMap.add() : adding a key that has already existed in the map... !! key = "+key+" : "+sKeyType+", value = "+value+" : "+sValueType);
-			}
-			}else {
-			this[key]=value;
-		}
-	}
-
-	// m_iCount++;
-	__proto.remove=function(key){
-		if (this[key] !=null){
-			delete this[key];
-			return true;
-		}
-		return false;
-	}
-
-	__proto.find=function(key){
-		if (key==null)return null;
-		return this[key];
-	}
-
-	__proto.firstKey=function(){
-		for (var key in this)return key;
-		return null;
-	}
-
-	__proto.firstValue=function(){
-		var value;
-		for(var $each_value in this){
-			value=this[$each_value];
-			return value;
-		}
-		return null;
-	}
-
-	__proto.clear=function(){
-		while(this.firstKey()!=null){
-			for (var key in this)delete this[key];
-		}
-	}
-
-	// m_iCount=0;
-	__proto.toArray=function(){
-		var theArray=[];
-		var i=0;
-		var obj;
-		for(var $each_obj in this){
-			obj=this[$each_obj];
-			theArray[i++]=obj;
-		}
-		return theArray;
-	}
-
-	// func(key,value)
-	__proto.loop=function(func){
-		if (null==func)return;
-		for (var key in this){
-			func(key,this[key]);
-		}
-	}
-
-	return CMap;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class core.ExtendsUtils
-var ExtendsUtils=(function(){
-	function ExtendsUtils(){}
-	__class(ExtendsUtils,'core.ExtendsUtils');
-	ExtendsUtils.getQualifiedClassName=function(obj){
-		return ClassTool.getClassName(obj);
-	}
-
-	return ExtendsUtils;
-})()
-
-
-/**
 *<code>EventDispatcher</code> 类是可调度事件的所有类的基类。
 */
 //class laya.events.EventDispatcher
@@ -1352,6 +1252,22 @@ var Handler=(function(){
 	Handler._pool=[];
 	Handler._gid=1;
 	return Handler;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.ExtendsUtils
+var ExtendsUtils=(function(){
+	function ExtendsUtils(){}
+	__class(ExtendsUtils,'core.ExtendsUtils');
+	ExtendsUtils.getQualifiedClassName=function(obj){
+		return ClassTool.getClassName(obj);
+	}
+
+	return ExtendsUtils;
 })()
 
 
@@ -2172,8 +2088,6 @@ var CPoolUsage=(function(){
 		poolBean.recoverObject(obj1);
 		poolBean.recoverObject(obj2);
 		poolBean.recoverObject(obj3);
-		var obj;
-		obj.xx;
 	}
 
 	__class(CPoolUsage,'usage.CPoolUsage');
@@ -37992,6 +37906,79 @@ var UIConfig=(function(){
 
 /**
 *...
+*@author
+*/
+//class core.character.CCharacterBase extends laya.events.EventDispatcher
+var CCharacterBase=(function(_super){
+	function CCharacterBase(){
+		this._loadFinish=false;
+		this._loadCount=0;
+		this._aniMap=null;
+		this.m_role=null;
+		this.m_animation=null;
+		this.m_id=null;
+		CCharacterBase.__super.call(this);
+		this.m_role=new Sprite();
+		this.m_animation=new Sprite();
+		this.m_role.addChild(this.m_animation);
+		this._aniMap={};
+	}
+
+	__class(CCharacterBase,'core.character.CCharacterBase',_super);
+	var __proto=CCharacterBase.prototype;
+	__proto.create=function(){
+		this._addAni("die");
+		this._addAni("move");
+		this._addAni("idle");
+	}
+
+	__proto.playAnimation=function(aniName){
+		var ani=this._aniMap[aniName];
+		var lastAni=this.m_animation.getChildAt(0);
+		if (lastAni){
+			lastAni.stop();
+			lastAni.parent.removeChild(lastAni);
+		}
+		this.m_animation.addChild(ani);
+		ani.play();
+	}
+
+	__proto._addAni=function(aniName){
+		var ani=new Animation();
+		var monsterUrl=CPathUtils.getMonsterAnimation(this.id,aniName);
+		ani.loadAtlas(monsterUrl,Handler.create(this,this.onLoaded,[aniName,ani]));
+	}
+
+	__proto.onLoaded=function(aniName,ani){
+		this._aniMap[aniName]=ani;
+		this._loadCount++;
+		if (this._loadCount >=3){
+			this._loadFinish=true;
+			this.event("running");
+		}
+	}
+
+	__getset(0,__proto,'isRunning',function(){
+		return this._loadFinish;
+	});
+
+	__getset(0,__proto,'id',function(){
+		return this.m_id;
+		},function(v){
+		this.m_id=v;
+	});
+
+	__getset(0,__proto,'displayObject',function(){
+		return this.m_role;
+	});
+
+	CCharacterBase.EVENT_RUNNING="running";
+	return CCharacterBase;
+})(EventDispatcher)
+
+
+/**
+*...
 *@author auto
 */
 //class core.framework.CLifeCycle extends laya.events.EventDispatcher
@@ -38843,79 +38830,6 @@ var Node=(function(_super){
 	Node.NOTICE_DISPLAY=0x1;
 	Node.MOUSEENABLE=0x2;
 	return Node;
-})(EventDispatcher)
-
-
-/**
-*...
-*@author
-*/
-//class metro.role.CRoleBase extends laya.events.EventDispatcher
-var CRoleBase=(function(_super){
-	function CRoleBase(){
-		this._loadFinish=false;
-		this._loadCount=0;
-		this._aniMap=null;
-		this.m_role=null;
-		this.m_animation=null;
-		this.m_id=null;
-		CRoleBase.__super.call(this);
-		this.m_role=new Sprite();
-		this.m_animation=new Sprite();
-		this.m_role.addChild(this.m_animation);
-		this._aniMap={};
-	}
-
-	__class(CRoleBase,'metro.role.CRoleBase',_super);
-	var __proto=CRoleBase.prototype;
-	__proto.create=function(){
-		this._addAni("die");
-		this._addAni("move");
-		this._addAni("idle");
-	}
-
-	__proto.playAnimation=function(aniName){
-		var ani=this._aniMap[aniName];
-		var lastAni=this.m_animation.getChildAt(0);
-		if (lastAni){
-			lastAni.stop();
-			lastAni.parent.removeChild(lastAni);
-		}
-		this.m_animation.addChild(ani);
-		ani.play();
-	}
-
-	__proto._addAni=function(aniName){
-		var ani=new Animation();
-		var monsterUrl=CPathUtils.getMonsterAnimation(this.id,aniName);
-		ani.loadAtlas(monsterUrl,Handler.create(this,this.onLoaded,[aniName,ani]));
-	}
-
-	__proto.onLoaded=function(aniName,ani){
-		this._aniMap[aniName]=ani;
-		this._loadCount++;
-		if (this._loadCount >=3){
-			this._loadFinish=true;
-			this.event("running");
-		}
-	}
-
-	__getset(0,__proto,'isRunning',function(){
-		return this._loadFinish;
-	});
-
-	__getset(0,__proto,'id',function(){
-		return this.m_id;
-		},function(v){
-		this.m_id=v;
-	});
-
-	__getset(0,__proto,'displayObject',function(){
-		return this.m_role;
-	});
-
-	CRoleBase.EVENT_RUNNING="running";
-	return CRoleBase;
 })(EventDispatcher)
 
 
@@ -48090,6 +48004,21 @@ var MeshTexture=(function(_super){
 
 /**
 *...
+*@author
+*/
+//class core.character.CCharacter extends core.character.CCharacterBase
+var CCharacter=(function(_super){
+	function CCharacter(){
+		CCharacter.__super.call(this);
+	}
+
+	__class(CCharacter,'core.character.CCharacter',_super);
+	return CCharacter;
+})(CCharacterBase)
+
+
+/**
+*...
 *@author auto
 */
 //class core.framework.CContainerLifeCycle extends core.framework.CLifeCycle
@@ -50042,21 +49971,6 @@ var Sprite=(function(_super){
 	]);
 	return Sprite;
 })(Node)
-
-
-/**
-*...
-*@author
-*/
-//class metro.role.CMonster extends metro.role.CRoleBase
-var CMonster=(function(_super){
-	function CMonster(){
-		CMonster.__super.call(this);
-	}
-
-	__class(CMonster,'metro.role.CMonster',_super);
-	return CMonster;
-})(CRoleBase)
 
 
 /**
@@ -53048,81 +52962,6 @@ var GlitterRender=(function(_super){
 
 
 /**
-*@private
-*将mesh元素缓存到canvas中并进行绘制
-*/
-//class laya.ani.bone.canvasmesh.CacheAbleSkinMesh extends laya.ani.bone.canvasmesh.SkinMeshCanvas
-var CacheAbleSkinMesh=(function(_super){
-	function CacheAbleSkinMesh(){
-		this.isCached=false;
-		this.canvas=null;
-		this.tex=null;
-		this.rec=null;
-		CacheAbleSkinMesh.__super.call(this);
-	}
-
-	__class(CacheAbleSkinMesh,'laya.ani.bone.canvasmesh.CacheAbleSkinMesh',_super);
-	var __proto=CacheAbleSkinMesh.prototype;
-	__proto.getCanvasPic=function(){
-		var canvas=new HTMLCanvas("2D");
-		var ctx=canvas.getContext('2d');
-		this.rec=this.mesh.getBounds();
-		debugger;
-		canvas.size(this.rec.width,this.rec.height);
-		var preTransform;
-		preTransform=this.transform;
-		this.transform=CacheAbleSkinMesh.tempMt;
-		this.transform.identity();
-		this.transform.translate(-this.rec.x,-this.rec.y);
-		this.renderToContext(ctx);
-		this.transform.translate(+this.rec.x,+this.rec.y);
-		this.transform=preTransform;
-		return new Texture(canvas);
-	}
-
-	__proto.render=function(context,x,y){
-		if (!this.mesh.texture)return;
-		if (!this.isCached){
-			this.isCached=true;
-			this.tex=this.getCanvasPic();
-		}
-		if(!this.transform){
-			this.transform=SkinMeshCanvas._tempMatrix;
-			this.transform.identity();
-			this.transform.translate(x,y);
-			this._renderTextureToContext(context);
-			this.transform.translate(-x,-y);
-			this.transform=null;
-			}else{
-			this.transform.translate(x,y);
-			this._renderTextureToContext(context);
-			this.transform.translate(-x,-y);
-		}
-	}
-
-	__proto._renderTextureToContext=function(context){
-		this.context=context.ctx || context;
-		context.save();
-		var texture;
-		texture=this.tex;
-		if (this.transform){
-			var mt=this.transform;
-			context.transform(mt.a,mt.b,mt.c,mt.d,mt.tx,mt.ty);
-		}
-		this.rec=this.mesh.getBounds();
-		context.translate(this.rec.x,this.rec.y);
-		context.drawTexture(texture,0,0,texture.width,texture.height,0,0);
-		context.restore();
-	}
-
-	__static(CacheAbleSkinMesh,
-	['tempMt',function(){return this.tempMt=new Matrix();}
-	]);
-	return CacheAbleSkinMesh;
-})(SkinMeshCanvas)
-
-
-/**
 *<code>MeshFilter</code> 类用于创建网格过滤器。
 */
 //class laya.d3.core.MeshFilter extends laya.d3.core.GeometryFilter
@@ -53205,6 +53044,81 @@ var MeshFilter=(function(_super){
 
 	return MeshFilter;
 })(GeometryFilter)
+
+
+/**
+*@private
+*将mesh元素缓存到canvas中并进行绘制
+*/
+//class laya.ani.bone.canvasmesh.CacheAbleSkinMesh extends laya.ani.bone.canvasmesh.SkinMeshCanvas
+var CacheAbleSkinMesh=(function(_super){
+	function CacheAbleSkinMesh(){
+		this.isCached=false;
+		this.canvas=null;
+		this.tex=null;
+		this.rec=null;
+		CacheAbleSkinMesh.__super.call(this);
+	}
+
+	__class(CacheAbleSkinMesh,'laya.ani.bone.canvasmesh.CacheAbleSkinMesh',_super);
+	var __proto=CacheAbleSkinMesh.prototype;
+	__proto.getCanvasPic=function(){
+		var canvas=new HTMLCanvas("2D");
+		var ctx=canvas.getContext('2d');
+		this.rec=this.mesh.getBounds();
+		debugger;
+		canvas.size(this.rec.width,this.rec.height);
+		var preTransform;
+		preTransform=this.transform;
+		this.transform=CacheAbleSkinMesh.tempMt;
+		this.transform.identity();
+		this.transform.translate(-this.rec.x,-this.rec.y);
+		this.renderToContext(ctx);
+		this.transform.translate(+this.rec.x,+this.rec.y);
+		this.transform=preTransform;
+		return new Texture(canvas);
+	}
+
+	__proto.render=function(context,x,y){
+		if (!this.mesh.texture)return;
+		if (!this.isCached){
+			this.isCached=true;
+			this.tex=this.getCanvasPic();
+		}
+		if(!this.transform){
+			this.transform=SkinMeshCanvas._tempMatrix;
+			this.transform.identity();
+			this.transform.translate(x,y);
+			this._renderTextureToContext(context);
+			this.transform.translate(-x,-y);
+			this.transform=null;
+			}else{
+			this.transform.translate(x,y);
+			this._renderTextureToContext(context);
+			this.transform.translate(-x,-y);
+		}
+	}
+
+	__proto._renderTextureToContext=function(context){
+		this.context=context.ctx || context;
+		context.save();
+		var texture;
+		texture=this.tex;
+		if (this.transform){
+			var mt=this.transform;
+			context.transform(mt.a,mt.b,mt.c,mt.d,mt.tx,mt.ty);
+		}
+		this.rec=this.mesh.getBounds();
+		context.translate(this.rec.x,this.rec.y);
+		context.drawTexture(texture,0,0,texture.width,texture.height,0,0);
+		context.restore();
+	}
+
+	__static(CacheAbleSkinMesh,
+	['tempMt',function(){return this.tempMt=new Matrix();}
+	]);
+	return CacheAbleSkinMesh;
+})(SkinMeshCanvas)
 
 
 /**
@@ -58028,6 +57942,21 @@ var CBean=(function(_super){
 
 	return CBean;
 })(CContainerLifeCycle)
+
+
+/**
+*...
+*@author
+*/
+//class metro.role.CMonster extends core.character.CCharacter
+var CMonster=(function(_super){
+	function CMonster(){
+		CMonster.__super.call(this);
+	}
+
+	__class(CMonster,'metro.role.CMonster',_super);
+	return CMonster;
+})(CCharacter)
 
 
 /**
@@ -71100,43 +71029,6 @@ var CSequentiaProcedureSystem=(function(_super){
 *...
 *@author
 */
-//class core.pool.CPoolBean extends core.framework.CBean
-var CPoolBean=(function(_super){
-	function CPoolBean(sign,type){
-		this.m_sign=null;
-		this.m_type=null;
-		CPoolBean.__super.call(this);
-		this.m_type=type;
-		this.m_sign=sign;
-	}
-
-	__class(CPoolBean,'core.pool.CPoolBean',_super);
-	var __proto=CPoolBean.prototype;
-	__proto.createObject=function(){
-		var item=Pool.getItemByClass(this.sign,this.type);
-		return item;
-	}
-
-	__proto.recoverObject=function(item){
-		Pool.recover(this.sign,item);
-	}
-
-	__getset(0,__proto,'sign',function(){
-		return this.m_sign;
-	});
-
-	__getset(0,__proto,'type',function(){
-		return this.m_type;
-	});
-
-	return CPoolBean;
-})(CBean)
-
-
-/**
-*...
-*@author
-*/
 //class core.pool.CPoolSystem extends core.framework.CAppSystem
 var CPoolSystem=(function(_super){
 	function CPoolSystem(){
@@ -71202,6 +71094,43 @@ var CPoolSystem=(function(_super){
 
 	return CPoolSystem;
 })(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.pool.CPoolBean extends core.framework.CBean
+var CPoolBean=(function(_super){
+	function CPoolBean(sign,type){
+		this.m_sign=null;
+		this.m_type=null;
+		CPoolBean.__super.call(this);
+		this.m_type=type;
+		this.m_sign=sign;
+	}
+
+	__class(CPoolBean,'core.pool.CPoolBean',_super);
+	var __proto=CPoolBean.prototype;
+	__proto.createObject=function(){
+		var item=Pool.getItemByClass(this.sign,this.type);
+		return item;
+	}
+
+	__proto.recoverObject=function(item){
+		Pool.recover(this.sign,item);
+	}
+
+	__getset(0,__proto,'sign',function(){
+		return this.m_sign;
+	});
+
+	__getset(0,__proto,'type',function(){
+		return this.m_type;
+	});
+
+	return CPoolBean;
+})(CBean)
 
 
 /**
@@ -84768,26 +84697,6 @@ var WebGLImage=(function(_super){
 })(HTMLImage)
 
 
-//class ui.GameBgUI extends laya.ui.View
-var GameBgUI=(function(_super){
-	function GameBgUI(){
-		this.bg1=null;
-		this.bg2=null;
-		GameBgUI.__super.call(this);
-	}
-
-	__class(GameBgUI,'ui.GameBgUI',_super);
-	var __proto=GameBgUI.prototype;
-	__proto.createChildren=function(){
-		laya.ui.Component.prototype.createChildren.call(this);
-		this.createView(GameBgUI.uiView);
-	}
-
-	GameBgUI.uiView={"type":"View","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"var":"bg1","skin":"background.png"}},{"type":"Image","props":{"y":-1280,"x":0,"var":"bg2","skin":"background.png"}}]};
-	return GameBgUI;
-})(View)
-
-
 /**
 *<code>Dialog</code> 组件是一个弹出对话框，实现对话框弹出，拖动，模式窗口功能。
 *可以通过UIConfig设置弹出框背景透明度，模式窗口点击边缘是否关闭等
@@ -85659,7 +85568,7 @@ var GameStartUI=(function(_super){
 })(Dialog)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,CSequentialProcedureManager,Timer,CSequentiaProcedureSystem,DrawText,Browser,Render,WebGLContext2D,CBaseDataUsage,CPoolUsage,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
+	Laya.__init([LoaderManager,EventDispatcher,CSequentialProcedureManager,CSequentiaProcedureSystem,DrawText,Browser,Timer,Render,WebGLContext2D,CBaseDataUsage,CPoolUsage,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
 	/**LayaGameStart**/
 	new LayaUISample();
 

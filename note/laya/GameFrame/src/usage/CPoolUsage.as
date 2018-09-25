@@ -20,9 +20,6 @@ package usage
 			poolBean.recoverObject(obj1);
 			poolBean.recoverObject(obj2);
 			poolBean.recoverObject(obj3);
-
-			var obj;
-			obj.xx;
 		}
 	}
 

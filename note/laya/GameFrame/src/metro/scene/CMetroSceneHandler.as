@@ -11,7 +11,7 @@ package metro.scene
 	import laya.utils.Handler;
 	import metro.EAnimation;
 	import metro.role.CMonster;
-	import metro.role.CRoleBase;
+	import core.character.CCharacterBase;
 
 	/**
 	 * ...
@@ -61,21 +61,21 @@ package metro.scene
 			m_role1.id = "1001";
 			m_role1.displayObject.x = 200;
 			m_role1.displayObject.y = 300;
-			m_role1.on(CRoleBase.EVENT_RUNNING, this, _onRole1Running);
+			m_role1.on(CCharacterBase.EVENT_RUNNING, this, _onRole1Running);
 			m_role1.create();
 
 			m_role2 = new CMonster();
 			m_role2.id = "1001";
 			m_role2.displayObject.x = 400;
 			m_role2.displayObject.y = 300;
-			m_role2.on(CRoleBase.EVENT_RUNNING, this, _onRole2Running);
+			m_role2.on(CCharacterBase.EVENT_RUNNING, this, _onRole2Running);
 			m_role2.create();
 
 			m_role3 = new CMonster();
 			m_role3.id = "1001";
 			m_role3.displayObject.x = 400;
 			m_role3.displayObject.y = 100;
-			m_role3.on(CRoleBase.EVENT_RUNNING, this, _onRole3Running);
+			m_role3.on(CCharacterBase.EVENT_RUNNING, this, _onRole3Running);
 			m_role3.create();
 			
 			m_sceneLayer.addChild(m_role1.displayObject);
@@ -85,15 +85,15 @@ package metro.scene
 
 		private function _onRole1Running() : void {
 			m_role1.playAnimation(EAnimation.DIE);
-			m_role1.off(CRoleBase.EVENT_RUNNING, this, _onRole1Running);
+			m_role1.off(CCharacterBase.EVENT_RUNNING, this, _onRole1Running);
 		}
 		private function _onRole2Running() : void {
 			m_role2.playAnimation(EAnimation.MOVE);
-			m_role2.off(CRoleBase.EVENT_RUNNING, this, _onRole2Running);
+			m_role2.off(CCharacterBase.EVENT_RUNNING, this, _onRole2Running);
 		}
 		private function _onRole3Running() : void {
 			m_role3.playAnimation(EAnimation.IDLE);
-			m_role3.off(CRoleBase.EVENT_RUNNING, this, _onRole3Running);
+			m_role3.off(CCharacterBase.EVENT_RUNNING, this, _onRole3Running);
 		}
 		private var m_role1:CMonster;
 		private var m_role2:CMonster;

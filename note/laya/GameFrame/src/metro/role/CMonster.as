@@ -1,13 +1,13 @@
 package metro.role
 {
 
-import metro.role.CRoleBase;
+import core.character.CCharacter;
 
 /**
 	* ...
 	* @author
 	*/
-public class CMonster extends CRoleBase {
+public class CMonster extends CCharacter {
 	public function CMonster(){
 		
 	}

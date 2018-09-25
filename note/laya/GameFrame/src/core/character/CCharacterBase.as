@@ -1,4 +1,4 @@
-package metro.role
+package core.character
 {
 import laya.display.Sprite;
 import metro.EAnimation;
@@ -11,9 +11,9 @@ import laya.events.EventDispatcher;
 	* ...
 	* @author
 	*/
-public class CRoleBase extends EventDispatcher {
+public class CCharacterBase extends EventDispatcher {
 	public static const EVENT_RUNNING:String = "running";
-	public function CRoleBase(){
+	public function CCharacterBase(){
 		m_role = new Sprite();
 		m_animation = new Sprite();
 		m_role.addChild(m_animation);
@@ -73,6 +73,7 @@ public class CRoleBase extends EventDispatcher {
 	private var m_role:Sprite;
 	private var m_animation:Sprite;
 	private var m_id:String;
+
 
 }
 
