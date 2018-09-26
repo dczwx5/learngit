@@ -2,7 +2,7 @@ package game.procedure
 {
 	import core.procedure.CProcedureBase;
 	import core.fsm.IFsm;
-	import game.scene.CSceneSystem;
+	import core.scene.CSceneSystem;
 
 	/**
 	 * ...

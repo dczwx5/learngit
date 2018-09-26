@@ -447,174 +447,6 @@ var ___Laya=(function(){
 
 /**
 *...
-*@author auto
-m_dataMap :封装简单的 key :value
-m_childData :用于组装某个较大的数据集合,拆分成各个childData,在rootData使用addChild添加
-getChild
-m_listData :数组数据,如果一个数据为数组数据,则会使用该字段,
-getListData
-*/
-//class core.CBaseData
-var CBaseData=(function(){
-	function CBaseData(listDataClass){
-		this.m_needSync=false;
-		this.m_dataMap=null;
-		this.m_rootData=null;
-		this.m_childData=null;
-		// 子数据
-		this.m_listData=null;
-		// 数组元素
-		this.m_listDataClass=null;
-		// 数组元素类型
-		this.m_system=null;
-		this.m_dataMap=new Object();
-		this.m_listDataClass=listDataClass;
-	}
-
-	__class(CBaseData,'core.CBaseData');
-	var __proto=CBaseData.prototype;
-	__proto.dispose=function(){
-		if (this.m_childData){
-			var child;
-			for(var $each_child in this.m_childData){
-				child=this.m_childData[$each_child];
-				child.dispose();
-			}
-		}
-		if (this.m_listData){
-			var listChild;
-			for(var $each_listChild in this.m_listData){
-				listChild=this.m_listData[$each_listChild];
-				listChild.dispose();
-			}
-		}
-		this.clear();
-		this.m_dataMap=null;
-		this.m_childData=null;
-		this.m_listData=null;
-		this.m_system=null;
-		this.m_rootData=null;
-	}
-
-	__proto.clear=function(){
-		for (var key in this.m_dataMap){
-			delete this.m_dataMap[key];
-		}
-		if (this.m_childData){
-			this.m_childData.length=0;
-		}
-		if (this.m_listData){
-			this.m_listData.length=0;
-		}
-	}
-
-	// 增量更新
-	__proto.updateData=function(dataObj){
-		if ((dataObj instanceof Array)){
-			if (!this.m_listData){
-				this.m_listData=[];
-			};
-			var tempList=dataObj;
-			for (var i=0;i < tempList.length;i++){
-				var listChildData=new this.m_listDataClass();
-				this._setChildCommonData(listChildData);
-				this.m_listData[this.m_listData.length]=listChildData;
-				listChildData.updateData(tempList[i]);
-			}
-			}else {
-			for (var key in dataObj){
-				this.m_dataMap[key]=dataObj[key];
-			}
-		}
-	}
-
-	__proto.getData=function(key){
-		return this.m_dataMap[key];
-	}
-
-	__proto.getInt=function(key){
-		return this.getData(key);
-	}
-
-	__proto.getBoolean=function(key){
-		return this.getData(key);
-	}
-
-	__proto.getString=function(key){
-		if (this.m_dataMap.hasOwnProperty(key)){
-			return this.getData(key);
-			}else {
-			return null;
-		}
-	}
-
-	__proto.getNumber=function(key){
-		if (this.m_dataMap.hasOwnProperty(key)){
-			return this.getData(key);
-			}else {
-			return NaN;
-		}
-	}
-
-	//===================child
-	__proto.addChild=function(childData){
-		if (!this.m_childData){
-			this.m_childData=[];
-		}
-		this.m_childData[this.m_childData.length]=childData;
-		this._setChildCommonData(childData);
-	}
-
-	__proto.getChild=function(index){
-		return this.m_childData[index];
-	}
-
-	__proto.getChildByType=function(clazz){
-		var child;
-		for(var $each_child in this.m_childData){
-			child=this.m_childData[$each_child];
-			if (Laya.__typeof(child,clazz)){
-				return child;
-			}
-		}
-		return null;
-	}
-
-	__proto.getListChildData=function(key,value){
-		var child;
-		for(var $each_child in this.m_listData){
-			child=this.m_listData[$each_child];
-			if (child[key]==value){
-				return child
-			}
-		}
-		return null;
-	}
-
-	__proto._setChildCommonData=function(child){
-		if (this.isRootData){
-			child.m_rootData=this;
-			}else {
-			child.m_rootData=this.m_rootData;
-		}
-		child.m_system=child.m_rootData.m_system;
-	}
-
-	// listData
-	__getset(0,__proto,'list',function(){
-		return this.m_listData;
-	});
-
-	__getset(0,__proto,'isRootData',function(){
-		return this.m_rootData==null;
-	});
-
-	return CBaseData;
-})()
-
-
-/**
-*...
 *@author
 */
 //class core.CBaseDataCodeBuilder
@@ -1957,150 +1789,6 @@ var InstanceType=(function(){
 	});
 
 	return InstanceType;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class usage.CBaseDataUsage
-var CBaseDataUsage=(function(){
-	var RootData,StoneData,SkillListData,SkillData;
-	function CBaseDataUsage(){
-		var heroData={
-			"ID":1001,
-			"lv":13,
-			"attack":15,
-			"stone":{
-				"power":1000,
-				"count":20
-			},
-			"skill":[
-			{"ID":1,"lv":2},{"ID":2,"lv":12},]
-		};
-		var rootData=new RootData();
-		rootData.updateData(heroData);
-		console.log("ID : "+rootData.ID);
-		console.log("level : "+rootData.lv);
-		console.log("attack : "+rootData.attack);
-		console.log("________stoneData");
-		console.log("power : "+rootData.stoneData.power);
-		console.log("count : "+rootData.stoneData.count);
-		console.log("________skillData");
-		var skillData=rootData.skillListData.getByID(2);
-		console.log("ID : "+skillData.ID);
-		console.log("level : "+skillData.lv);
-	}
-
-	__class(CBaseDataUsage,'usage.CBaseDataUsage');
-	CBaseDataUsage.__init$=function(){
-		//class RootData extends core.CBaseData
-		RootData=(function(_super){
-			function RootData(){
-				RootData.__super.call(this);
-				this.addChild(new StoneData());
-				this.addChild(new SkillListData());
-			}
-			__class(RootData,'',_super);
-			var __proto=RootData.prototype;
-			__proto.updateData=function(dataObj){
-				_super.prototype.updateData.call(this,dataObj);
-				var obj=this.getData("stone");
-				this.stoneData.updateData(obj);
-				this.skillListData.updateData(dataObj["skill"]);
-			}
-			__getset(0,__proto,'ID',function(){return this.getInt("ID");});
-			__getset(0,__proto,'lv',function(){return this.getInt("lv");});
-			__getset(0,__proto,'attack',function(){return this.getInt("attack");});
-			__getset(0,__proto,'skillListData',function(){
-				return this.getChildByType(SkillListData);
-			});
-			__getset(0,__proto,'stoneData',function(){
-				return this.getChild(0);
-			});
-			RootData._Stone="stone";
-			RootData._ID="ID";
-			RootData._Level="lv";
-			RootData._Attack="attack";
-			return RootData;
-		})(CBaseData)
-		//class StoneData extends core.CBaseData
-		StoneData=(function(_super){
-			function StoneData(){
-				StoneData.__super.call(this);;
-			}
-			__class(StoneData,'',_super);
-			var __proto=StoneData.prototype;
-			__getset(0,__proto,'power',function(){return this.getInt("power");});
-			__getset(0,__proto,'count',function(){return this.getInt("count");});
-			StoneData._Power="power";
-			StoneData._Count="count";
-			return StoneData;
-		})(CBaseData)
-		//class SkillListData extends core.CBaseData
-		SkillListData=(function(_super){
-			function SkillListData(){
-				SkillListData.__super.call(this,SkillData);
-			}
-			__class(SkillListData,'',_super);
-			var __proto=SkillListData.prototype;
-			__proto.updateData=function(dataObj){
-				_super.prototype.updateData.call(this,dataObj);
-			}
-			__proto.getByID=function(id){
-				return this.getListChildData("ID",id);
-			}
-			return SkillListData;
-		})(CBaseData)
-		//class SkillData extends core.CBaseData
-		SkillData=(function(_super){
-			function SkillData(){
-				SkillData.__super.call(this);;
-			}
-			__class(SkillData,'',_super);
-			var __proto=SkillData.prototype;
-			__getset(0,__proto,'ID',function(){return this.getInt("ID");});
-			__getset(0,__proto,'lv',function(){return this.getInt("lv");});
-			SkillData._ID="ID";
-			SkillData._Level="lv";
-			return SkillData;
-		})(CBaseData)
-	}
-
-	return CBaseDataUsage;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class usage.CPoolUsage
-var CPoolUsage=(function(){
-	var TestPoolObject;
-	function CPoolUsage(stage){
-		var poolSystem=stage.getSystem(CPoolSystem);
-		var poolBean=poolSystem.addPool("testPool",TestPoolObject);
-		var obj1=poolBean.createObject();
-		var obj2=poolBean.createObject();
-		var obj3=poolBean.createObject();
-		poolBean.recoverObject(obj1);
-		poolBean.recoverObject(obj2);
-		poolBean.recoverObject(obj3);
-	}
-
-	__class(CPoolUsage,'usage.CPoolUsage');
-	CPoolUsage.__init$=function(){
-		//class TestPoolObject
-		TestPoolObject=(function(){
-			function TestPoolObject(){}
-			__class(TestPoolObject,'');
-			return TestPoolObject;
-		})()
-	}
-
-	return CPoolUsage;
 })()
 
 
@@ -40178,59 +39866,6 @@ var BaseRender=(function(_super){
 
 
 /**
-*@private
-*Canvas版本的SkinMesh
-*/
-//class laya.ani.bone.canvasmesh.SkinMeshCanvas extends laya.ani.bone.canvasmesh.CanvasMeshRender
-var SkinMeshCanvas=(function(_super){
-	function SkinMeshCanvas(){
-		SkinMeshCanvas.__super.call(this);
-		this.mesh=new MeshData();
-	}
-
-	__class(SkinMeshCanvas,'laya.ani.bone.canvasmesh.SkinMeshCanvas',_super);
-	var __proto=SkinMeshCanvas.prototype;
-	__proto.init2=function(texture,vs,ps,verticles,uvs){
-		if (this.transform){
-			this.transform=null;
-		};
-		var _ps;
-		if (ps){
-			_ps=ps;
-			}else {
-			_ps=[];
-			_ps.push(0,1,3,3,1,2);
-		}
-		this.mesh.texture=texture;
-		this.mesh.indexes=_ps;
-		this.mesh.vertices=verticles;
-		this.mesh.uvs=uvs;
-	}
-
-	__proto.render=function(context,x,y){
-		if(!this.mesh.texture)return;
-		if(!this.transform){
-			this.transform=SkinMeshCanvas._tempMatrix;
-			this.transform.identity();
-			this.transform.translate(x,y);
-			this.renderToContext(context);
-			this.transform.translate(-x,-y);
-			this.transform=null;
-			}else{
-			this.transform.translate(x,y);
-			this.renderToContext(context);
-			this.transform.translate(-x,-y);
-		}
-	}
-
-	__static(SkinMeshCanvas,
-	['_tempMatrix',function(){return this._tempMatrix=new Matrix();}
-	]);
-	return SkinMeshCanvas;
-})(CanvasMeshRender)
-
-
-/**
 *<code>Transform3D</code> 类用于实现3D变换。
 */
 //class laya.d3.core.Transform3D extends laya.events.EventDispatcher
@@ -40929,6 +40564,59 @@ var TransformUV=(function(_super){
 	]);
 	return TransformUV;
 })(EventDispatcher)
+
+
+/**
+*@private
+*Canvas版本的SkinMesh
+*/
+//class laya.ani.bone.canvasmesh.SkinMeshCanvas extends laya.ani.bone.canvasmesh.CanvasMeshRender
+var SkinMeshCanvas=(function(_super){
+	function SkinMeshCanvas(){
+		SkinMeshCanvas.__super.call(this);
+		this.mesh=new MeshData();
+	}
+
+	__class(SkinMeshCanvas,'laya.ani.bone.canvasmesh.SkinMeshCanvas',_super);
+	var __proto=SkinMeshCanvas.prototype;
+	__proto.init2=function(texture,vs,ps,verticles,uvs){
+		if (this.transform){
+			this.transform=null;
+		};
+		var _ps;
+		if (ps){
+			_ps=ps;
+			}else {
+			_ps=[];
+			_ps.push(0,1,3,3,1,2);
+		}
+		this.mesh.texture=texture;
+		this.mesh.indexes=_ps;
+		this.mesh.vertices=verticles;
+		this.mesh.uvs=uvs;
+	}
+
+	__proto.render=function(context,x,y){
+		if(!this.mesh.texture)return;
+		if(!this.transform){
+			this.transform=SkinMeshCanvas._tempMatrix;
+			this.transform.identity();
+			this.transform.translate(x,y);
+			this.renderToContext(context);
+			this.transform.translate(-x,-y);
+			this.transform=null;
+			}else{
+			this.transform.translate(x,y);
+			this.renderToContext(context);
+			this.transform.translate(-x,-y);
+		}
+	}
+
+	__static(SkinMeshCanvas,
+	['_tempMatrix',function(){return this._tempMatrix=new Matrix();}
+	]);
+	return SkinMeshCanvas;
+})(CanvasMeshRender)
 
 
 /**
@@ -48013,6 +47701,8 @@ var CCharacter=(function(_super){
 	}
 
 	__class(CCharacter,'core.character.CCharacter',_super);
+	var __proto=CCharacter.prototype;
+	__proto.dispose=function(){}
 	return CCharacter;
 })(CCharacterBase)
 
@@ -53047,81 +52737,6 @@ var MeshFilter=(function(_super){
 
 
 /**
-*@private
-*将mesh元素缓存到canvas中并进行绘制
-*/
-//class laya.ani.bone.canvasmesh.CacheAbleSkinMesh extends laya.ani.bone.canvasmesh.SkinMeshCanvas
-var CacheAbleSkinMesh=(function(_super){
-	function CacheAbleSkinMesh(){
-		this.isCached=false;
-		this.canvas=null;
-		this.tex=null;
-		this.rec=null;
-		CacheAbleSkinMesh.__super.call(this);
-	}
-
-	__class(CacheAbleSkinMesh,'laya.ani.bone.canvasmesh.CacheAbleSkinMesh',_super);
-	var __proto=CacheAbleSkinMesh.prototype;
-	__proto.getCanvasPic=function(){
-		var canvas=new HTMLCanvas("2D");
-		var ctx=canvas.getContext('2d');
-		this.rec=this.mesh.getBounds();
-		debugger;
-		canvas.size(this.rec.width,this.rec.height);
-		var preTransform;
-		preTransform=this.transform;
-		this.transform=CacheAbleSkinMesh.tempMt;
-		this.transform.identity();
-		this.transform.translate(-this.rec.x,-this.rec.y);
-		this.renderToContext(ctx);
-		this.transform.translate(+this.rec.x,+this.rec.y);
-		this.transform=preTransform;
-		return new Texture(canvas);
-	}
-
-	__proto.render=function(context,x,y){
-		if (!this.mesh.texture)return;
-		if (!this.isCached){
-			this.isCached=true;
-			this.tex=this.getCanvasPic();
-		}
-		if(!this.transform){
-			this.transform=SkinMeshCanvas._tempMatrix;
-			this.transform.identity();
-			this.transform.translate(x,y);
-			this._renderTextureToContext(context);
-			this.transform.translate(-x,-y);
-			this.transform=null;
-			}else{
-			this.transform.translate(x,y);
-			this._renderTextureToContext(context);
-			this.transform.translate(-x,-y);
-		}
-	}
-
-	__proto._renderTextureToContext=function(context){
-		this.context=context.ctx || context;
-		context.save();
-		var texture;
-		texture=this.tex;
-		if (this.transform){
-			var mt=this.transform;
-			context.transform(mt.a,mt.b,mt.c,mt.d,mt.tx,mt.ty);
-		}
-		this.rec=this.mesh.getBounds();
-		context.translate(this.rec.x,this.rec.y);
-		context.drawTexture(texture,0,0,texture.width,texture.height,0,0);
-		context.restore();
-	}
-
-	__static(CacheAbleSkinMesh,
-	['tempMt',function(){return this.tempMt=new Matrix();}
-	]);
-	return CacheAbleSkinMesh;
-})(SkinMeshCanvas)
-
-
-/**
 *<code>MeshRender</code> 类用于网格渲染器。
 */
 //class laya.d3.core.MeshRender extends laya.d3.core.render.BaseRender
@@ -53273,6 +52888,81 @@ var Buffer=(function(_super){
 	Buffer._enableAtributes=[];
 	return Buffer;
 })(Resource)
+
+
+/**
+*@private
+*将mesh元素缓存到canvas中并进行绘制
+*/
+//class laya.ani.bone.canvasmesh.CacheAbleSkinMesh extends laya.ani.bone.canvasmesh.SkinMeshCanvas
+var CacheAbleSkinMesh=(function(_super){
+	function CacheAbleSkinMesh(){
+		this.isCached=false;
+		this.canvas=null;
+		this.tex=null;
+		this.rec=null;
+		CacheAbleSkinMesh.__super.call(this);
+	}
+
+	__class(CacheAbleSkinMesh,'laya.ani.bone.canvasmesh.CacheAbleSkinMesh',_super);
+	var __proto=CacheAbleSkinMesh.prototype;
+	__proto.getCanvasPic=function(){
+		var canvas=new HTMLCanvas("2D");
+		var ctx=canvas.getContext('2d');
+		this.rec=this.mesh.getBounds();
+		debugger;
+		canvas.size(this.rec.width,this.rec.height);
+		var preTransform;
+		preTransform=this.transform;
+		this.transform=CacheAbleSkinMesh.tempMt;
+		this.transform.identity();
+		this.transform.translate(-this.rec.x,-this.rec.y);
+		this.renderToContext(ctx);
+		this.transform.translate(+this.rec.x,+this.rec.y);
+		this.transform=preTransform;
+		return new Texture(canvas);
+	}
+
+	__proto.render=function(context,x,y){
+		if (!this.mesh.texture)return;
+		if (!this.isCached){
+			this.isCached=true;
+			this.tex=this.getCanvasPic();
+		}
+		if(!this.transform){
+			this.transform=SkinMeshCanvas._tempMatrix;
+			this.transform.identity();
+			this.transform.translate(x,y);
+			this._renderTextureToContext(context);
+			this.transform.translate(-x,-y);
+			this.transform=null;
+			}else{
+			this.transform.translate(x,y);
+			this._renderTextureToContext(context);
+			this.transform.translate(-x,-y);
+		}
+	}
+
+	__proto._renderTextureToContext=function(context){
+		this.context=context.ctx || context;
+		context.save();
+		var texture;
+		texture=this.tex;
+		if (this.transform){
+			var mt=this.transform;
+			context.transform(mt.a,mt.b,mt.c,mt.d,mt.tx,mt.ty);
+		}
+		this.rec=this.mesh.getBounds();
+		context.translate(this.rec.x,this.rec.y);
+		context.drawTexture(texture,0,0,texture.width,texture.height,0,0);
+		context.restore();
+	}
+
+	__static(CacheAbleSkinMesh,
+	['tempMt',function(){return this.tempMt=new Matrix();}
+	]);
+	return CacheAbleSkinMesh;
+})(SkinMeshCanvas)
 
 
 /**
@@ -57787,6 +57477,42 @@ var PrimitiveSV=(function(_super){
 
 /**
 *...
+*@author
+*/
+//class core.framework.CBean extends core.framework.CContainerLifeCycle
+var CBean=(function(_super){
+	function CBean(){
+		this.m_system=null;
+		CBean.__super.call(this);
+	}
+
+	__class(CBean,'core.framework.CBean',_super);
+	var __proto=CBean.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		return _super.prototype.onStart.call(this);
+	}
+
+	__proto.onDestroy=function(){
+		this.m_system=null;
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__getset(0,__proto,'system',function(){
+		return this.m_system;
+		},function(v){
+		this.m_system=v;
+	});
+
+	return CBean;
+})(CContainerLifeCycle)
+
+
+/**
+*...
 1.update/fixUpdate :继承IUpdate/IFixUpdate的system,会自动调用update与fixUpdate,并不会往下自动调用(避免调用太多无用的update)
 2.在OnAwake中addBean的节点,会自动启动,其他的需要自行调用awake与start:
 如 :(在awake之外添加)
@@ -57905,42 +57631,6 @@ var CAppSystem=(function(_super){
 	});
 
 	return CAppSystem;
-})(CContainerLifeCycle)
-
-
-/**
-*...
-*@author
-*/
-//class core.framework.CBean extends core.framework.CContainerLifeCycle
-var CBean=(function(_super){
-	function CBean(){
-		this.m_system=null;
-		CBean.__super.call(this);
-	}
-
-	__class(CBean,'core.framework.CBean',_super);
-	var __proto=CBean.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		return _super.prototype.onStart.call(this);
-	}
-
-	__proto.onDestroy=function(){
-		this.m_system=null;
-		_super.prototype.onDestroy.call(this);
-	}
-
-	__getset(0,__proto,'system',function(){
-		return this.m_system;
-		},function(v){
-		this.m_system=v;
-	});
-
-	return CBean;
 })(CContainerLifeCycle)
 
 
@@ -70812,6 +70502,43 @@ var CDatabaseSystem=(function(_super){
 *...
 *@author
 */
+//class core.pool.CPoolBean extends core.framework.CBean
+var CPoolBean=(function(_super){
+	function CPoolBean(sign,type){
+		this.m_sign=null;
+		this.m_type=null;
+		CPoolBean.__super.call(this);
+		this.m_type=type;
+		this.m_sign=sign;
+	}
+
+	__class(CPoolBean,'core.pool.CPoolBean',_super);
+	var __proto=CPoolBean.prototype;
+	__proto.createObject=function(){
+		var item=Pool.getItemByClass(this.sign,this.type);
+		return item;
+	}
+
+	__proto.recoverObject=function(item){
+		Pool.recover(this.sign,item);
+	}
+
+	__getset(0,__proto,'sign',function(){
+		return this.m_sign;
+	});
+
+	__getset(0,__proto,'type',function(){
+		return this.m_type;
+	});
+
+	return CPoolBean;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
 //class core.game.fsm.CFsmSystem extends core.framework.CAppSystem
 var CFsmSystem=(function(_super){
 	function CFsmSystem(){
@@ -71100,37 +70827,29 @@ var CPoolSystem=(function(_super){
 *...
 *@author
 */
-//class core.pool.CPoolBean extends core.framework.CBean
-var CPoolBean=(function(_super){
-	function CPoolBean(sign,type){
-		this.m_sign=null;
-		this.m_type=null;
-		CPoolBean.__super.call(this);
-		this.m_type=type;
-		this.m_sign=sign;
+//class core.scene.CSceneSystem extends core.framework.CAppSystem
+var CSceneSystem=(function(_super){
+	function CSceneSystem(){
+		CSceneSystem.__super.call(this);
 	}
 
-	__class(CPoolBean,'core.pool.CPoolBean',_super);
-	var __proto=CPoolBean.prototype;
-	__proto.createObject=function(){
-		var item=Pool.getItemByClass(this.sign,this.type);
-		return item;
+	__class(CSceneSystem,'core.scene.CSceneSystem',_super);
+	var __proto=CSceneSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
 	}
 
-	__proto.recoverObject=function(item){
-		Pool.recover(this.sign,item);
+	__proto.onStart=function(){
+		return _super.prototype.onStart.call(this);
 	}
 
-	__getset(0,__proto,'sign',function(){
-		return this.m_sign;
-	});
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
 
-	__getset(0,__proto,'type',function(){
-		return this.m_type;
-	});
-
-	return CPoolBean;
-})(CBean)
+	__proto.createScene=function(sceneID){}
+	return CSceneSystem;
+})(CAppSystem)
 
 
 /**
@@ -71451,31 +71170,93 @@ var CProcedureSystem=(function(_super){
 
 /**
 *...
-*@author
+*@author auto
 */
-//class game.scene.CSceneSystem extends core.framework.CAppSystem
-var CSceneSystem=(function(_super){
-	function CSceneSystem(){
-		CSceneSystem.__super.call(this);
+//class metro.scene.CMetroSceneHandler extends core.framework.CBean
+var CMetroSceneHandler=(function(_super){
+	function CMetroSceneHandler(){
+		this.m_role1=null;
+		this.m_role2=null;
+		this.m_role3=null;
+		this.m_root=null;
+		this.m_sceneLayer=null;
+		CMetroSceneHandler.__super.call(this);
 	}
 
-	__class(CSceneSystem,'game.scene.CSceneSystem',_super);
-	var __proto=CSceneSystem.prototype;
+	__class(CMetroSceneHandler,'metro.scene.CMetroSceneHandler',_super);
+	var __proto=CMetroSceneHandler.prototype;
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
 	}
 
 	__proto.onStart=function(){
-		return _super.prototype.onStart.call(this);
+		var ret=_super.prototype.onStart.call(this);
+		this.m_root=new Sprite();
+		Laya.stage.addChildAt(this.m_root,0);
+		this.m_sceneLayer=new Sprite();
+		this.m_root.addChild(this.m_sceneLayer);
+		return ret;
 	}
 
 	__proto.onDestroy=function(){
 		_super.prototype.onDestroy.call(this);
 	}
 
-	__proto.createScene=function(sceneID){}
-	return CSceneSystem;
-})(CAppSystem)
+	__proto.createScene=function(sceneID){
+		while (this.m_sceneLayer.numChildren > 0){
+			this.m_sceneLayer.removeChildAt(0);
+		};
+		var bgUrl=CPathUtils.getScenePath("b");
+		var bg=new Image(bgUrl);
+		this.m_sceneLayer.addChild(bg);
+		this.m_role1=new CMonster();
+		this.m_role1.id="1001";
+		this.m_role1.displayObject.x=200;
+		this.m_role1.displayObject.y=300;
+		this.m_role1.on("running",this,this._onRole1Running);
+		this.m_role1.create();
+		this.m_role2=new CMonster();
+		this.m_role2.id="1001";
+		this.m_role2.displayObject.x=400;
+		this.m_role2.displayObject.y=300;
+		this.m_role2.on("running",this,this._onRole2Running);
+		this.m_role2.create();
+		this.m_role3=new CMonster();
+		this.m_role3.id="1001";
+		this.m_role3.displayObject.x=400;
+		this.m_role3.displayObject.y=100;
+		this.m_role3.on("running",this,this._onRole3Running);
+		this.m_role3.create();
+		this.m_sceneLayer.addChild(this.m_role1.displayObject);
+		this.m_sceneLayer.addChild(this.m_role2.displayObject);
+		this.m_sceneLayer.addChild(this.m_role3.displayObject);
+	}
+
+	__proto._onRole1Running=function(){
+		this.m_role1.playAnimation("die");
+		this.m_role1.off("running",this,this._onRole1Running);
+	}
+
+	__proto._onRole2Running=function(){
+		this.m_role2.playAnimation("move");
+		this.m_role2.off("running",this,this._onRole2Running);
+	}
+
+	__proto._onRole3Running=function(){
+		this.m_role3.playAnimation("idle");
+		this.m_role3.off("running",this,this._onRole3Running);
+	}
+
+	__getset(0,__proto,'root',function(){
+		return this.m_root;
+	});
+
+	__getset(0,__proto,'sceneLayer',function(){
+		return this.m_sceneLayer;
+	});
+
+	return CMetroSceneHandler;
+})(CBean)
 
 
 /**
@@ -71604,97 +71385,6 @@ var CUISystem=(function(_super){
 
 	return CUISystem;
 })(CAppSystem)
-
-
-/**
-*...
-*@author auto
-*/
-//class metro.scene.CMetroSceneHandler extends core.framework.CBean
-var CMetroSceneHandler=(function(_super){
-	function CMetroSceneHandler(){
-		this.m_role1=null;
-		this.m_role2=null;
-		this.m_role3=null;
-		this.m_root=null;
-		this.m_sceneLayer=null;
-		CMetroSceneHandler.__super.call(this);
-	}
-
-	__class(CMetroSceneHandler,'metro.scene.CMetroSceneHandler',_super);
-	var __proto=CMetroSceneHandler.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-	}
-
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		this.m_root=new Sprite();
-		Laya.stage.addChildAt(this.m_root,0);
-		this.m_sceneLayer=new Sprite();
-		this.m_root.addChild(this.m_sceneLayer);
-		return ret;
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	__proto.createScene=function(sceneID){
-		while (this.m_sceneLayer.numChildren > 0){
-			this.m_sceneLayer.removeChildAt(0);
-		};
-		var bgUrl=CPathUtils.getScenePath("b");
-		var bg=new Image(bgUrl);
-		this.m_sceneLayer.addChild(bg);
-		this.m_role1=new CMonster();
-		this.m_role1.id="1001";
-		this.m_role1.displayObject.x=200;
-		this.m_role1.displayObject.y=300;
-		this.m_role1.on("running",this,this._onRole1Running);
-		this.m_role1.create();
-		this.m_role2=new CMonster();
-		this.m_role2.id="1001";
-		this.m_role2.displayObject.x=400;
-		this.m_role2.displayObject.y=300;
-		this.m_role2.on("running",this,this._onRole2Running);
-		this.m_role2.create();
-		this.m_role3=new CMonster();
-		this.m_role3.id="1001";
-		this.m_role3.displayObject.x=400;
-		this.m_role3.displayObject.y=100;
-		this.m_role3.on("running",this,this._onRole3Running);
-		this.m_role3.create();
-		this.m_sceneLayer.addChild(this.m_role1.displayObject);
-		this.m_sceneLayer.addChild(this.m_role2.displayObject);
-		this.m_sceneLayer.addChild(this.m_role3.displayObject);
-	}
-
-	__proto._onRole1Running=function(){
-		this.m_role1.playAnimation("die");
-		this.m_role1.off("running",this,this._onRole1Running);
-	}
-
-	__proto._onRole2Running=function(){
-		this.m_role2.playAnimation("move");
-		this.m_role2.off("running",this,this._onRole2Running);
-	}
-
-	__proto._onRole3Running=function(){
-		this.m_role3.playAnimation("idle");
-		this.m_role3.off("running",this,this._onRole3Running);
-	}
-
-	__getset(0,__proto,'root',function(){
-		return this.m_root;
-	});
-
-	__getset(0,__proto,'sceneLayer',function(){
-		return this.m_sceneLayer;
-	});
-
-	return CMetroSceneHandler;
-})(CBean)
 
 
 /**
@@ -78018,7 +77708,7 @@ var CLoginMenuView=(function(_super){
 *...
 *@author
 */
-//class metro.scene.CMetroSceneSystem extends game.scene.CSceneSystem
+//class metro.scene.CMetroSceneSystem extends core.scene.CSceneSystem
 var CMetroSceneSystem=(function(_super){
 	function CMetroSceneSystem(){
 		this.m_sceneHandler=null;
@@ -83506,104 +83196,6 @@ var VScrollBar=(function(_super){
 
 
 /**
-*使用 <code>VSlider</code> 控件，用户可以通过在滑块轨道的终点之间移动滑块来选择值。
-*<p> <code>VSlider</code> 控件采用垂直方向。滑块轨道从下往上扩展，而标签位于轨道的左右两侧。</p>
-*
-*@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
-*package
-*{
-	*import laya.ui.HSlider;
-	*import laya.ui.VSlider;
-	*import laya.utils.Handler;
-	*public class VSlider_Example
-	*{
-		*private var vSlider:VSlider;
-		*public function VSlider_Example()
-		*{
-			*Laya.init(640,800);//设置游戏画布宽高。
-			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
-			*}
-		*private function onLoadComplete():void
-		*{
-			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-			*vSlider.min=0;//设置 vSlider 最低位置值。
-			*vSlider.max=10;//设置 vSlider 最高位置值。
-			*vSlider.value=2;//设置 vSlider 当前位置值。
-			*vSlider.tick=1;//设置 vSlider 刻度值。
-			*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-			*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-			*vSlider.changeHandler=new Handler(this,onChange);//设置 vSlider 位置变化处理器。
-			*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
-			*}
-		*private function onChange(value:Number):void
-		*{
-			*trace("滑块的位置： value="+value);
-			*}
-		*}
-	*}
-*@example
-*Laya.init(640,800);//设置游戏画布宽高
-*Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*var vSlider;
-*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
-*function onLoadComplete(){
-	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-	*vSlider.min=0;//设置 vSlider 最低位置值。
-	*vSlider.max=10;//设置 vSlider 最高位置值。
-	*vSlider.value=2;//设置 vSlider 当前位置值。
-	*vSlider.tick=1;//设置 vSlider 刻度值。
-	*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-	*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-	*vSlider.changeHandler=new laya.utils.Handler(this,onChange);//设置 vSlider 位置变化处理器。
-	*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
-	*}
-*function onChange(value){
-	*console.log("滑块的位置： value="+value);
-	*}
-*@example
-*import HSlider=laya.ui.HSlider;
-*import VSlider=laya.ui.VSlider;
-*import Handler=laya.utils.Handler;
-*class VSlider_Example {
-	*private vSlider:VSlider;
-	*constructor(){
-		*Laya.init(640,800);//设置游戏画布宽高。
-		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
-		*}
-	*private onLoadComplete():void {
-		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-		*this.vSlider.min=0;//设置 vSlider 最低位置值。
-		*this.vSlider.max=10;//设置 vSlider 最高位置值。
-		*this.vSlider.value=2;//设置 vSlider 当前位置值。
-		*this.vSlider.tick=1;//设置 vSlider 刻度值。
-		*this.vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-		*this.vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-		*this.vSlider.changeHandler=new Handler(this,this.onChange);//设置 vSlider 位置变化处理器。
-		*Laya.stage.addChild(this.vSlider);//把 vSlider 添加到显示列表。
-		*}
-	*private onChange(value:number):void {
-		*console.log("滑块的位置： value="+value);
-		*}
-	*}
-*@see laya.ui.Slider
-*/
-//class laya.ui.VSlider extends laya.ui.Slider
-var VSlider=(function(_super){
-	function VSlider(){
-		VSlider.__super.call(this);;
-	}
-
-	__class(VSlider,'laya.ui.VSlider',_super);
-	return VSlider;
-})(Slider)
-
-
-/**
 *<code>TextInput</code> 类用于创建显示对象以显示和输入文本。
 *
 *@example <caption>以下示例代码，创建了一个 <code>TextInput</code> 实例。</caption>
@@ -83926,6 +83518,104 @@ var TextInput=(function(_super){
 
 	return TextInput;
 })(Label)
+
+
+/**
+*使用 <code>VSlider</code> 控件，用户可以通过在滑块轨道的终点之间移动滑块来选择值。
+*<p> <code>VSlider</code> 控件采用垂直方向。滑块轨道从下往上扩展，而标签位于轨道的左右两侧。</p>
+*
+*@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
+*package
+*{
+	*import laya.ui.HSlider;
+	*import laya.ui.VSlider;
+	*import laya.utils.Handler;
+	*public class VSlider_Example
+	*{
+		*private var vSlider:VSlider;
+		*public function VSlider_Example()
+		*{
+			*Laya.init(640,800);//设置游戏画布宽高。
+			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
+			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*}
+		*private function onLoadComplete():void
+		*{
+			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+			*vSlider.min=0;//设置 vSlider 最低位置值。
+			*vSlider.max=10;//设置 vSlider 最高位置值。
+			*vSlider.value=2;//设置 vSlider 当前位置值。
+			*vSlider.tick=1;//设置 vSlider 刻度值。
+			*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+			*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+			*vSlider.changeHandler=new Handler(this,onChange);//设置 vSlider 位置变化处理器。
+			*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
+			*}
+		*private function onChange(value:Number):void
+		*{
+			*trace("滑块的位置： value="+value);
+			*}
+		*}
+	*}
+*@example
+*Laya.init(640,800);//设置游戏画布宽高
+*Laya.stage.bgColor="#efefef";//设置画布的背景颜色
+*var vSlider;
+*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
+*function onLoadComplete(){
+	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	*vSlider.min=0;//设置 vSlider 最低位置值。
+	*vSlider.max=10;//设置 vSlider 最高位置值。
+	*vSlider.value=2;//设置 vSlider 当前位置值。
+	*vSlider.tick=1;//设置 vSlider 刻度值。
+	*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+	*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+	*vSlider.changeHandler=new laya.utils.Handler(this,onChange);//设置 vSlider 位置变化处理器。
+	*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
+	*}
+*function onChange(value){
+	*console.log("滑块的位置： value="+value);
+	*}
+*@example
+*import HSlider=laya.ui.HSlider;
+*import VSlider=laya.ui.VSlider;
+*import Handler=laya.utils.Handler;
+*class VSlider_Example {
+	*private vSlider:VSlider;
+	*constructor(){
+		*Laya.init(640,800);//设置游戏画布宽高。
+		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
+		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*}
+	*private onLoadComplete():void {
+		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+		*this.vSlider.min=0;//设置 vSlider 最低位置值。
+		*this.vSlider.max=10;//设置 vSlider 最高位置值。
+		*this.vSlider.value=2;//设置 vSlider 当前位置值。
+		*this.vSlider.tick=1;//设置 vSlider 刻度值。
+		*this.vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+		*this.vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+		*this.vSlider.changeHandler=new Handler(this,this.onChange);//设置 vSlider 位置变化处理器。
+		*Laya.stage.addChild(this.vSlider);//把 vSlider 添加到显示列表。
+		*}
+	*private onChange(value:number):void {
+		*console.log("滑块的位置： value="+value);
+		*}
+	*}
+*@see laya.ui.Slider
+*/
+//class laya.ui.VSlider extends laya.ui.Slider
+var VSlider=(function(_super){
+	function VSlider(){
+		VSlider.__super.call(this);;
+	}
+
+	__class(VSlider,'laya.ui.VSlider',_super);
+	return VSlider;
+})(Slider)
 
 
 /**
@@ -85568,7 +85258,7 @@ var GameStartUI=(function(_super){
 })(Dialog)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,CSequentialProcedureManager,CSequentiaProcedureSystem,DrawText,Browser,Timer,Render,WebGLContext2D,CBaseDataUsage,CPoolUsage,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
+	Laya.__init([EventDispatcher,LoaderManager,DrawText,AtlasGrid,CSequentialProcedureManager,CSequentiaProcedureSystem,Browser,Timer,Render,WebGLContext2D,View,ShaderCompile,GraphicAnimation,LocalStorage]);
 	/**LayaGameStart**/
 	new LayaUISample();
 

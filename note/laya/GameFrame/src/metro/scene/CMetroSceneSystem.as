@@ -1,7 +1,7 @@
 package metro.scene
 {
-	import game.scene.CSceneSystem;
 	import metro.scene.CMetroSceneHandler;
+	import core.scene.CSceneSystem;
 
 	/**
 	 * ...

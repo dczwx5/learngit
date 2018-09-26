@@ -1,4 +1,4 @@
-package game.scene
+package core.scene
 {
 	import core.framework.CAppSystem;
 

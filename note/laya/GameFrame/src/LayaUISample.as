@@ -8,14 +8,12 @@
 	import game.CGameStageStart;
 	import laya.utils.Stat;
 	import laya.display.Stage;
-	import usage.CBaseDataUsage;
 	import core.CBaseDataCodeBuilder;
 	import game.CPathUtils;
 	import laya.utils.ClassUtils;
 	import laya.debug.tools.ClassTool;
 	import table.Chapter;
 	import table.Instance;
-	import usage.CPoolUsage;
 	import core.framework.CAppStage;
 	
 	// sequntialProceudreManager不能只有一条线

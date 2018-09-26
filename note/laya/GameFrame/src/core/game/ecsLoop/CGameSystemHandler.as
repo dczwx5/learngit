@@ -1,20 +1,21 @@
 package core.game.ecsLoop
 {
     import core.framework.CBean;
+    import core.game.ecsLoop.IGameComponent;
 
     public class CGameSystemHandler extends CBean implements IGameSystemHandler {
         // gameSystemHandler需要GameObject拥有哪些组件
-        private var m_supportedComponentClass:Vector.<Class>; 
+        private var m_supportedComponentClassList:Vector.<Class>;
+
         private var m_isEnable:Boolean;
 
         public function CGameSystemHandler(...comps) {
             super();
 
-            m_supportedComponentClass = new Vector.<Class>();
-
+            m_supportedComponentClassList = new Vector.<Class>();
             for each (var cls:Class in comps) {
                 if (cls) {
-                    m_supportedComponentClass.push(cls);
+                    m_supportedComponentClassList.push(cls);
                 }
             }
 
@@ -22,20 +23,20 @@ package core.game.ecsLoop
         }
 
         public function isComponentSupported(obj:CGameObject) : Boolean {
-            if (!m_supportedComponentClass || m_supportedComponentClass.length == 0) {
+            if (!m_supportedComponentClassList || m_supportedComponentClassList.length == 0) {
                 return true;
             } else {
-                var supported:Boolean;
-                for each (var clz:Class in m_supportedComponentClass) {
+                var supported:Boolean = true;
+                for each (var clz:Class in m_supportedComponentClassList) {
                     var comp:IGameComponent = obj.getComponentByClass(clz, true);
                     if (!comp) {
-                        supported == false;
+                        supported = false;
                         break;
                     }
                 }
-            }
 
-            return supported;
+                return supported;
+            }
         }
 
         final public function get enable() : Boolean {

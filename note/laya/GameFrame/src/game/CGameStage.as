@@ -5,7 +5,6 @@ package game
 	import game.login.CLoginSystem;
 	import game.player.CPlayerSystem;
 	import game.lobby.CLobbySystem;
-	import game.scene.CSceneSystem;
 	import game.CGameStage;
 	import laya.display.Stage;
 	import core.game.sequentiaProcedure.CSequentiaProcedureSystem;

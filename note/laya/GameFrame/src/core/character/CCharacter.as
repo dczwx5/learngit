@@ -11,7 +11,8 @@ package core.character
 			
 		}
 
-	 
+		public function dispose() : void {
+		}
 	}
 
 }
