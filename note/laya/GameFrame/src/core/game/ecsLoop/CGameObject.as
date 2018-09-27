@@ -169,7 +169,7 @@ public class CGameObject extends EventDispatcher implements IDispose, IDataHolde
     }
 
     final public function removeComponents(dispose:Boolean, ...comps) : Vector.<IGameComponent> {
-        const ret:Vector.<IGameComponent> = new Vecotr.<IGameComponent>();
+        var ret:Vector.<IGameComponent> = new Vector.<IGameComponent>();
         for each (var c:* in comps) {
             if (c is IGameComponent) {
                 if (removeComponent(c as IGameComponent, dispose));

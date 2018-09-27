@@ -18,8 +18,8 @@ package core
 				if (bAllowReplace) {
 					this[key] = value;
 				} else {
-					var sKeyType:String = ExtendsUtils.getQualifiedClassName(key);
-					var sValueType:String = ExtendsUtils.getQualifiedClassName(value);
+					var sKeyType:String = CCommon.getQualifiedClassName(key);
+					var sValueType:String = CCommon.getQualifiedClassName(value);
 					throw new Error("CMap.add() : adding a key that has already existed in the map... !! key = " + key + " : " + sKeyType + ", value = " + value + " : " + sValueType);
 				}
 			} else {

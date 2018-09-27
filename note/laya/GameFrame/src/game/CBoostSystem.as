@@ -4,12 +4,13 @@ package game
 	import core.game.ecsLoop.IGameSystemHandler;
 	import core.framework.ILifeCycle;
 	import core.framework.CLifeCycle;
+	import core.framework.CAppSystem;
 
 	/**
 	 * ...
 	 * @author
 	 */
-	public class CBoostSystem extends CECSLoop {
+	public class CBoostSystem extends CAppSystem {
 		public function CBoostSystem(){
 			
 		}
@@ -17,6 +18,7 @@ package game
 		override protected function onAwake() : void {
             super.onAwake();
 
+			var pEcsLoop:CECSLoop = stage.getSystem(CECSLoop) as CECSLoop;
             var handlers:Array = [
 				// new CMovementHandler(), 
 				// new CAnimationHandler(),
@@ -34,13 +36,14 @@ package game
 			for each (var handler:IGameSystemHandler in handlers) {
 				var bean:CLifeCycle = handler as CLifeCycle;
 				if (bean) {
-					addBean(handler as CLifeCycle);
+					pEcsLoop.addBean(bean);
+					bean.awake();
 				}
 			}
 
 			var gamePipelineHandler:IGameSystemHandler = handler as IGameSystemHandler;
 			if (gamePipelineHandler) {
-				addHandler(gamePipelineHandler);
+				pEcsLoop.addHandler(gamePipelineHandler);
 			}
 
 			// addBean(new CPingPongHandler());

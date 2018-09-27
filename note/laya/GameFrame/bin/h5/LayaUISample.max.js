@@ -218,9 +218,10 @@ Laya.interface('laya.resource.IDispose');
 Laya.interface('laya.runtime.IConchNode');
 Laya.interface('laya.webgl.shapes.IShape');
 Laya.interface('core.framework.IUICanvas');
-Laya.interface('core.framework.IDatabase');
 Laya.interface('laya.d3.graphics.IVertex');
+Laya.interface('core.framework.IDatabase');
 Laya.interface('core.framework.IDataTable');
+Laya.interface('core.framework.ILifeCycle');
 Laya.interface('laya.webgl.submit.ISubmit');
 Laya.interface('core.framework.IFixUpdate');
 Laya.interface('core.framework.IDataHolder');
@@ -231,7 +232,10 @@ Laya.interface('laya.runtime.ICPlatformClass');
 Laya.interface('laya.d3.core.render.IRenderable');
 Laya.interface('core.character.display.IDisplay');
 Laya.interface('laya.webgl.canvas.save.ISaveData');
+Laya.interface('core.game.ecsLoop.IGameSystemHandler');
 Laya.interface('laya.webgl.resource.IMergeAtlasBitmap');
+Laya.interface('core.character.builder.ICharacterBuilder');
+Laya.interface('core.character.animation.ICharacterAnimation');
 Laya.interface('laya.filters.IFilterActionGL','laya.filters.IFilterAction');
 Laya.interface('core.game.ecsLoop.ITransform','core.game.ecsLoop.IGameComponent');
 Laya.interface('core.game.ecsLoop.IGameComponent','laya.resource.IDispose,core.framework.IDataHolder');
@@ -616,6 +620,10 @@ var CBaseData=(function(){
 	CBaseData._TYPE="type";
 	CBaseData._ID="ID";
 	CBaseData._id="id";
+	CBaseData._X="x";
+	CBaseData._Y="y";
+	CBaseData._SKIN="skin";
+	CBaseData._DEF_ANIMATION="defAni";
 	return CBaseData;
 })()
 
@@ -1283,6 +1291,240 @@ var CCommon=(function(){
 })()
 
 
+/**
+*...
+*@author
+*/
+//class core.character.animation.CCharacterFrameAnimation
+var CCharacterFrameAnimation=(function(){
+	function CCharacterFrameAnimation(){
+		this._loadFinish=false;
+		this._loadCount=0;
+		this._aniMap=null;
+		this.m_role=null;
+		this.m_animation=null;
+		this.m_skin=null;
+		this.m_defAni=null;
+		this.m_pEventDispater=null;
+		this.m_role=new CCharacterDisplay();
+		this.m_animation=new CCharacterDisplay();
+		this.m_role.addChild(this.m_animation);
+		this._aniMap={};
+	}
+
+	__class(CCharacterFrameAnimation,'core.character.animation.CCharacterFrameAnimation');
+	var __proto=CCharacterFrameAnimation.prototype;
+	Laya.imps(__proto,{"core.character.animation.ICharacterAnimation":true})
+	__proto.create=function(propertyData){
+		this.m_skin=propertyData.skin;
+		this.m_defAni=propertyData.defAni;
+		this._addAni("die");
+		this._addAni("move");
+		this._addAni("idle");
+	}
+
+	__proto.playAnimation=function(aniName){
+		var ani=this._aniMap[aniName];
+		var lastAni=this.m_animation.getChildAt(0);
+		if (ani==lastAni){
+			ani.play();
+			return;
+		}
+		if (lastAni){
+			lastAni.stop();
+			lastAni.parent.removeChild(lastAni);
+		}
+		this.m_animation.addChild(ani);
+		ani.play();
+	}
+
+	__proto._addAni=function(aniName){
+		var ani=new Animation();
+		var monsterUrl=CPathUtils.getAnimation(this.m_skin,aniName);
+		ani.loadAtlas(monsterUrl,Handler.create(this,this.onLoaded,[aniName,ani]));
+	}
+
+	__proto.onLoaded=function(aniName,ani){
+		this._aniMap[aniName]=ani;
+		this._loadCount++;
+		if (this._loadCount >=3){
+			this._loadFinish=true;
+			this.playAnimation(this.m_defAni);
+			this.m_pEventDispater.event("running");
+		}
+	}
+
+	__getset(0,__proto,'isRunning',function(){
+		return this._loadFinish;
+	});
+
+	__getset(0,__proto,'skin',function(){
+		return this.m_skin;
+	});
+
+	__getset(0,__proto,'displayObject',function(){
+		return this.m_role;
+	});
+
+	__getset(0,__proto,'eventDispatcher',null,function(v){
+		this.m_pEventDispater=v;
+	});
+
+	CCharacterFrameAnimation.EVENT_RUNNING="running";
+	return CCharacterFrameAnimation;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.character.animation.EAnimation
+var EAnimation=(function(){
+	function EAnimation(){}
+	__class(EAnimation,'core.character.animation.EAnimation');
+	EAnimation.DIE="die";
+	EAnimation.IDLE="idle";
+	EAnimation.MOVE="move";
+	return EAnimation;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.character.builder.CPlayerBuilder
+var CPlayerBuilder=(function(){
+	function CPlayerBuilder(){}
+	__class(CPlayerBuilder,'core.character.builder.CPlayerBuilder');
+	var __proto=CPlayerBuilder.prototype;
+	Laya.imps(__proto,{"core.character.builder.ICharacterBuilder":true})
+	__proto.build=function(obj,data){
+		var ret=true;
+		var propertyData=new CPlayerProperty();
+		propertyData.updateData(data);
+		obj.addComponent(propertyData);
+		this.addAnimationCommponent(obj,propertyData);
+		return ret;
+	}
+
+	__proto.addAnimationCommponent=function(obj,propertyData){
+		var animation=new CCharacterAnimation();
+		animation.setAnimation(new CCharacterFrameAnimation());
+		animation.create(propertyData);
+		obj.addComponent(animation);
+		animation.displayObject.pos(propertyData.x,propertyData.y);
+	}
+
+	return CPlayerBuilder;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.character.CCharacterDataDescriptor
+var CCharacterDataDescriptor=(function(){
+	function CCharacterDataDescriptor(){}
+	__class(CCharacterDataDescriptor,'core.character.CCharacterDataDescriptor');
+	CCharacterDataDescriptor.isPlayer=function(type){
+		return type==0;
+	}
+
+	CCharacterDataDescriptor.TYPE_PLAYER=0;
+	CCharacterDataDescriptor.TYPE_MONSTER=1;
+	CCharacterDataDescriptor.TYPE_MAP_OBJECT=2;
+	CCharacterDataDescriptor.TYPE_NPC=3;
+	return CCharacterDataDescriptor;
+})()
+
+
+/**
+*...
+*@author auto
+这类不能用
+*/
+//class core.CMap
+var CMap=(function(){
+	function CMap(){}
+	__class(CMap,'core.CMap');
+	var __proto=CMap.prototype;
+	// }
+	__proto.add=function(key,value,bAllowReplace){
+		(bAllowReplace===void 0)&& (bAllowReplace=false);
+		if (this[key] !=null){
+			if (bAllowReplace){
+				this[key]=value;
+				}else {
+				var sKeyType=CCommon.getQualifiedClassName(key);
+				var sValueType=CCommon.getQualifiedClassName(value);
+				throw new Error("CMap.add() : adding a key that has already existed in the map... !! key = "+key+" : "+sKeyType+", value = "+value+" : "+sValueType);
+			}
+			}else {
+			this[key]=value;
+		}
+	}
+
+	// m_iCount++;
+	__proto.remove=function(key){
+		if (this[key] !=null){
+			delete this[key];
+			return true;
+		}
+		return false;
+	}
+
+	__proto.find=function(key){
+		if (key==null)return null;
+		return this[key];
+	}
+
+	__proto.firstKey=function(){
+		for (var key in this)return key;
+		return null;
+	}
+
+	__proto.firstValue=function(){
+		var value;
+		for(var $each_value in this){
+			value=this[$each_value];
+			return value;
+		}
+		return null;
+	}
+
+	__proto.clear=function(){
+		while(this.firstKey()!=null){
+			for (var key in this)delete this[key];
+		}
+	}
+
+	// m_iCount=0;
+	__proto.toArray=function(){
+		var theArray=[];
+		var i=0;
+		var obj;
+		for(var $each_obj in this){
+			obj=this[$each_obj];
+			theArray[i++]=obj;
+		}
+		return theArray;
+	}
+
+	// func(key,value)
+	__proto.loop=function(func){
+		if (null==func)return;
+		for (var key in this){
+			func(key,this[key]);
+		}
+	}
+
+	return CMap;
+})()
+
+
 //class core.CObjectUtils
 var CObjectUtils=(function(){
 	function CObjectUtils(){}
@@ -1394,7 +1636,7 @@ var CFsmState=(function(){
 	}
 
 	__proto.onInit=function(fsm){
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onInit",typeName)
 	}
 
@@ -1403,7 +1645,7 @@ var CFsmState=(function(){
 	}
 
 	__proto.onEnter=function(fsm){
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onEnter",typeName)
 	}
 
@@ -1417,7 +1659,7 @@ var CFsmState=(function(){
 	}
 
 	__proto.onLeave=function(fsm,isShutDown){
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onLeave",typeName)
 	}
 
@@ -1426,7 +1668,7 @@ var CFsmState=(function(){
 	}
 
 	__proto.onDestroy=function(fsm){
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onDestroy",typeName)
 	}
 
@@ -1563,6 +1805,106 @@ var CDataTable=(function(){
 })()
 
 
+//class core.game.ecsLoop.CLinkEntity
+var CLinkEntity=(function(){
+	function CLinkEntity(obj){
+		this.prev=null;
+		this.next=null;
+		this.obj=null;
+		this.obj=obj;
+	}
+
+	__class(CLinkEntity,'core.game.ecsLoop.CLinkEntity');
+	var __proto=CLinkEntity.prototype;
+	Laya.imps(__proto,{"laya.resource.IDispose":true})
+	__proto.dispose=function(){
+		this.next=null;
+		this.prev=null;
+		this.obj=null;
+	}
+
+	__proto.remove=function(){
+		if (this.next){
+			this.next.prev=this.prev;
+		}
+		if (this.prev){
+			this.prev.next=this.next;
+		}
+		this.obj=null;
+	}
+
+	return CLinkEntity;
+})()
+
+
+//class core.game.ecsLoop.CLinkList
+var CLinkList=(function(){
+	function CLinkList(){
+		this.head=null;
+		this.tail=null;
+		this.m_pCurEntity=null;
+		this.m_size=0;
+		this.m_mapObjToEntity=null;
+		;
+		this.head=new CLinkEntity();
+		this.tail=new CLinkEntity();
+		this.head.next=this.tail;
+		this.tail.prev=this.head;
+		this.m_pCurEntity=this.head;
+	}
+
+	__class(CLinkList,'core.game.ecsLoop.CLinkList');
+	var __proto=CLinkList.prototype;
+	Laya.imps(__proto,{"laya.resource.IDispose":true})
+	__proto.dispose=function(){
+		this.head.dispose();
+		this.head=null;
+		this.tail.dispose();
+		this.tail=null;
+		this.m_pCurEntity.dispose();
+		this.m_pCurEntity=null;
+	}
+
+	__proto.push=function(obj){
+		var prev=this.tail.prev;
+		var current=new CLinkEntity(obj);
+		current.next=this.tail;
+		current.prev=prev;
+		prev.next=current;
+		this.tail.prev=current;
+		this.m_size++;
+	}
+
+	__proto.remove=function(obj){
+		var findObject=this.find(obj);
+		if (findObject){
+			findObject.remove();
+		}
+		this.m_size--;
+	}
+
+	__proto.find=function(obj){
+		var entity;
+		entity=this.head;
+		var findEntity;
+		while (entity){
+			if (entity.obj==obj){
+				findEntity=entity;
+				break ;
+			}
+			entity=entity.next;
+		}
+		return findEntity;
+	}
+
+	__getset(0,__proto,'size',function(){
+		return this.m_size;
+	});
+
+	return CLinkList;
+})()
+
+
 /**
 *...
 *@author
@@ -1664,6 +2006,19 @@ var CProcedureManager=(function(){
 	});
 
 	return CProcedureManager;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.scene.CSceneEvent
+var CSceneEvent=(function(){
+	function CSceneEvent(){}
+	__class(CSceneEvent,'core.scene.CSceneEvent');
+	CSceneEvent.EVENT_CHARACTER_ADDED="SceneAddCharacter";
+	return CSceneEvent;
 })()
 
 
@@ -1822,7 +2177,7 @@ var CPathUtils=(function(){
 		return "monster/"+name+".png";
 	}
 
-	CPathUtils.getMonsterAnimation=function(mID,ani){
+	CPathUtils.getAnimation=function(mID,ani){
 		return "res/atlas/"+"monster/"+mID+"/"+ani+".atlas";
 	}
 
@@ -38607,20 +38962,20 @@ var CLifeCycle=(function(_super){
 	//=================================================
 	__proto.onAwake=function(){
 		this.m_state=0;
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onAwake",typeName);
 	}
 
 	__proto.onStart=function(){
 		this.m_state=1;
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onStart",typeName);
 		return true;
 	}
 
 	__proto.onDestroy=function(){
 		this.m_state=2;
-		var typeName=core.ExtendsUtils.getQualifiedClassName(this);
+		var typeName=CCommon.getQualifiedClassName(this);
 		CLog.log("{0} onDestroy",typeName);
 	}
 
@@ -38770,7 +39125,7 @@ var CGameObject=(function(_super){
 
 	__proto.removeComponents=function(dispose,__comps){
 		var comps=[];for(var i=1,sz=arguments.length;i<sz;i++)comps.push(arguments[i]);
-		var ret=new /*no*/this.Vecotr.<core.game.ecsLoop.IGameComponent>();
+		var ret=[];
 		var c;
 		for(var $each_c in comps){
 			c=comps[$each_c];
@@ -39103,6 +39458,21 @@ var CProcedureBase=(function(_super){
 
 	return CProcedureBase;
 })(CFsmState)
+
+
+/**
+*...
+*@author
+*/
+//class metro.role.CMetroRoleBuilder extends core.character.builder.CPlayerBuilder
+var CMetroRoleBuilder=(function(_super){
+	function CMetroRoleBuilder(){
+		CMetroRoleBuilder.__super.call(this);
+	}
+
+	__class(CMetroRoleBuilder,'metro.role.CMetroRoleBuilder',_super);
+	return CMetroRoleBuilder;
+})(CPlayerBuilder)
 
 
 /**
@@ -49775,6 +50145,41 @@ var Sprite=(function(_super){
 
 /**
 *...
+*@author
+*/
+//class core.character.animation.CCharacterAnimation extends core.game.ecsLoop.CGameComponent
+var CCharacterAnimation=(function(_super){
+	function CCharacterAnimation(){
+		this.m_animation=null;
+		CCharacterAnimation.__super.call(this,"animation");
+	}
+
+	__class(CCharacterAnimation,'core.character.animation.CCharacterAnimation',_super);
+	var __proto=CCharacterAnimation.prototype;
+	Laya.imps(__proto,{"core.character.display.IDisplay":true})
+	__proto.create=function(propertyData){
+		this.m_animation.create(propertyData);
+	}
+
+	__proto.playAnimation=function(aniName){
+		this.m_animation.playAnimation(aniName);
+	}
+
+	__proto.setAnimation=function(v){
+		this.m_animation=v;
+		this.m_animation.eventDispatcher=this;
+	}
+
+	__getset(0,__proto,'displayObject',function(){
+		return this.m_animation.displayObject;
+	});
+
+	return CCharacterAnimation;
+})(CGameComponent)
+
+
+/**
+*...
 *@author auto
 */
 //class core.framework.CContainerLifeCycle extends core.framework.CLifeCycle
@@ -50064,8 +50469,8 @@ var CProcedureGaming=(function(_super){
 
 	__proto.onEnter=function(fsm){
 		_super.prototype.onEnter.call(this,fsm);
-		var pSceneSystem=fsm.system.stage.getSystem(CSceneSystem);
-		pSceneSystem.createScene("1111");
+		var pGameSystem=fsm.system.stage.getSystem(CGameSystem);
+		pGameSystem.createScene("1111");
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
@@ -58061,14 +58466,14 @@ var PrimitiveSV=(function(_super){
 *...
 *@author auto
 */
-//class core.CBaseObject extends laya.display.Sprite
-var CBaseObject=(function(_super){
-	function CBaseObject(){
-		CBaseObject.__super.call(this);
+//class core.CBaseDisplay extends laya.display.Sprite
+var CBaseDisplay=(function(_super){
+	function CBaseDisplay(){
+		CBaseDisplay.__super.call(this);
 	}
 
-	__class(CBaseObject,'core.CBaseObject',_super);
-	return CBaseObject;
+	__class(CBaseDisplay,'core.CBaseDisplay',_super);
+	return CBaseDisplay;
 })(Sprite)
 
 
@@ -58126,7 +58531,8 @@ var CAppSystem=(function(_super){
 	}
 
 	__proto.onStart=function(){
-		return _super.prototype.onStart.call(this);
+		var ret=_super.prototype.onStart.call(this);
+		return ret;
 	}
 
 	__proto.onDestroy=function(){
@@ -58249,8 +58655,19 @@ var CCharacterProperty=(function(_super){
 		this._dataObject.updateData(data);
 	}
 
+	__getset(0,__proto,'skin',function(){return this._dataObject.getString("skin");});
 	__getset(0,__proto,'ID',function(){return this._dataObject.getNumber("ID");});
 	__getset(0,__proto,'type',function(){return this._dataObject.getInt("type");});
+	__getset(0,__proto,'defAni',function(){
+		var defAnimation=this._dataObject.getString("defAni");
+		if (defAnimation==null || defAnimation.length==0){
+			defAnimation="idle";
+		}
+		return defAnimation;
+	});
+
+	__getset(0,__proto,'x',function(){return this._dataObject.getNumber("x");});
+	__getset(0,__proto,'y',function(){return this._dataObject.getNumber("y");});
 	return CCharacterProperty;
 })(CSubscribeBehaviour)
 
@@ -70755,24 +71172,89 @@ var TextSV=(function(_super){
 *...
 *@author
 */
-//class core.character.CCharacter extends core.CBaseObject
-var CCharacter=(function(_super){
-	function CCharacter(){
-		CCharacter.__super.call(this);
+//class core.character.display.CCharacterDisplay extends core.CBaseDisplay
+var CCharacterDisplay=(function(_super){
+	function CCharacterDisplay(){
+		CCharacterDisplay.__super.call(this);
 	}
 
-	__class(CCharacter,'core.character.CCharacter',_super);
-	var __proto=CCharacter.prototype;
-	__proto.dispose=function(){}
-	return CCharacter;
-})(CBaseObject)
+	__class(CCharacterDisplay,'core.character.display.CCharacterDisplay',_super);
+	return CCharacterDisplay;
+})(CBaseDisplay)
 
 
 /**
 *...
 *@author
 */
-//class core.scene.CSceneLayer extends core.CBaseObject
+//class core.character.builder.CCharacterBuilder extends core.framework.CBean
+var CCharacterBuilder=(function(_super){
+	function CCharacterBuilder(){
+		this.m_pPlayerBuilder=null;
+		CCharacterBuilder.__super.call(this);
+		this.m_pPlayerBuilder=new CPlayerBuilder();
+	}
+
+	__class(CCharacterBuilder,'core.character.builder.CCharacterBuilder',_super);
+	var __proto=CCharacterBuilder.prototype;
+	Laya.imps(__proto,{"laya.resource.IDispose":true})
+	__proto.dispose=function(){}
+	__proto.build=function(obj,data){
+		var type=data["type"];
+		if (CCharacterDataDescriptor.isPlayer(type)){
+			this.m_pPlayerBuilder.build(obj,data);
+		}
+	}
+
+	__getset(0,__proto,'playerBuilder',null,function(v){
+		this.m_pPlayerBuilder=v;
+	});
+
+	return CCharacterBuilder;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.CCharacterSystem extends core.framework.CAppSystem
+var CCharacterSystem=(function(_super){
+	function CCharacterSystem(){
+		this.m_pCharacterPool=null;
+		CCharacterSystem.__super.call(this);
+	}
+
+	__class(CCharacterSystem,'core.character.CCharacterSystem',_super);
+	var __proto=CCharacterSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		this.addBean(new CCharacterBuilder());
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_pCharacterPool=(this.stage.getSystem(CPoolSystem)).addPool("character",CGameObject);
+		return ret;
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	__getset(0,__proto,'characterPool',function(){
+		return this.m_pCharacterPool;
+	});
+
+	return CCharacterSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.scene.CSceneLayer extends core.CBaseDisplay
 var CSceneLayer=(function(_super){
 	function CSceneLayer(){
 		CSceneLayer.__super.call(this);
@@ -70780,7 +71262,7 @@ var CSceneLayer=(function(_super){
 
 	__class(CSceneLayer,'core.scene.CSceneLayer',_super);
 	return CSceneLayer;
-})(CBaseObject)
+})(CBaseDisplay)
 
 
 /**
@@ -71048,6 +71530,93 @@ var CFsmManager=(function(_super){
 *...
 *@author
 */
+//class core.character.property.CPlayerProperty extends core.character.property.CCharacterProperty
+var CPlayerProperty=(function(_super){
+	function CPlayerProperty(){
+		CPlayerProperty.__super.call(this);
+	}
+
+	__class(CPlayerProperty,'core.character.property.CPlayerProperty',_super);
+	return CPlayerProperty;
+})(CCharacterProperty)
+
+
+/**
+*...
+*@author auto
+控制scene,character
+*/
+//class core.game.CGameSystem extends core.framework.CAppSystem
+var CGameSystem=(function(_super){
+	function CGameSystem(){
+		this.m_pSceneSystem=null;
+		this.m_pCharacterSystem=null;
+		this.m_pEcsLoop=null;
+		CGameSystem.__super.call(this);
+	}
+
+	__class(CGameSystem,'core.game.CGameSystem',_super);
+	var __proto=CGameSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_pCharacterSystem=this.stage.getSystem(CCharacterSystem);
+		this.m_pSceneSystem=this.stage.getSystem(CSceneSystem);
+		this.m_pEcsLoop=this.stage.getSystem(CECSLoop);
+		this.m_pSceneSystem.on("SceneAddCharacter",this,this._onSceneChacterAdded);
+		this.m_pSceneSystem.on("SceneAddCharacter",this,this._onSceneChacterAdded);
+		return ret;
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		if (this.m_pSceneSystem){
+			this.m_pSceneSystem.off("SceneAddCharacter",this,this._onSceneChacterAdded)
+			this.m_pSceneSystem=null;
+		}
+		this.m_pEcsLoop=null;
+	}
+
+	__proto.createScene=function(sceneID){
+		this.m_pSceneSystem.createScene(sceneID);
+		this.spawnCharacter({ID:1,type:0,skin:"1001",defAni:"die",x:300,y:100});
+		this.spawnCharacter({ID:2,type:0,skin:"1001",defAni:"idle",x:300,y:300});
+		this.spawnCharacter({ID:3,type:0,skin:"1001",defAni:"move",x:500,y:300});
+	}
+
+	__proto.spawnCharacter=function(data){
+		var gameObj=this.m_pCharacterSystem.characterPool.createObject();
+		var characterBuilder=this.m_pCharacterSystem.getBean(CCharacterBuilder);
+		characterBuilder.build(gameObj,data);
+		this.m_pSceneSystem.spawnCharacter(gameObj);
+	}
+
+	// spawn不是即时,需要等　characterAdded
+	__proto._onSceneChacterAdded=function(__characters){
+		var characters=arguments;
+		var character;
+		for(var $each_character in characters){
+			character=characters[$each_character];
+			this.m_pEcsLoop.addObject(character);
+		}
+	}
+
+	__proto.removeCharacter=function(obj){
+		this.m_pSceneSystem.removeCharacter(obj);
+		this.m_pEcsLoop.removeObject(obj);
+	}
+
+	return CGameSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
 //class core.game.data.CDatabaseSystem extends core.framework.CAppSystem
 var CDatabaseSystem=(function(_super){
 	function CDatabaseSystem(mainfest){
@@ -71133,6 +71702,172 @@ var CDatabaseSystem=(function(_super){
 	});
 
 	return CDatabaseSystem;
+})(CAppSystem)
+
+
+//class core.game.ecsLoop.CECSLoop extends core.framework.CAppSystem
+var CECSLoop=(function(_super){
+	var CGameSystemPipeline;
+	function CECSLoop(){
+		this.m_pPipeline=null;
+		this.m_isInitialized=false;
+		this.m_objLink=null;
+		CECSLoop.__super.call(this);
+	}
+
+	__class(CECSLoop,'core.game.ecsLoop.CECSLoop',_super);
+	var __proto=CECSLoop.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		if (this.m_pPipeline){
+			this.m_pPipeline.dispose();
+		}
+		this.m_pPipeline=null;
+		if (this.m_objLink){
+			this.m_objLink.dispose();
+		}
+		this.m_objLink=null;
+	}
+
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		if (!this.m_isInitialized){
+			this.m_isInitialized=true;
+			this.m_pPipeline=new CGameSystemPipeline(this);
+			this.m_objLink=new CLinkList();
+		}
+	}
+
+	__proto.addHandler=function(handler){
+		this.m_pPipeline.add(handler);
+	}
+
+	__proto.removeHandler=function(handler){
+		this.m_pPipeline.remove(handler);
+	}
+
+	__proto.removeAllHandler=function(){
+		var handlers=this.m_pPipeline.handlers.slice();
+		var handler;
+		for(var $each_handler in handlers){
+			handler=handlers[$each_handler];
+			if (handler){
+				this.m_pPipeline.remove(handler);
+			}
+		}
+	}
+
+	__proto.addObject=function(obj){
+		if (!obj){
+			return;
+		}
+		this.m_objLink.push(obj);
+		obj.onAdded();
+	}
+
+	__proto.removeObject=function(obj){
+		if (!obj){
+			return;
+		}
+		this.m_objLink.remove(obj);
+		obj.onRemoved();
+	}
+
+	__proto.update=function(delta){
+		if (this.m_isInitialized==false){
+			return;
+		}
+		this.m_pPipeline.beforeTick(delta);
+		var current=this.m_objLink.head;
+		var curGameObj;
+		for (;current !=this.m_objLink.tail;){
+			curGameObj=current.obj;
+			if (curGameObj){
+				curGameObj.updateData();
+				this.m_pPipeline.tickUpdate(delta,current.obj);
+			}
+			current=current.next;
+		}
+		this.m_pPipeline.afterTick(delta);
+	}
+
+	CECSLoop.__init$=function(){
+		//class CGameSystemPipeline
+		CGameSystemPipeline=(function(){
+			function CGameSystemPipeline(gameSystem){
+				this.m_pGameSystem=null;
+				this.m_handlerList=null;
+				this.m_updateHandlerList=null;
+				;
+				this.m_pGameSystem=gameSystem;
+				this.m_handlerList=[];
+				this.m_updateHandlerList=[];
+			}
+			__class(CGameSystemPipeline,'');
+			var __proto=CGameSystemPipeline.prototype;
+			Laya.imps(__proto,{"core.game.ecsLoop.IPipeline":true,"laya.resource.IDispose":true})
+			__proto.add=function(handler){
+				this.m_handlerList.push(handler);
+			}
+			__proto.remove=function(handler){
+				var index=this.m_handlerList.indexOf(handler);
+				if (-1 !=index){
+					this.m_handlerList.splice(index,1);
+				}
+			}
+			__proto.dispose=function(){
+				this.m_pGameSystem=null;
+			}
+			__proto.tickUpdate=function(delta,obj){
+				if (!obj){
+					return;
+				};
+				var listUpdated=this.m_updateHandlerList;
+				if (this.m_handlerList.length > this.m_updateHandlerList.length){
+					this.m_updateHandlerList.length=this.m_handlerList.length;
+				};
+				var handler;
+				var idxPush=0;
+				var $each_handler;
+				for($each_handler in this.m_handlerList){
+					handler=this.m_handlerList[$each_handler];
+					if (handler && handler.isComponentSupported(obj)){
+						if (handler.tickValidate(delta,obj)){
+							listUpdated[idxPush++]=handler;
+						}
+					}
+				}
+				if (obj.isRunning){
+					for (var i=0;i < idxPush;++i){
+						listUpdated[i].tickUpdate(delta,obj);
+					}
+				}
+			}
+			__proto.beforeTick=function(delta){
+				var handler;
+				var $each_handler;
+				for($each_handler in this.m_handlerList){
+					handler=this.m_handlerList[$each_handler];
+					handler.beforeTick(delta);
+				}
+			}
+			__proto.afterTick=function(delta){
+				var handler;
+				var $each_handler;
+				for($each_handler in this.m_handlerList){
+					handler=this.m_handlerList[$each_handler];
+					handler.afterTick(delta);
+				}
+			}
+			__getset(0,__proto,'handlers',function(){
+				return this.m_handlerList.slice();
+			});
+			return CGameSystemPipeline;
+		})()
+	}
+
+	return CECSLoop;
 })(CAppSystem)
 
 
@@ -71496,138 +72231,6 @@ var CSceneObjectList=(function(_super){
 *...
 *@author
 */
-//class core.scene.CSceneRendering extends core.framework.CBean
-var CSceneRendering=(function(_super){
-	function CSceneRendering(){
-		this.m_root=null;
-		this.m_sceneLayer=null;
-		CSceneRendering.__super.call(this);
-	}
-
-	__class(CSceneRendering,'core.scene.CSceneRendering',_super);
-	var __proto=CSceneRendering.prototype;
-	Laya.imps(__proto,{"core.framework.IUpdate":true})
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		this.m_root=new CSceneLayer();
-		CCommon.stage.addChildAt(this.m_root,0);
-		this.m_sceneLayer=new CSceneLayer();
-		this.m_root.addChild(this.m_sceneLayer);
-		return ret;
-	}
-
-	__proto.addDisplayObject=function(c){
-		this.m_sceneLayer.addChild(c);
-	}
-
-	__proto.update=function(delta){}
-	__proto.createScene=function(sceneID){
-		while (this.m_sceneLayer.numChildren > 0){
-			this.m_sceneLayer.removeChildAt(0);
-		};
-		var bgUrl=CPathUtils.getScenePath("b");
-		var bg=new Image(bgUrl);
-		this.m_sceneLayer.addChild(bg);
-	}
-
-	__getset(0,__proto,'isReady',function(){
-		return true;
-	});
-
-	return CSceneRendering;
-})(CBean)
-
-
-/**
-*...
-*@author
-*/
-//class core.scene.CSceneSpawnHandler extends core.framework.CBean
-var CSceneSpawnHandler=(function(_super){
-	function CSceneSpawnHandler(onSpawnCharacterHandler,maxSpawnCountPerFrame){
-		this.m_pSceneRendering=null;
-		this.m_pSceneObjectList=null;
-		this.m_spawnQueue=null;
-		this.m_maxSpawnCountPerFrame=0;
-		this._onSpawnCharacterHandler=null;
-		CSceneSpawnHandler.__super.call(this);
-		(maxSpawnCountPerFrame===void 0)&& (maxSpawnCountPerFrame=15);
-		this.m_maxSpawnCountPerFrame=maxSpawnCountPerFrame;
-		this._onSpawnCharacterHandler=onSpawnCharacterHandler;
-	}
-
-	__class(CSceneSpawnHandler,'core.scene.CSceneSpawnHandler',_super);
-	var __proto=CSceneSpawnHandler.prototype;
-	Laya.imps(__proto,{"core.framework.IUpdate":true})
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-		this.m_pSceneRendering=null;
-	}
-
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		return ret;
-	}
-
-	__proto.addCharacter=function(c){
-		if (!c){
-			return;
-		}
-		this.m_spawnQueue.push(c);
-	}
-
-	__proto.removeCharacter=function(c){
-		if (!c){
-			return;
-		};
-		var idx=this.m_spawnQueue.indexOf(c);
-		if (-1 !=idx){
-			this.m_spawnQueue.splice(idx,1);
-		}
-	}
-
-	__proto.update=function(dleta){
-		if (!this.m_pSceneRendering){
-			return;
-		}
-		if (!this.m_pSceneRendering.isReady){
-			return;
-		}
-		if (this.m_spawnQueue.length==0){
-			return;
-		};
-		var counter=0;
-		for (var i=0;i < this.m_spawnQueue.length;i++){
-			var obj=this.m_spawnQueue[i];
-			if (obj){
-				this.spawnObject(obj);
-				this._onSpawnCharacterHandler(obj);
-			}
-			++counter;
-			if (counter >=this.m_maxSpawnCountPerFrame){
-				break ;
-			}
-		}
-		if (counter > 0){
-			this.m_spawnQueue.splice(0,counter);
-		}
-	}
-
-	__proto.spawnObject=function(character){
-		var display=character.findComponentByClass(core.character.display.IDisplay);
-		if (display){
-			this.m_pSceneRendering.addDisplayObject(display.displayObject);
-		}
-	}
-
-	return CSceneSpawnHandler;
-})(CBean)
-
-
-/**
-*...
-*@author
-*/
 //class core.pool.CPoolSystem extends core.framework.CAppSystem
 var CPoolSystem=(function(_super){
 	function CPoolSystem(){
@@ -71699,6 +72302,139 @@ var CPoolSystem=(function(_super){
 *...
 *@author
 */
+//class core.scene.CSceneRendering extends core.framework.CBean
+var CSceneRendering=(function(_super){
+	function CSceneRendering(){
+		this.m_root=null;
+		this.m_sceneLayer=null;
+		CSceneRendering.__super.call(this);
+	}
+
+	__class(CSceneRendering,'core.scene.CSceneRendering',_super);
+	var __proto=CSceneRendering.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_root=new CSceneLayer();
+		CCommon.stage.addChildAt(this.m_root,0);
+		this.m_sceneLayer=new CSceneLayer();
+		this.m_root.addChild(this.m_sceneLayer);
+		return ret;
+	}
+
+	__proto.addDisplayObject=function(c){
+		this.m_sceneLayer.addChild(c);
+	}
+
+	__proto.update=function(delta){}
+	__proto.createScene=function(sceneID){
+		while (this.m_sceneLayer.numChildren > 0){
+			this.m_sceneLayer.removeChildAt(0);
+		};
+		var bgUrl=CPathUtils.getScenePath("b");
+		var bg=new Image(bgUrl);
+		this.m_sceneLayer.addChild(bg);
+	}
+
+	__getset(0,__proto,'isReady',function(){
+		return true;
+	});
+
+	return CSceneRendering;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
+//class core.scene.CSceneSpawnHandler extends core.framework.CBean
+var CSceneSpawnHandler=(function(_super){
+	function CSceneSpawnHandler(onSpawnCharacterHandler,maxSpawnCountPerFrame){
+		this.m_pSceneRendering=null;
+		this.m_spawnQueue=null;
+		this.m_maxSpawnCountPerFrame=0;
+		this._onSpawnCharacterHandler=null;
+		CSceneSpawnHandler.__super.call(this);
+		(maxSpawnCountPerFrame===void 0)&& (maxSpawnCountPerFrame=15);
+		this.m_maxSpawnCountPerFrame=maxSpawnCountPerFrame;
+		this._onSpawnCharacterHandler=onSpawnCharacterHandler;
+	}
+
+	__class(CSceneSpawnHandler,'core.scene.CSceneSpawnHandler',_super);
+	var __proto=CSceneSpawnHandler.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+		this.m_pSceneRendering=null;
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_spawnQueue=[];
+		this.m_pSceneRendering=this.system.getBean(CSceneRendering);
+		return ret;
+	}
+
+	__proto.addCharacter=function(c){
+		if (!c){
+			return;
+		}
+		this.m_spawnQueue.push(c);
+	}
+
+	__proto.removeCharacter=function(c){
+		if (!c){
+			return;
+		};
+		var idx=this.m_spawnQueue.indexOf(c);
+		if (-1 !=idx){
+			this.m_spawnQueue.splice(idx,1);
+		}
+	}
+
+	__proto.update=function(dleta){
+		if (!this.m_pSceneRendering){
+			return;
+		}
+		if (!this.m_pSceneRendering.isReady){
+			return;
+		}
+		if (this.m_spawnQueue.length==0){
+			return;
+		};
+		var counter=0;
+		for (var i=0;i < this.m_spawnQueue.length;i++){
+			var obj=this.m_spawnQueue[i];
+			if (obj){
+				this.spawnObject(obj);
+				this._onSpawnCharacterHandler.runWith(obj);
+			}
+			++counter;
+			if (counter >=this.m_maxSpawnCountPerFrame){
+				break ;
+			}
+		}
+		if (counter > 0){
+			this.m_spawnQueue.splice(0,counter);
+		}
+	}
+
+	__proto.spawnObject=function(character){
+		var display=character.findComponentByClass(core.character.display.IDisplay);
+		if (display){
+			this.m_pSceneRendering.addDisplayObject(display.displayObject);
+		}
+	}
+
+	return CSceneSpawnHandler;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
 //class core.scene.CSceneSystem extends core.framework.CAppSystem
 var CSceneSystem=(function(_super){
 	function CSceneSystem(){
@@ -71710,15 +72446,28 @@ var CSceneSystem=(function(_super){
 
 	__class(CSceneSystem,'core.scene.CSceneSystem',_super);
 	var __proto=CSceneSystem.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
+		this.addBean(this.m_sceneSpawnHandler=new CSceneSpawnHandler(Handler.create(this,this._onSpawnCharacter,null,false)));
+		this.addBean(this.m_sceneRendering=new CSceneRendering());
+		this.addBean(this.m_sceneObjectList=new CSceneObjectList());
 	}
 
 	__proto.onStart=function(){
-		return _super.prototype.onStart.call(this);
-		this.addBean(this.m_sceneSpawnHandler=new CSceneSpawnHandler(this._onSpawnCharacter));
-		this.addBean(this.m_sceneRendering=new CSceneRendering());
-		this.addBean(this.m_sceneObjectList=new CSceneObjectList());
+		var ret=_super.prototype.onStart.call(this);
+		return ret;
+	}
+
+	__proto.update=function(delta){
+		var beans=this.getBeans();
+		var bean;
+		for(var $each_bean in beans){
+			bean=beans[$each_bean];
+			if (Laya.__typeof(bean,'core.framework.IUpdate')){
+				(bean).update(delta);
+			}
+		}
 	}
 
 	__proto.onDestroy=function(){
@@ -71854,6 +72603,41 @@ var CSoundSystem=(function(_super){
 	}
 
 	return CSoundSystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class game.CBoostSystem extends core.framework.CAppSystem
+var CBoostSystem=(function(_super){
+	function CBoostSystem(){
+		CBoostSystem.__super.call(this);
+	}
+
+	__class(CBoostSystem,'game.CBoostSystem',_super);
+	var __proto=CBoostSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		var pEcsLoop=this.stage.getSystem(CECSLoop);
+		var handlers=[];
+		var handler;
+		for(var $each_handler in handlers){
+			handler=handlers[$each_handler];
+			var bean=handler;
+			if (bean){
+				pEcsLoop.addBean(bean);
+				bean.awake();
+			}
+		};
+		var gamePipelineHandler=handler;
+		if (gamePipelineHandler){
+			pEcsLoop.addHandler(gamePipelineHandler);
+		}
+	}
+
+	return CBoostSystem;
 })(CAppSystem)
 
 
@@ -72004,12 +72788,17 @@ var CGameStage=(function(_super){
 		this.addSystem(new CDatabaseSystem(CTableConstant.tableList));
 		this.addSystem(new CSoundSystem());
 		this.addSystem(new CUISystem());
+		this.addSystem(new CCharacterSystem());
+		this.addSystem(new CECSLoop());
 		this.addSystem(new CLoginSystem());
 		this.addSystem(new CPlayerSystem());
 		this.addSystem(new CLobbySystem());
 		this.addSystem(new CMetroSceneSystem());
 		this.addSystem(new CInstanceSystem());
 		this.addSystem(new CProcedureSystem());
+		this.addSystem(new CGameSystem());
+		this.addSystem(new CBoostSystem());
+		this.addSystem(new CMetroBoostSystem());
 	}
 
 	__proto.onStart=function(){
@@ -72223,6 +73012,30 @@ var CUISystem=(function(_super){
 	}
 
 	return CUISystem;
+})(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class metro.CMetroBoostSystem extends core.framework.CAppSystem
+var CMetroBoostSystem=(function(_super){
+	function CMetroBoostSystem(){
+		CMetroBoostSystem.__super.call(this);
+	}
+
+	__class(CMetroBoostSystem,'metro.CMetroBoostSystem',_super);
+	var __proto=CMetroBoostSystem.prototype;
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		var pCharacterSystem=this.stage.getSystem(CCharacterSystem);
+		var characterBuilder=pCharacterSystem.getBean(CCharacterBuilder);
+		characterBuilder.playerBuilder=new CMetroRoleBuilder();
+		return ret;
+	}
+
+	return CMetroBoostSystem;
 })(CAppSystem)
 
 
@@ -78445,21 +79258,6 @@ var VertexBuffer2D=(function(_super){
 *...
 *@author
 */
-//class core.character.CSceneObject extends core.character.CCharacter
-var CSceneObject=(function(_super){
-	function CSceneObject(){
-		CSceneObject.__super.call(this);
-	}
-
-	__class(CSceneObject,'core.character.CSceneObject',_super);
-	return CSceneObject;
-})(CCharacter)
-
-
-/**
-*...
-*@author
-*/
 //class game.lobby.CLobbyView extends core.framework.CViewBean
 var CLobbyView=(function(_super){
 	function CLobbyView(){
@@ -84050,104 +84848,6 @@ var VScrollBar=(function(_super){
 
 
 /**
-*使用 <code>VSlider</code> 控件，用户可以通过在滑块轨道的终点之间移动滑块来选择值。
-*<p> <code>VSlider</code> 控件采用垂直方向。滑块轨道从下往上扩展，而标签位于轨道的左右两侧。</p>
-*
-*@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
-*package
-*{
-	*import laya.ui.HSlider;
-	*import laya.ui.VSlider;
-	*import laya.utils.Handler;
-	*public class VSlider_Example
-	*{
-		*private var vSlider:VSlider;
-		*public function VSlider_Example()
-		*{
-			*Laya.init(640,800);//设置游戏画布宽高。
-			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
-			*}
-		*private function onLoadComplete():void
-		*{
-			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-			*vSlider.min=0;//设置 vSlider 最低位置值。
-			*vSlider.max=10;//设置 vSlider 最高位置值。
-			*vSlider.value=2;//设置 vSlider 当前位置值。
-			*vSlider.tick=1;//设置 vSlider 刻度值。
-			*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-			*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-			*vSlider.changeHandler=new Handler(this,onChange);//设置 vSlider 位置变化处理器。
-			*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
-			*}
-		*private function onChange(value:Number):void
-		*{
-			*trace("滑块的位置： value="+value);
-			*}
-		*}
-	*}
-*@example
-*Laya.init(640,800);//设置游戏画布宽高
-*Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*var vSlider;
-*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
-*function onLoadComplete(){
-	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-	*vSlider.min=0;//设置 vSlider 最低位置值。
-	*vSlider.max=10;//设置 vSlider 最高位置值。
-	*vSlider.value=2;//设置 vSlider 当前位置值。
-	*vSlider.tick=1;//设置 vSlider 刻度值。
-	*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-	*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-	*vSlider.changeHandler=new laya.utils.Handler(this,onChange);//设置 vSlider 位置变化处理器。
-	*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
-	*}
-*function onChange(value){
-	*console.log("滑块的位置： value="+value);
-	*}
-*@example
-*import HSlider=laya.ui.HSlider;
-*import VSlider=laya.ui.VSlider;
-*import Handler=laya.utils.Handler;
-*class VSlider_Example {
-	*private vSlider:VSlider;
-	*constructor(){
-		*Laya.init(640,800);//设置游戏画布宽高。
-		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
-		*}
-	*private onLoadComplete():void {
-		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-		*this.vSlider.min=0;//设置 vSlider 最低位置值。
-		*this.vSlider.max=10;//设置 vSlider 最高位置值。
-		*this.vSlider.value=2;//设置 vSlider 当前位置值。
-		*this.vSlider.tick=1;//设置 vSlider 刻度值。
-		*this.vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-		*this.vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-		*this.vSlider.changeHandler=new Handler(this,this.onChange);//设置 vSlider 位置变化处理器。
-		*Laya.stage.addChild(this.vSlider);//把 vSlider 添加到显示列表。
-		*}
-	*private onChange(value:number):void {
-		*console.log("滑块的位置： value="+value);
-		*}
-	*}
-*@see laya.ui.Slider
-*/
-//class laya.ui.VSlider extends laya.ui.Slider
-var VSlider=(function(_super){
-	function VSlider(){
-		VSlider.__super.call(this);;
-	}
-
-	__class(VSlider,'laya.ui.VSlider',_super);
-	return VSlider;
-})(Slider)
-
-
-/**
 *<code>TextInput</code> 类用于创建显示对象以显示和输入文本。
 *
 *@example <caption>以下示例代码，创建了一个 <code>TextInput</code> 实例。</caption>
@@ -84470,6 +85170,104 @@ var TextInput=(function(_super){
 
 	return TextInput;
 })(Label)
+
+
+/**
+*使用 <code>VSlider</code> 控件，用户可以通过在滑块轨道的终点之间移动滑块来选择值。
+*<p> <code>VSlider</code> 控件采用垂直方向。滑块轨道从下往上扩展，而标签位于轨道的左右两侧。</p>
+*
+*@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
+*package
+*{
+	*import laya.ui.HSlider;
+	*import laya.ui.VSlider;
+	*import laya.utils.Handler;
+	*public class VSlider_Example
+	*{
+		*private var vSlider:VSlider;
+		*public function VSlider_Example()
+		*{
+			*Laya.init(640,800);//设置游戏画布宽高。
+			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
+			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*}
+		*private function onLoadComplete():void
+		*{
+			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+			*vSlider.min=0;//设置 vSlider 最低位置值。
+			*vSlider.max=10;//设置 vSlider 最高位置值。
+			*vSlider.value=2;//设置 vSlider 当前位置值。
+			*vSlider.tick=1;//设置 vSlider 刻度值。
+			*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+			*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+			*vSlider.changeHandler=new Handler(this,onChange);//设置 vSlider 位置变化处理器。
+			*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
+			*}
+		*private function onChange(value:Number):void
+		*{
+			*trace("滑块的位置： value="+value);
+			*}
+		*}
+	*}
+*@example
+*Laya.init(640,800);//设置游戏画布宽高
+*Laya.stage.bgColor="#efefef";//设置画布的背景颜色
+*var vSlider;
+*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
+*function onLoadComplete(){
+	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	*vSlider.min=0;//设置 vSlider 最低位置值。
+	*vSlider.max=10;//设置 vSlider 最高位置值。
+	*vSlider.value=2;//设置 vSlider 当前位置值。
+	*vSlider.tick=1;//设置 vSlider 刻度值。
+	*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+	*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+	*vSlider.changeHandler=new laya.utils.Handler(this,onChange);//设置 vSlider 位置变化处理器。
+	*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
+	*}
+*function onChange(value){
+	*console.log("滑块的位置： value="+value);
+	*}
+*@example
+*import HSlider=laya.ui.HSlider;
+*import VSlider=laya.ui.VSlider;
+*import Handler=laya.utils.Handler;
+*class VSlider_Example {
+	*private vSlider:VSlider;
+	*constructor(){
+		*Laya.init(640,800);//设置游戏画布宽高。
+		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
+		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*}
+	*private onLoadComplete():void {
+		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+		*this.vSlider.min=0;//设置 vSlider 最低位置值。
+		*this.vSlider.max=10;//设置 vSlider 最高位置值。
+		*this.vSlider.value=2;//设置 vSlider 当前位置值。
+		*this.vSlider.tick=1;//设置 vSlider 刻度值。
+		*this.vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+		*this.vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+		*this.vSlider.changeHandler=new Handler(this,this.onChange);//设置 vSlider 位置变化处理器。
+		*Laya.stage.addChild(this.vSlider);//把 vSlider 添加到显示列表。
+		*}
+	*private onChange(value:number):void {
+		*console.log("滑块的位置： value="+value);
+		*}
+	*}
+*@see laya.ui.Slider
+*/
+//class laya.ui.VSlider extends laya.ui.Slider
+var VSlider=(function(_super){
+	function VSlider(){
+		VSlider.__super.call(this);;
+	}
+
+	__class(VSlider,'laya.ui.VSlider',_super);
+	return VSlider;
+})(Slider)
 
 
 /**
@@ -85239,6 +86037,26 @@ var WebGLImage=(function(_super){
 
 	return WebGLImage;
 })(HTMLImage)
+
+
+//class ui.GameBgUI extends laya.ui.View
+var GameBgUI=(function(_super){
+	function GameBgUI(){
+		this.bg1=null;
+		this.bg2=null;
+		GameBgUI.__super.call(this);
+	}
+
+	__class(GameBgUI,'ui.GameBgUI',_super);
+	var __proto=GameBgUI.prototype;
+	__proto.createChildren=function(){
+		laya.ui.Component.prototype.createChildren.call(this);
+		this.createView(GameBgUI.uiView);
+	}
+
+	GameBgUI.uiView={"type":"View","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"var":"bg1","skin":"background.png"}},{"type":"Image","props":{"y":-1280,"x":0,"var":"bg2","skin":"background.png"}}]};
+	return GameBgUI;
+})(View)
 
 
 /**
@@ -86112,16 +86930,12 @@ var GameStartUI=(function(_super){
 })(Dialog)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,DrawText,AtlasGrid,CSequentiaProcedureSystem,CSequentialProcedureManager,Browser,Timer,WebGLContext2D,View,ShaderCompile,GraphicAnimation,LocalStorage,Render]);
+	Laya.__init([LoaderManager,EventDispatcher,CSequentiaProcedureSystem,DrawText,CECSLoop,CSequentialProcedureManager,Browser,Timer,Render,WebGLContext2D,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
 	/**LayaGameStart**/
 	new LayaUISample();
 
 })(window,document,Laya);
 
-
-/*
-1 file:///f:/auto/autoGit/learngit/note/laya/GameFrame/src/core/game/ecsLoop/CGameObject.as (172):warning:Vecotr. This variable is not defined.
-*/
 if (typeof define === 'function' && define.amd){
 	define('laya.core', ['require', "exports"], function(require, exports) {
         'use strict';

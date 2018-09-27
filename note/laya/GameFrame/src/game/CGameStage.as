@@ -17,6 +17,10 @@ package game
 	import core.sound.CSoundSystem;
 	import core.pool.CPoolSystem;
 	import metro.scene.CMetroSceneSystem;
+	import metro.CMetroBoostSystem;
+	import core.character.CCharacterSystem;
+	import core.game.ecsLoop.CECSLoop;
+	import core.game.CGameSystem;
 	/**
 	 * ...
 	 * @author auto
@@ -50,6 +54,9 @@ package game
 			
 			this.addSystem(new CUISystem());
 
+			this.addSystem(new CCharacterSystem());
+			this.addSystem(new CECSLoop());
+
 			this.addSystem(new CLoginSystem());
 			this.addSystem(new CPlayerSystem());
 			this.addSystem(new CLobbySystem());
@@ -57,6 +64,13 @@ package game
 			this.addSystem(new CInstanceSystem());
 
 			this.addSystem(new CProcedureSystem());
+
+			this.addSystem(new CGameSystem());
+			// 
+			this.addSystem(new CBoostSystem());
+
+			//
+			this.addSystem(new CMetroBoostSystem());
 		}
 		protected override function onStart() : Boolean {
 			return super.onStart();

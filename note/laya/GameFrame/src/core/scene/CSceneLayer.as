@@ -1,12 +1,12 @@
 package core.scene
 {
-	import core.CBaseObject;
+	import core.CBaseDisplay;
 
 	/**
 	 * ...
 	 * @author
 	 */
-	public class CSceneLayer extends CBaseObject {
+	public class CSceneLayer extends CBaseDisplay {
 		public function CSceneLayer(){
 			
 		}

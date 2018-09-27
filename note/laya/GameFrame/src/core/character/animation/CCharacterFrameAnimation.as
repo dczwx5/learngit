@@ -5,27 +5,31 @@ import game.CPathUtils;
 import laya.utils.Handler;
 import laya.events.EventDispatcher;
 import core.game.ecsLoop.CGameComponent;
-import core.character.CCharacter;
 import core.character.display.IDisplay;
-import core.CBaseObject;
+import core.CBaseDisplay;
+import core.character.display.CCharacterDisplay;
+import core.character.animation.ICharacterAnimation;
+import core.character.property.CCharacterProperty;
 
 /**
 	* ...
 	* @author
 	*/
-public class CCharacterFrameAnimation extends CGameComponent implements IDisplay {
+public class CCharacterFrameAnimation implements ICharacterAnimation {
 	public static const EVENT_RUNNING:String = "running";
+	
 	public function CCharacterFrameAnimation(){
-		super("frameAnimation");
-
-		m_role = new CCharacter();
-		m_animation = new CCharacter();
+		m_role = new CCharacterDisplay();
+		m_animation = new CCharacterDisplay();
 		m_role.addChild(m_animation);
 
 		_aniMap = {};
 	}
 
-	public function create() : void {
+	public function create(propertyData:CCharacterProperty) : void {
+		m_skin = propertyData.skin;
+		m_defAni = propertyData.defAni;
+
 		_addAni(EAnimation.DIE);
 		_addAni(EAnimation.MOVE);
 		_addAni(EAnimation.IDLE);
@@ -34,6 +38,11 @@ public class CCharacterFrameAnimation extends CGameComponent implements IDisplay
 	public function playAnimation(aniName:String) : void {
 		var ani:Animation = _aniMap[aniName];
 		var lastAni:Animation = m_animation.getChildAt(0) as Animation;
+		if (ani == lastAni) {
+			ani.play();
+			return ;
+		}
+
 		if (lastAni) {
 			lastAni.stop();
 			lastAni.parent.removeChild(lastAni);
@@ -45,7 +54,7 @@ public class CCharacterFrameAnimation extends CGameComponent implements IDisplay
 
 	private function _addAni(aniName:String) : void {
 		var ani:Animation = new Animation();
-		var monsterUrl:String = CPathUtils.getMonsterAnimation(id, aniName);
+		var monsterUrl:String = CPathUtils.getAnimation(m_skin, aniName);
 		// 加载动画图集,加载成功后执行回调方法
 		ani.loadAtlas(monsterUrl, Handler.create(this, onLoaded, [aniName, ani]));
 	}
@@ -57,7 +66,8 @@ public class CCharacterFrameAnimation extends CGameComponent implements IDisplay
 		_loadCount++;
 		if (_loadCount >= 3) {
 			_loadFinish = true;
-			event(EVENT_RUNNING);
+			playAnimation(m_defAni);
+			m_pEventDispater.event(EVENT_RUNNING);
 		}
 	}
 
@@ -65,20 +75,24 @@ public class CCharacterFrameAnimation extends CGameComponent implements IDisplay
 		return _loadFinish;
 	}
 
-	public function get id() : String {
-		return m_id;
+	public function get skin() : String {
+		return m_skin;
 	}
-	public function set id(v:String) : void {
-		m_id = v;
-	}
-	public function get displayObject() : CCharacter {
+	
+	public function get displayObject() : CCharacterDisplay {
 		return m_role;
 	}
 
-	private var m_role:CCharacter;
-	private var m_animation:CCharacter;
-	private var m_id:String;
+	public function set eventDispatcher(v:EventDispatcher) : void {
+		m_pEventDispater = v;
+	}
 
+	private var m_role:CCharacterDisplay;
+	private var m_animation:CCharacterDisplay;
+	private var m_skin:String;
+	private var m_defAni:String;
+
+	private var m_pEventDispater:EventDispatcher;
 
 }
 

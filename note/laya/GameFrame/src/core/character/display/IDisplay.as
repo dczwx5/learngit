@@ -1,13 +1,14 @@
 package core.character.display
 {
-	import core.character.CCharacter;
+
+	import core.character.display.CCharacterDisplay;
 
 	/**
 	 * ...
 	 * @author
 	 */
 	public interface IDisplay{
-		function get displayObject() : CCharacter;
+		function get displayObject() : CCharacterDisplay;
 	}
 
 }

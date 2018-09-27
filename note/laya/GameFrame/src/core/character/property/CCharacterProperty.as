@@ -2,6 +2,7 @@ package core.character.property
 {
 	import core.game.ecsLoop.CSubscribeBehaviour;
 	import core.CBaseData;
+	import core.character.animation.EAnimation;
 
 	/**
 	 * ...
@@ -20,6 +21,18 @@ package core.character.property
 
 		public function get ID() : Number { return _dataObject.getNumber(CBaseData._ID); }
 		public function get type() : Number { return _dataObject.getInt(CBaseData._TYPE); }
+		public function get skin() : String { return _dataObject.getString(CBaseData._SKIN); }
+		public function get defAni() : String { 
+			var defAnimation:String = _dataObject.getString(CBaseData._DEF_ANIMATION);
+			if (defAnimation == null || defAnimation.length == 0) {
+				defAnimation = EAnimation.IDLE;
+			}
+			return defAnimation;
+		}
+
+		public function get x() : Number { return _dataObject.getNumber(CBaseData._X); }
+		public function get y() : Number { return _dataObject.getNumber(CBaseData._Y); }
+
 
 		protected var _dataObject:CBaseData;
 	}

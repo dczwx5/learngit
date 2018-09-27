@@ -12,7 +12,8 @@ package core.framework
 			super.onAwake();
 		}
 		protected override function onStart() : Boolean {
-			return super.onStart();
+			var ret:Boolean = super.onStart();
+			return ret;		
 		}
 		
 		protected override function onDestroy() : void {

@@ -48,9 +48,10 @@ package core.game
 
 		public function createScene(sceneID:String) : void {
 			m_pSceneSystem.createScene(sceneID);
-
-			spawnCharacter({ID:1, type:0});
-			spawnCharacter({ID:2, type:0});
+			// test data
+			spawnCharacter({ID:1, type:0, skin:"1001", defAni:"die", x:300, y:100});
+			spawnCharacter({ID:2, type:0, skin:"1001", defAni:"idle", x:300, y:300});
+			spawnCharacter({ID:3, type:0, skin:"1001", defAni:"move", x:500, y:300});
 		}
 
 		

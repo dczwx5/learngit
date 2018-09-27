@@ -25,7 +25,7 @@ package game
 			return "monster/" + name + ".png";
 		}
 
-		public static function getMonsterAnimation(mID:String, ani:String) : String {
+		public static function getAnimation(mID:String, ani:String) : String {
 			return ATLAS_PATH + "monster/" + mID + "/" + ani + ".atlas";
 		}
 	}

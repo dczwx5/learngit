@@ -9,9 +9,6 @@ package metro.scene
 	import laya.d3.animation.AnimationClip;
 	import laya.display.Animation;
 	import laya.utils.Handler;
-	import metro.EAnimation;
-	import metro.role.CMonster;
-	import core.character.CCharacterBase;
 
 	/**
 	 * ...

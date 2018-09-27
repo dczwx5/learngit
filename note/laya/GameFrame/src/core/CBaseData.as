@@ -17,6 +17,13 @@ package core
 		public static const _ID:String = "ID";
 		public static const _id:String = "id";
 
+		public static const _X:String = "x";
+		public static const _Y:String = "y";
+
+		public static const _SKIN:String = "skin";
+		public static const _DEF_ANIMATION:String = "defAni";
+
+
 		public function CBaseData(listDataClass:Class = null){
 			m_dataMap = new Object();
 			m_listDataClass = listDataClass;

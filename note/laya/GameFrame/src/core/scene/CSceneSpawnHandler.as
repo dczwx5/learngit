@@ -4,8 +4,8 @@ package core.scene
 	import core.framework.CBean;
 	import core.framework.IUpdate;
 	import core.scene.CSceneRendering;
-	import core.character.CSceneObject;
 	import core.character.display.IDisplay;
+	import laya.utils.Handler;
 
 	/**
 	 * ...
@@ -13,14 +13,13 @@ package core.scene
 	 */
 	public class CSceneSpawnHandler extends CBean implements IUpdate {
 		private var m_pSceneRendering:CSceneRendering;
-		private var m_pSceneObjectList:CSceneObject;
 		private var m_spawnQueue:Vector.<CGameObject>;
 
 		private var m_maxSpawnCountPerFrame:int;
 
-		private var _onSpawnCharacterHandler:Function;
+		private var _onSpawnCharacterHandler:Handler;
 
-		public function CSceneSpawnHandler(onSpawnCharacterHandler:Function, maxSpawnCountPerFrame:int = 15){
+		public function CSceneSpawnHandler(onSpawnCharacterHandler:Handler, maxSpawnCountPerFrame:int = 15){
 			m_maxSpawnCountPerFrame = maxSpawnCountPerFrame;
 			_onSpawnCharacterHandler = onSpawnCharacterHandler;
 		}
@@ -33,6 +32,9 @@ package core.scene
 
 		override protected function onStart() : Boolean {
 			var ret:Boolean = super.onStart();
+
+			m_spawnQueue = new Vector.<CGameObject>();
+			m_pSceneRendering = system.getBean(CSceneRendering) as CSceneRendering;
 			
 			return ret;
 		}
@@ -73,7 +75,7 @@ package core.scene
 				var obj:CGameObject = m_spawnQueue[i];
 				if (obj) {
 					spawnObject(obj);
-					_onSpawnCharacterHandler(obj);
+					_onSpawnCharacterHandler.runWith(obj);
 				}
 
 				++counter;

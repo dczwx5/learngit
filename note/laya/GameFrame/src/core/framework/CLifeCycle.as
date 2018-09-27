@@ -1,8 +1,8 @@
 package core.framework
 {
-	import core.ExtendsUtils;
 	import core.log.CLog;
 	import laya.events.EventDispatcher;
+	import core.CCommon;
 
 	/**
 	 * ...
@@ -31,13 +31,13 @@ package core.framework
 
 		protected virtual function onAwake() : void {
 			m_state = STATE_AWAKED;
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onAwake", typeName);
 		}
 		protected virtual function onStart() : Boolean {
 			m_state = STATE_STARTED;
 			
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onStart", typeName);
 
 			return true;
@@ -45,7 +45,7 @@ package core.framework
 		
 		protected virtual function onDestroy() : void {
 			m_state = STATE_DESTORYED;
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onDestroy", typeName);
 		}
 

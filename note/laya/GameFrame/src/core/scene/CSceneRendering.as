@@ -1,15 +1,12 @@
 package core.scene
 {
-	import core.character.CCharacter;
 	import core.framework.CBean;
 	import core.framework.IUpdate;
 	import core.scene.CSceneLayer;
 	import core.CCommon;
 	import game.CPathUtils;
 	import laya.ui.Image;
-	import metro.role.CMonster;
-	import core.character.CCharacterBase;
-	import metro.EAnimation;
+	import core.character.display.CCharacterDisplay;
 
 	/**
 	 * ...
@@ -36,7 +33,7 @@ package core.scene
 			return true;
 		}
 
-		public function addDisplayObject(c:CCharacter) : void {
+		public function addDisplayObject(c:CCharacterDisplay) : void {
 			m_sceneLayer.addChild(c);
 		}
 

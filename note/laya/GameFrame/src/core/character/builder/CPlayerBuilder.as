@@ -3,6 +3,7 @@ package core.character.builder
 	import core.character.builder.ICharacterBuilder;
 	import core.game.ecsLoop.CGameObject;
 	import core.character.property.CPlayerProperty;
+	import core.character.animation.CCharacterAnimation;
 	import core.character.animation.CCharacterFrameAnimation;
 
 	/**
@@ -20,13 +21,18 @@ package core.character.builder
 			propertyData.updateData(data);
 			obj.addComponent(propertyData);
 			
-			addAnimationCommponent(obj);
+			addAnimationCommponent(obj, propertyData);
 
 			return ret;
 		}
 
-		protected function addAnimationCommponent(obj:CGameObject) : void {
-			obj.addComponent(new CCharacterFrameAnimation());
+		protected function addAnimationCommponent(obj:CGameObject, propertyData:CPlayerProperty) : void {
+			var animation:CCharacterAnimation = new CCharacterAnimation();
+			animation.setAnimation(new CCharacterFrameAnimation());
+			animation.create(propertyData);
+			obj.addComponent(animation);
+
+			animation.displayObject.pos(propertyData.x, propertyData.y);
 		}
 	}
 

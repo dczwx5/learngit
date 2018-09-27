@@ -6,25 +6,41 @@ package core.scene
 	import core.scene.CSceneSpawnHandler;
 	import core.game.ecsLoop.CGameObject;
 	import core.character.property.CCharacterProperty;
+	import core.framework.IUpdate;
+	import core.framework.CLifeCycle;
+	import laya.utils.Handler;
 
 	/**
 	 * ...
 	 * @author
 	 */
-	public class CSceneSystem extends CAppSystem {
+	public class CSceneSystem extends CAppSystem implements IUpdate {
 		public function CSceneSystem(){
 			
 		}
 
 		protected override function onAwake() : void {
 			super.onAwake();
-		}
-		protected override function onStart() : Boolean {
-			return super.onStart();
 
-			this.addBean(m_sceneSpawnHandler = new CSceneSpawnHandler(_onSpawnCharacter));
+			this.addBean(m_sceneSpawnHandler = new CSceneSpawnHandler(Handler.create(this, _onSpawnCharacter, null, false)));
 			this.addBean(m_sceneRendering = new CSceneRendering());
 			this.addBean(m_sceneObjectList = new CSceneObjectList());
+		}
+		protected override function onStart() : Boolean {
+			var ret:Boolean = super.onStart();
+
+			
+
+			return ret;
+		}
+
+		public function update(delta:Number) : void {
+			var beans:Vector.<CLifeCycle> = getBeans();
+			for each (var bean:CLifeCycle in beans) {
+				if (bean is IUpdate) {
+					(bean as IUpdate).update(delta);
+				}
+			}
 		}
 	
 		protected override function onDestroy() : void {

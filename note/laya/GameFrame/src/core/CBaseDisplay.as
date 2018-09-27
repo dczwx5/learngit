@@ -6,8 +6,8 @@ package core
 	 * ...
 	 * @author auto
 	 */
-	public class CBaseObject extends Sprite {
-		public function CBaseObject(){
+	public class CBaseDisplay extends Sprite {
+		public function CBaseDisplay(){
 			
 		}
 	}

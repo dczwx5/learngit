@@ -3,7 +3,7 @@ package core.fsm
 	import core.fsm.CFsm;
 	import core.fsm.IFsm;
 	import core.log.CLog;
-	import core.ExtendsUtils;
+	import core.CCommon;
 
 	/**
 	 * ...
@@ -18,7 +18,7 @@ package core.fsm
 			onInit(fsm);
 		}
 		protected virtual function onInit(fsm:IFsm) : void {
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onInit", typeName)
 		}
 
@@ -27,7 +27,7 @@ package core.fsm
 			onEnter(fsm);
 		}
 		protected virtual function onEnter(fsm:IFsm) : void {
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onEnter", typeName)
 		}
 
@@ -43,7 +43,7 @@ package core.fsm
 			
 		}
 		protected virtual function onLeave(fsm:IFsm, isShutDown:Boolean) : void {
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onLeave", typeName)
 		}
 
@@ -51,7 +51,7 @@ package core.fsm
 			onDestroy(fsm);
 		}
 		protected virtual function onDestroy(fsm:IFsm) : void {
-			var typeName:String = ExtendsUtils.getQualifiedClassName(this);
+			var typeName:String = CCommon.getQualifiedClassName(this);
 			CLog.log("{0} onDestroy", typeName)
 		}
 
