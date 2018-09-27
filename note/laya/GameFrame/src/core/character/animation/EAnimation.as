@@ -1,4 +1,4 @@
-package metro
+package core.character.animation
 {
 	/**
 	 * ...

@@ -1,9 +1,10 @@
 package core.game.ecsLoop
 {
-    import core.ExtendsUtils;
     import core.CObjectUtils;
+    import core.CCommon;
+    import laya.events.EventDispatcher;
 
-    public class CGameComponent implements IGameComponent {
+    public class CGameComponent extends EventDispatcher implements IGameComponent {
 
         public static const STATE_CREATED:int = 0;
         public static const STATE_ENTERED:int = 1;
@@ -22,7 +23,7 @@ package core.game.ecsLoop
 
             m_name = name;
             if (null == name) {
-                m_name = ExtendsUtils.getQualifiedClassName(this);
+                m_name = CCommon.getQualifiedClassName(this);
             }
 
             m_isBranchData = branchData;

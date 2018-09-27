@@ -7,7 +7,7 @@ package core.character.display
 	 * @author
 	 */
 	public interface IDisplay{
-		function get modelDisplay() : CCharacter;
+		function get displayObject() : CCharacter;
 	}
 
 }

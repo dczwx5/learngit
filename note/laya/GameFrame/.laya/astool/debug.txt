@@ -12,9 +12,12 @@ Project configuration:f:\auto\autoGit\learngit\note\laya\GameFrame/.actionScript
 1,0.00,f:/auto/autoGit/learngit/note/laya/GameFrame/src,0,Collect
 1,0.00,f:/auto/autoGit/learngit/note/laya/GameFrame/libs/laya/src,0,Collect
 1,2.00,,0,read class message
-7,51.91,f:/auto/autoGit/learngit/note/laya/GameFrame/src/core/game/ecsLoop/CGameObject.as,171,Vecotr. This variable is not defined.
-1,89.71,,0,Disable Flash3D f:/auto/autoGit/learngit/note/laya/GameFrame/src/LayaUISample.as
-12,89.71,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.js,2775187,
-11,89.71,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
+7,52.27,f:/auto/autoGit/learngit/note/laya/GameFrame/src/core/game/ecsLoop/CGameObject.as,171,Vecotr. This variable is not defined.
+1,89.67,,0,Disable Flash3D f:/auto/autoGit/learngit/note/laya/GameFrame/src/LayaUISample.as
+12,89.67,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.js,2795652,
+11,89.67,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
 ******************************************************************************
-14,89.71,,0,
+Error or warning message:LayaUISample.max.js
+1 file:///f:/auto/autoGit/learngit/note/laya/GameFrame/src/core/game/ecsLoop/CGameObject.as (172):warning:Vecotr. This variable is not defined.
+******************************************************************************
+14,89.67,,0,

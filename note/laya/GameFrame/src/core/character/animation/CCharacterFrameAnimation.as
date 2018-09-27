@@ -1,21 +1,25 @@
-package core.character
+package core.character.animation
 {
-import laya.display.Sprite;
-import metro.EAnimation;
 import laya.display.Animation;
 import game.CPathUtils;
 import laya.utils.Handler;
 import laya.events.EventDispatcher;
+import core.game.ecsLoop.CGameComponent;
+import core.character.CCharacter;
+import core.character.display.IDisplay;
+import core.CBaseObject;
 
 /**
 	* ...
 	* @author
 	*/
-public class CCharacterBase extends EventDispatcher {
+public class CCharacterFrameAnimation extends CGameComponent implements IDisplay {
 	public static const EVENT_RUNNING:String = "running";
-	public function CCharacterBase(){
-		m_role = new Sprite();
-		m_animation = new Sprite();
+	public function CCharacterFrameAnimation(){
+		super("frameAnimation");
+
+		m_role = new CCharacter();
+		m_animation = new CCharacter();
 		m_role.addChild(m_animation);
 
 		_aniMap = {};
@@ -67,11 +71,12 @@ public class CCharacterBase extends EventDispatcher {
 	public function set id(v:String) : void {
 		m_id = v;
 	}
-	public function get displayObject() : Sprite {
+	public function get displayObject() : CCharacter {
 		return m_role;
 	}
-	private var m_role:Sprite;
-	private var m_animation:Sprite;
+
+	private var m_role:CCharacter;
+	private var m_animation:CCharacter;
 	private var m_id:String;
 
 

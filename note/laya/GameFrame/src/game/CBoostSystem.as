@@ -9,8 +9,8 @@ package game
 	 * ...
 	 * @author
 	 */
-	public class CGameSystem extends CECSLoop {
-		public function CGameSystem(){
+	public class CBoostSystem extends CECSLoop {
+		public function CBoostSystem(){
 			
 		}
 

@@ -1,12 +1,12 @@
 package core.character
 {
-	import core.character.CCharacterBase;
+	import core.CBaseObject;
 
 	/**
 	 * ...
 	 * @author
 	 */
-	public class CCharacter extends CCharacterBase {
+	public class CCharacter extends CBaseObject {
 		public function CCharacter(){
 			
 		}

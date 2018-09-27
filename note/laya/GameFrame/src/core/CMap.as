@@ -1,7 +1,5 @@
 package core
-{
-	import core.ExtendsUtils;
-	/**
+{	/**
 	 * ...
 	 * @author auto
 	 这类不能用

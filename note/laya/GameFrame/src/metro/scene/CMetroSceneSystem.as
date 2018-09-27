@@ -25,7 +25,7 @@ package metro.scene
 		}
 
 		public override function createScene(sceneID:String) : void {
-			m_sceneHandler.createScene(sceneID);
+			super.createScene(sceneID);
 		}
 		
 		private var m_sceneHandler:CMetroSceneHandler;

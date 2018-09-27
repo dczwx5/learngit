@@ -13,6 +13,10 @@ package core
 			getListData
 	 */
 	public class CBaseData {
+		public static const _TYPE:String = "type";
+		public static const _ID:String = "ID";
+		public static const _id:String = "id";
+
 		public function CBaseData(listDataClass:Class = null){
 			m_dataMap = new Object();
 			m_listDataClass = listDataClass;
