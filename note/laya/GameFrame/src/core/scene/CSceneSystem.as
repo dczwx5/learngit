@@ -9,6 +9,7 @@ package core.scene
 	import core.framework.IUpdate;
 	import core.framework.CLifeCycle;
 	import laya.utils.Handler;
+	import core.scene.CSceneEvent;
 
 	/**
 	 * ...
@@ -57,6 +58,7 @@ package core.scene
 			for each (var character:CGameObject in characters) {
 				var propertyData:CCharacterProperty = character.getComponentByClass(CCharacterProperty) as CCharacterProperty;
 				m_sceneObjectList.addObject(propertyData.ID, character, propertyData.type);
+				event(CSceneEvent.EVENT_CHARACTER_ADDED, character);
 			}
 		}
 		public function removeCharacter(c:CGameObject) : void {

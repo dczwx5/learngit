@@ -13,7 +13,7 @@ package core.fsm
 	 */
 	public final class CFsmManager extends CBean implements IFsmManager {
 		public function CFsmManager(){
-			m_fsms = new Dictionary();
+			m_fsms = new Object();
 		}
 
 		protected override function onAwake() : void {
@@ -25,19 +25,39 @@ package core.fsm
 		protected override function onDestroy() : void {
 			super.onDestroy();
 
-			var temp:Array = m_fsms.values;
-			for (var i:int = 0; i < temp.length; i++) {
-				var fsm:CFsmBase = temp[i];
+			for (var key:* in m_fsms) {
+				var fsm:CFsmBase = m_fsms[key];
+				delete m_fsms[key]; 
+
 				if (fsm.isDestroyed) {
 					continue;
 				}
 				fsm.shutDown();
 			}
+			m_fsms = null;
+
+
+			// var temp:Array = m_fsms.values;
+			// for (var i:int = 0; i < temp.length; i++) {
+			// 	var fsm:CFsmBase = temp[i];
+			// 	if (fsm.isDestroyed) {
+			// 		continue;
+			// 	}
+			// 	fsm.shutDown();
+			// }
 		
-			m_fsms.clear();
+			// m_fsms.clear();
 		}
 
 		public function update(deltaTime:Number) : void {
+			for (var key:* in m_fsms) {
+				var fsm:CFsmBase = m_fsms[key];
+				if (fsm.isDestroyed) {
+					continue;
+				}
+				fsm.update(deltaTime);
+			}
+			/**
 			var temp:Array = m_fsms.values;
 			for (var i:int = 0; i < temp.length; i++) {
 				var fsm:CFsmBase = temp[i];
@@ -45,23 +65,32 @@ package core.fsm
 					continue;
 				}
 				fsm.update(deltaTime);
-			}
+			}*/
 
 		}
 
-		public function getAllFsms() : Array {
-			return m_fsms.values;
+		public function getAllFsms() : Object {
+			return m_fsms;
 		}
 
 		public function getFsm(name:String) : IFsm {
-			return m_fsms.get(name);
+			return m_fsms[name];
 		}
 		public function getFsmByOwnerType(clazz:Class) : IFsm {
-			var values:Array = m_fsms.values;
 			var fsm:IFsm;
-			for each (fsm in values) {
+			for each (fsm in m_fsms) {
 				if (fsm.owner is clazz) {
 					return fsm;
+				}
+			}
+			return null;
+		}
+		public function getFsmsByOwnerType(clazz:Class) : Array {
+			var ret:Array = new Array();
+			var fsm:IFsm;
+			for each (fsm in m_fsms) {
+				if (fsm.owner is clazz) {
+					ret.push(fsm);
 				}
 			}
 			return null;
@@ -75,28 +104,30 @@ package core.fsm
 			var fsm:CFsm = new CFsm(name, owner, stateList);
 			fsm.system = system;
 			fsm.initialize();
-			m_fsms.set(name, fsm);
+			m_fsms[name] =fsm;
+			// m_fsms.set(name, fsm);
 			return fsm;
 		}
 
 		public function destroyFsm(name:String) : Boolean {
-			var fsm:CFsmBase = m_fsms.get(name);
+			var fsm:CFsmBase = m_fsms[name];
 			if (fsm) {
 				fsm.shutDown();
-				return m_fsms.remove(name);
+				delete m_fsms[name];
+				return fsm;
 			}
 			return false;
 		}
 
 		public function hasFsm(name:String) : Boolean {
-			return m_fsms.get(name) != null;
+			return m_fsms.hasOwnProperty(name);
 		}
 
-		public function get count() : int {
-			return m_fsms.keys.length;
-		}
+		// public function get count() : int {
+		// 	return m_fsms.keys.length;
+		// }
 
-		private var m_fsms:Dictionary; // key:string, value fsm
+		private var m_fsms:Object; // key:string, value fsm
 	}
 
 }

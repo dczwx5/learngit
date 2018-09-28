@@ -10,13 +10,13 @@ import core.CBaseDisplay;
 import core.character.display.CCharacterDisplay;
 import core.character.animation.ICharacterAnimation;
 import core.character.property.CCharacterProperty;
+import core.ECommonEventType;
 
 /**
 	* ...
 	* @author
 	*/
 public class CCharacterFrameAnimation implements ICharacterAnimation {
-	public static const EVENT_RUNNING:String = "running";
 	
 	public function CCharacterFrameAnimation(){
 		m_role = new CCharacterDisplay();
@@ -66,8 +66,7 @@ public class CCharacterFrameAnimation implements ICharacterAnimation {
 		_loadCount++;
 		if (_loadCount >= 3) {
 			_loadFinish = true;
-			playAnimation(m_defAni);
-			m_pEventDispater.event(EVENT_RUNNING);
+			m_pEventDispater.event(ECommonEventType.EVENT_RUNNING);
 		}
 	}
 

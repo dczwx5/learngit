@@ -1349,7 +1349,6 @@ var CCharacterFrameAnimation=(function(){
 		this._loadCount++;
 		if (this._loadCount >=3){
 			this._loadFinish=true;
-			this.playAnimation(this.m_defAni);
 			this.m_pEventDispater.event("running");
 		}
 	}
@@ -1370,7 +1369,6 @@ var CCharacterFrameAnimation=(function(){
 		this.m_pEventDispater=v;
 	});
 
-	CCharacterFrameAnimation.EVENT_RUNNING="running";
 	return CCharacterFrameAnimation;
 })()
 
@@ -1406,15 +1404,19 @@ var CPlayerBuilder=(function(){
 		propertyData.updateData(data);
 		obj.addComponent(propertyData);
 		this.addAnimationCommponent(obj,propertyData);
+		this.addFsmStateComponent(obj);
 		return ret;
 	}
 
 	__proto.addAnimationCommponent=function(obj,propertyData){
 		var animation=new CCharacterAnimation();
 		animation.setAnimation(new CCharacterFrameAnimation());
-		animation.create(propertyData);
 		obj.addComponent(animation);
 		animation.displayObject.pos(propertyData.x,propertyData.y);
+	}
+
+	__proto.addFsmStateComponent=function(obj){
+		obj.addComponent(new CCharacterStateMachine());
 	}
 
 	return CPlayerBuilder;
@@ -1438,187 +1440,6 @@ var CCharacterDataDescriptor=(function(){
 	CCharacterDataDescriptor.TYPE_MAP_OBJECT=2;
 	CCharacterDataDescriptor.TYPE_NPC=3;
 	return CCharacterDataDescriptor;
-})()
-
-
-/**
-*...
-*@author auto
-这类不能用
-*/
-//class core.CMap
-var CMap=(function(){
-	function CMap(){}
-	__class(CMap,'core.CMap');
-	var __proto=CMap.prototype;
-	// }
-	__proto.add=function(key,value,bAllowReplace){
-		(bAllowReplace===void 0)&& (bAllowReplace=false);
-		if (this[key] !=null){
-			if (bAllowReplace){
-				this[key]=value;
-				}else {
-				var sKeyType=CCommon.getQualifiedClassName(key);
-				var sValueType=CCommon.getQualifiedClassName(value);
-				throw new Error("CMap.add() : adding a key that has already existed in the map... !! key = "+key+" : "+sKeyType+", value = "+value+" : "+sValueType);
-			}
-			}else {
-			this[key]=value;
-		}
-	}
-
-	// m_iCount++;
-	__proto.remove=function(key){
-		if (this[key] !=null){
-			delete this[key];
-			return true;
-		}
-		return false;
-	}
-
-	__proto.find=function(key){
-		if (key==null)return null;
-		return this[key];
-	}
-
-	__proto.firstKey=function(){
-		for (var key in this)return key;
-		return null;
-	}
-
-	__proto.firstValue=function(){
-		var value;
-		for(var $each_value in this){
-			value=this[$each_value];
-			return value;
-		}
-		return null;
-	}
-
-	__proto.clear=function(){
-		while(this.firstKey()!=null){
-			for (var key in this)delete this[key];
-		}
-	}
-
-	// m_iCount=0;
-	__proto.toArray=function(){
-		var theArray=[];
-		var i=0;
-		var obj;
-		for(var $each_obj in this){
-			obj=this[$each_obj];
-			theArray[i++]=obj;
-		}
-		return theArray;
-	}
-
-	// func(key,value)
-	__proto.loop=function(func){
-		if (null==func)return;
-		for (var key in this){
-			func(key,this[key]);
-		}
-	}
-
-	return CMap;
-})()
-
-
-//class core.CObjectUtils
-var CObjectUtils=(function(){
-	function CObjectUtils(){}
-	__class(CObjectUtils,'core.CObjectUtils');
-	CObjectUtils.toObject=function(src,options){
-		options=options || [];
-		var dest={};
-		var key;
-		for(var $each_key in options){
-			key=options[$each_key];
-			dest[key]=src[key];
-		}
-		return dest;
-	}
-
-	CObjectUtils.extend=function(deep,target,__addObjs){
-		var addObjs=[];for(var i=2,sz=arguments.length;i<sz;i++)addObjs.push(arguments[i]);
-		var options,name,src,copy,copyIsArray=false,clone;
-		for (var i=0;i < addObjs.length;i++){
-			options=addObjs[i];
-			if (null !=options){
-				for (name in options){
-					src=(name in target || target.hasOwnProperty(name))? target[name] :null;
-					copy=options[name];
-					if (target==copy){
-						continue ;
-					}
-					if (deep && copy && (CObjectUtils.isPlainObject(copy)|| true==(copyIsArray==Boolean((copy instanceof Array))))){
-						if (copyIsArray){
-							copyIsArray=false;
-							clone=src && ((src instanceof Array))? src :[];
-							}else {
-							clone=src && CObjectUtils.isPlainObject(src)? src :{};
-						}
-						target[name]=CObjectUtils.extend(deep,clone,copy);
-						}else if (copy !=null){
-						target[name]=copy;
-					}
-				}
-			}
-		}
-		return null;
-	}
-
-	CObjectUtils.isPlainObject=function(copy){
-		return !(!copy || copy.toString()!='[object Object]');
-	}
-
-	return CObjectUtils;
-})()
-
-
-/**
-*...
-*@author
-*/
-//class core.fsm.CFsmBase
-var CFsmBase=(function(){
-	function CFsmBase(name){
-		this.m_name=null;
-		this.m_name=name;
-	}
-
-	__class(CFsmBase,'core.fsm.CFsmBase');
-	var __proto=CFsmBase.prototype;
-	__proto.initialize=function(){}
-	// virtual interface
-	__proto.shutDown=function(){}
-	__proto.update=function(deltaTime){}
-	__getset(0,__proto,'currentStateTime',function(){
-		return-1;
-	});
-
-	__getset(0,__proto,'name',function(){
-		return this.m_name;
-	});
-
-	__getset(0,__proto,'currentStateName',function(){
-		return null;
-	});
-
-	__getset(0,__proto,'isRunning',function(){
-		return false;
-	});
-
-	__getset(0,__proto,'isDestroyed',function(){
-		return false;
-	});
-
-	__getset(0,__proto,'fsmStateCount',function(){
-		return-1;
-	});
-
-	return CFsmBase;
 })()
 
 
@@ -1685,6 +1506,116 @@ var CFsmState=(function(){
 
 	__proto.onEvent=function(fsm,sender,eventID,userData){}
 	return CFsmState;
+})()
+
+
+//class core.CObjectUtils
+var CObjectUtils=(function(){
+	function CObjectUtils(){}
+	__class(CObjectUtils,'core.CObjectUtils');
+	CObjectUtils.toObject=function(src,options){
+		options=options || [];
+		var dest={};
+		var key;
+		for(var $each_key in options){
+			key=options[$each_key];
+			dest[key]=src[key];
+		}
+		return dest;
+	}
+
+	CObjectUtils.extend=function(deep,target,__addObjs){
+		var addObjs=[];for(var i=2,sz=arguments.length;i<sz;i++)addObjs.push(arguments[i]);
+		var options,name,src,copy,copyIsArray=false,clone;
+		for (var i=0;i < addObjs.length;i++){
+			options=addObjs[i];
+			if (null !=options){
+				for (name in options){
+					src=(name in target || target.hasOwnProperty(name))? target[name] :null;
+					copy=options[name];
+					if (target==copy){
+						continue ;
+					}
+					if (deep && copy && (CObjectUtils.isPlainObject(copy)|| true==(copyIsArray==Boolean((copy instanceof Array))))){
+						if (copyIsArray){
+							copyIsArray=false;
+							clone=src && ((src instanceof Array))? src :[];
+							}else {
+							clone=src && CObjectUtils.isPlainObject(src)? src :{};
+						}
+						target[name]=CObjectUtils.extend(deep,clone,copy);
+						}else if (copy !=null){
+						target[name]=copy;
+					}
+				}
+			}
+		}
+		return null;
+	}
+
+	CObjectUtils.isPlainObject=function(copy){
+		return !(!copy || copy.toString()!='[object Object]');
+	}
+
+	return CObjectUtils;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.ECommonEventType
+var ECommonEventType=(function(){
+	function ECommonEventType(){}
+	__class(ECommonEventType,'core.ECommonEventType');
+	ECommonEventType.EVENT_RUNNING="running";
+	return ECommonEventType;
+})()
+
+
+/**
+*...
+*@author
+*/
+//class core.fsm.CFsmBase
+var CFsmBase=(function(){
+	function CFsmBase(name){
+		this.m_name=null;
+		this.m_name=name;
+	}
+
+	__class(CFsmBase,'core.fsm.CFsmBase');
+	var __proto=CFsmBase.prototype;
+	__proto.initialize=function(){}
+	// virtual interface
+	__proto.shutDown=function(){}
+	__proto.update=function(deltaTime){}
+	__getset(0,__proto,'currentStateTime',function(){
+		return-1;
+	});
+
+	__getset(0,__proto,'name',function(){
+		return this.m_name;
+	});
+
+	__getset(0,__proto,'currentStateName',function(){
+		return null;
+	});
+
+	__getset(0,__proto,'isRunning',function(){
+		return false;
+	});
+
+	__getset(0,__proto,'isDestroyed',function(){
+		return false;
+	});
+
+	__getset(0,__proto,'fsmStateCount',function(){
+		return-1;
+	});
+
+	return CFsmBase;
 })()
 
 
@@ -39008,6 +38939,42 @@ var CLifeCycle=(function(_super){
 })(EventDispatcher)
 
 
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterState extends core.fsm.CFsmState
+var CCharacterState=(function(_super){
+	function CCharacterState(){
+		CCharacterState.__super.call(this);
+	}
+
+	__class(CCharacterState,'core.character.state.CCharacterState',_super);
+	var __proto=CCharacterState.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CCharacterState;
+})(CFsmState)
+
+
 //class core.game.ecsLoop.CGameObject extends laya.events.EventDispatcher
 var CGameObject=(function(_super){
 	function CGameObject(){
@@ -39017,6 +38984,7 @@ var CGameObject=(function(_super){
 		this.m_isDataDirty=false;
 		this.m_pTransform=null;
 		this.m_isRunning=false;
+		this.m_pSystem=null;
 		CGameObject.__super.call(this);
 		this.m_isRunning=false;
 		this.m_data=this.data;
@@ -39216,6 +39184,12 @@ var CGameObject=(function(_super){
 		if (this.m_data==v)return;
 		this.m_data=v;
 		this.m_isDataDirty=true;
+	});
+
+	__getset(0,__proto,'system',function(){
+		return this.m_pSystem;
+		},function(v){
+		this.m_pSystem=v;
 	});
 
 	__getset(0,__proto,'isRunning',function(){
@@ -50157,7 +50131,9 @@ var CCharacterAnimation=(function(_super){
 	__class(CCharacterAnimation,'core.character.animation.CCharacterAnimation',_super);
 	var __proto=CCharacterAnimation.prototype;
 	Laya.imps(__proto,{"core.character.display.IDisplay":true})
-	__proto.create=function(propertyData){
+	__proto.onEnter=function(){
+		_super.prototype.onEnter.call(this);
+		var propertyData=this.owner.getComponentByClass(CCharacterProperty);
 		this.m_animation.create(propertyData);
 	}
 
@@ -50169,6 +50145,14 @@ var CCharacterAnimation=(function(_super){
 		this.m_animation=v;
 		this.m_animation.eventDispatcher=this;
 	}
+
+	__proto.onExit=function(){
+		_super.prototype.onExit.call(this);
+	}
+
+	__getset(0,__proto,'isRunning',function(){
+		return this.m_animation.isRunning;
+	});
 
 	__getset(0,__proto,'displayObject',function(){
 		return this.m_animation.displayObject;
@@ -50334,6 +50318,231 @@ var CSubscribeBehaviour=(function(_super){
 	__proto.update=function(delta){}
 	return CSubscribeBehaviour;
 })(CGameComponent)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterStateMachine extends core.game.ecsLoop.CGameComponent
+var CCharacterStateMachine=(function(_super){
+	function CCharacterStateMachine(){
+		this.m_state=null;
+		CCharacterStateMachine.__super.call(this);
+	}
+
+	__class(CCharacterStateMachine,'core.character.state.CCharacterStateMachine',_super);
+	var __proto=CCharacterStateMachine.prototype;
+	__proto.onEnter=function(){
+		var pFsmSystem=this.owner.system.stage.getSystem(CFsmSystem);
+		var fsmName="Character"+CCharacterStateMachine._INDEX;
+		var stateList=[
+		new CCharacterIdleState(),
+		new CCharacterMoveState(),
+		new CCharacterAttackState(),
+		new CCharacterDeadState()];
+		this.m_state=pFsmSystem.createFsm(fsmName,this.owner,stateList);
+		CCharacterStateMachine._INDEX++;
+		this.m_state.start(CCharacterIdleState);
+	}
+
+	__proto.onExit=function(){
+		var pFsmSystem=this.owner.system.stage.getSystem(CFsmSystem);
+		pFsmSystem.destroyFsm(this.m_state.name);
+	}
+
+	CCharacterStateMachine._INDEX=0;
+	return CCharacterStateMachine;
+})(CGameComponent)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterAttackState extends core.character.state.CCharacterState
+var CCharacterAttackState=(function(_super){
+	function CCharacterAttackState(){
+		CCharacterAttackState.__super.call(this);
+	}
+
+	__class(CCharacterAttackState,'core.character.state.CCharacterAttackState',_super);
+	var __proto=CCharacterAttackState.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CCharacterAttackState;
+})(CCharacterState)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterDeadState extends core.character.state.CCharacterState
+var CCharacterDeadState=(function(_super){
+	function CCharacterDeadState(){
+		this.m_isReady=false;
+		CCharacterDeadState.__super.call(this);
+	}
+
+	__class(CCharacterDeadState,'core.character.state.CCharacterDeadState',_super);
+	var __proto=CCharacterDeadState.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+		var animation=(fsm.owner).getComponentByClass(CCharacterAnimation);
+		if (animation.isRunning){
+			this._onReady(animation);
+			}else {
+			animation.on("running",this,this._onReady,[animation]);
+		}
+	}
+
+	__proto._onReady=function(animation){
+		animation.playAnimation("die");
+		this.m_isReady=true;
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
+		if (!this.m_isReady){
+			return;
+		}
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CCharacterDeadState;
+})(CCharacterState)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterIdleState extends core.character.state.CCharacterState
+var CCharacterIdleState=(function(_super){
+	function CCharacterIdleState(){
+		this.m_isReady=false;
+		CCharacterIdleState.__super.call(this);
+	}
+
+	__class(CCharacterIdleState,'core.character.state.CCharacterIdleState',_super);
+	var __proto=CCharacterIdleState.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+		var animation=(fsm.owner).getComponentByClass(CCharacterAnimation);
+		if (animation.isRunning){
+			this._onReady(animation);
+			}else {
+			animation.on("running",this,this._onReady,[animation]);
+		}
+	}
+
+	__proto._onReady=function(animation){
+		animation.playAnimation("idle");
+		this.m_isReady=true;
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
+		if (!this.m_isReady){
+			return;
+		}
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CCharacterIdleState;
+})(CCharacterState)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterMoveState extends core.character.state.CCharacterState
+var CCharacterMoveState=(function(_super){
+	function CCharacterMoveState(){
+		this.m_isReady=false;
+		CCharacterMoveState.__super.call(this);
+	}
+
+	__class(CCharacterMoveState,'core.character.state.CCharacterMoveState',_super);
+	var __proto=CCharacterMoveState.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+		var animation=(fsm.owner).getComponentByClass(CCharacterAnimation);
+		if (animation.isRunning){
+			this._onReady(animation);
+			}else {
+			animation.on("running",this,this._onReady,[animation]);
+		}
+	}
+
+	__proto._onReady=function(animation){
+		animation.playAnimation("move");
+		this.m_isReady=true;
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
+		if (!this.m_isReady){
+			return;
+		}
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CCharacterMoveState;
+})(CCharacterState)
 
 
 /**
@@ -58560,6 +58769,41 @@ var CAppSystem=(function(_super){
 
 /**
 *...
+*@author
+*/
+//class core.character.property.CCharacterProperty extends core.game.ecsLoop.CSubscribeBehaviour
+var CCharacterProperty=(function(_super){
+	function CCharacterProperty(){
+		this._dataObject=null;
+		CCharacterProperty.__super.call(this,"property",true);
+		this._dataObject=new CBaseData();
+	}
+
+	__class(CCharacterProperty,'core.character.property.CCharacterProperty',_super);
+	var __proto=CCharacterProperty.prototype;
+	__proto.updateData=function(data){
+		this._dataObject.updateData(data);
+	}
+
+	__getset(0,__proto,'skin',function(){return this._dataObject.getString("skin");});
+	__getset(0,__proto,'ID',function(){return this._dataObject.getNumber("ID");});
+	__getset(0,__proto,'type',function(){return this._dataObject.getInt("type");});
+	__getset(0,__proto,'defAni',function(){
+		var defAnimation=this._dataObject.getString("defAni");
+		if (defAnimation==null || defAnimation.length==0){
+			defAnimation="idle";
+		}
+		return defAnimation;
+	});
+
+	__getset(0,__proto,'x',function(){return this._dataObject.getNumber("x");});
+	__getset(0,__proto,'y',function(){return this._dataObject.getNumber("y");});
+	return CCharacterProperty;
+})(CSubscribeBehaviour)
+
+
+/**
+*...
 1.update/fixUpdate :继承IUpdate/IFixUpdate的system,会自动调用update与fixUpdate,并不会往下自动调用(避免调用太多无用的update)
 2.在OnAwake中addBean的节点,会自动启动,其他的需要自行调用awake与start:
 如 :(在awake之外添加)
@@ -58635,41 +58879,6 @@ var CAppStage=(function(_super){
 	CAppStage.DEBUG=false;
 	return CAppStage;
 })(CContainerLifeCycle)
-
-
-/**
-*...
-*@author
-*/
-//class core.character.property.CCharacterProperty extends core.game.ecsLoop.CSubscribeBehaviour
-var CCharacterProperty=(function(_super){
-	function CCharacterProperty(){
-		this._dataObject=null;
-		CCharacterProperty.__super.call(this,"property",true);
-		this._dataObject=new CBaseData();
-	}
-
-	__class(CCharacterProperty,'core.character.property.CCharacterProperty',_super);
-	var __proto=CCharacterProperty.prototype;
-	__proto.updateData=function(data){
-		this._dataObject.updateData(data);
-	}
-
-	__getset(0,__proto,'skin',function(){return this._dataObject.getString("skin");});
-	__getset(0,__proto,'ID',function(){return this._dataObject.getNumber("ID");});
-	__getset(0,__proto,'type',function(){return this._dataObject.getInt("type");});
-	__getset(0,__proto,'defAni',function(){
-		var defAnimation=this._dataObject.getString("defAni");
-		if (defAnimation==null || defAnimation.length==0){
-			defAnimation="idle";
-		}
-		return defAnimation;
-	});
-
-	__getset(0,__proto,'x',function(){return this._dataObject.getNumber("x");});
-	__getset(0,__proto,'y',function(){return this._dataObject.getNumber("y");});
-	return CCharacterProperty;
-})(CSubscribeBehaviour)
 
 
 /**
@@ -62555,6 +62764,644 @@ var AnimationPlayerBase=(function(_super){
 
 
 /**
+*<p> <code>Stage</code> 是舞台类，显示列表的根节点，所有显示对象都在舞台上显示。通过 Laya.stage 单例访问。</p>
+*<p>Stage提供几种适配模式，不同的适配模式会产生不同的画布大小，画布越大，渲染压力越大，所以要选择合适的适配方案。</p>
+*<p>Stage提供不同的帧率模式，帧率越高，渲染压力越大，越费电，合理使用帧率甚至动态更改帧率有利于改进手机耗电。</p>
+*/
+//class laya.display.Stage extends laya.display.Sprite
+var Stage=(function(_super){
+	function Stage(){
+		/**当前焦点对象，此对象会影响当前键盘事件的派发主体。*/
+		this.focus=null;
+		/**设计宽度（初始化时设置的宽度Laya.init(width,height)）*/
+		this.designWidth=0;
+		/**设计高度（初始化时设置的高度Laya.init(width,height)）*/
+		this.designHeight=0;
+		/**画布是否发生翻转。*/
+		this.canvasRotation=false;
+		/**画布的旋转角度。*/
+		this.canvasDegree=0;
+		/**
+		*<p>设置是否渲染，设置为false，可以停止渲染，画面会停留到最后一次渲染上，减少cpu消耗，此设置不影响时钟。</p>
+		*<p>比如非激活状态，可以设置renderingEnabled=false以节省消耗。</p>
+		**/
+		this.renderingEnabled=true;
+		/**是否启用屏幕适配，可以适配后，在某个时候关闭屏幕适配，防止某些操作导致的屏幕以外改变*/
+		this.screenAdaptationEnabled=true;
+		/**@private */
+		this._screenMode="none";
+		/**@private */
+		this._scaleMode="noscale";
+		/**@private */
+		this._alignV="top";
+		/**@private */
+		this._alignH="left";
+		/**@private */
+		this._bgColor="black";
+		/**@private */
+		this._mouseMoveTime=0;
+		/**@private */
+		this._renderCount=0;
+		/**@private */
+		this._frameStartTime=NaN;
+		/**@private */
+		this._isFocused=false;
+		/**@private */
+		this._isVisibility=false;
+		/**@private 3D场景*/
+		this._scenes=null;
+		/**@private */
+		this._frameRate="fast";
+		Stage.__super.call(this);
+		this.offset=new Point();
+		this._canvasTransform=new Matrix();
+		this._previousOrientation=Browser.window.orientation;
+		var _$this=this;
+		this.transform=Matrix.create();
+		this._scenes=[];
+		this.mouseEnabled=true;
+		this.hitTestPrior=true;
+		this.autoSize=false;
+		this._displayedInStage=true;
+		this._isFocused=true;
+		this._isVisibility=true;
+		var window=Browser.window;
+		var _this=this;
+		window.addEventListener("focus",function(){
+			_$this._isFocused=true;
+			_this.event("focus");
+			_this.event("focuschange");
+		});
+		window.addEventListener("blur",function(){
+			_$this._isFocused=false;
+			_this.event("blur");
+			_this.event("focuschange");
+			if (_this._isInputting())Input["inputElement"].target.focus=false;
+		});
+		var hidden="hidden",state="visibilityState",visibilityChange="visibilitychange";
+		var document=window.document;
+		if (typeof document.hidden!=="undefined"){
+			visibilityChange="visibilitychange";
+			state="visibilityState";
+			}else if (typeof document.mozHidden!=="undefined"){
+			visibilityChange="mozvisibilitychange";
+			state="mozVisibilityState";
+			}else if (typeof document.msHidden!=="undefined"){
+			visibilityChange="msvisibilitychange";
+			state="msVisibilityState";
+			}else if (typeof document.webkitHidden!=="undefined"){
+			visibilityChange="webkitvisibilitychange";
+			state="webkitVisibilityState";
+		}
+		window.document.addEventListener(visibilityChange,visibleChangeFun);
+		function visibleChangeFun (){
+			if (Browser.document[state]=="hidden"){
+				_this._setStageVisible(false);
+				}else {
+				_this._setStageVisible(true);
+			}
+		}
+		window.document.addEventListener("qbrowserVisibilityChange",qbroserVisibleChangeFun);
+		function qbroserVisibleChangeFun (e){
+			_this._setStageVisible(!e.hidden);
+		}
+		window.addEventListener("resize",function(){
+			var orientation=Browser.window.orientation;
+			if (orientation !=null && orientation !=_$this._previousOrientation && _this._isInputting()){
+				Input["inputElement"].target.focus=false;
+			}
+			_$this._previousOrientation=orientation;
+			if (_this._isInputting())return;
+			_this._resetCanvas();
+		});
+		window.addEventListener("orientationchange",function(e){
+			_this._resetCanvas();
+		});
+		this.on("mousemove",this,this._onmouseMove);
+		if (Browser.onMobile)this.on("mousedown",this,this._onmouseMove);
+	}
+
+	__class(Stage,'laya.display.Stage',_super);
+	var __proto=Stage.prototype;
+	__proto._setStageVisible=function(value){
+		if (this._isVisibility==value)return;
+		this._isVisibility=value;
+		if (!this._isVisibility)if (this._isInputting())Input["inputElement"].target.focus=false;
+		this.event("visibilitychange");
+	}
+
+	/**
+	*@private
+	*在移动端输入时，输入法弹出期间不进行画布尺寸重置。
+	*/
+	__proto._isInputting=function(){
+		return (Browser.onMobile && Input.isInputting);
+	}
+
+	/**@private */
+	__proto._changeCanvasSize=function(){
+		this.setScreenSize(Browser.clientWidth *Browser.pixelRatio,Browser.clientHeight *Browser.pixelRatio);
+	}
+
+	/**@private */
+	__proto._resetCanvas=function(){
+		if (!this.screenAdaptationEnabled)return;
+		var canvas=Render._mainCanvas;
+		var canvasStyle=canvas.source.style;
+		canvas.size(1,1);
+		Laya.timer.once(100,this,this._changeCanvasSize);
+	}
+
+	/**
+	*设置屏幕大小，场景会根据屏幕大小进行适配。可以动态调用此方法，来更改游戏显示的大小。
+	*@param screenWidth 屏幕宽度。
+	*@param screenHeight 屏幕高度。
+	*/
+	__proto.setScreenSize=function(screenWidth,screenHeight){
+		var rotation=false;
+		if (this._screenMode!=="none"){
+			var screenType=screenWidth / screenHeight < 1 ? "vertical" :"horizontal";
+			rotation=screenType!==this._screenMode;
+			if (rotation){
+				var temp=screenHeight;
+				screenHeight=screenWidth;
+				screenWidth=temp;
+			}
+		}
+		this.canvasRotation=rotation;
+		var canvas=Render._mainCanvas;
+		var canvasStyle=canvas.source.style;
+		var mat=this._canvasTransform.identity();
+		var scaleMode=this._scaleMode;
+		var scaleX=screenWidth / this.designWidth;
+		var scaleY=screenHeight / this.designHeight;
+		var canvasWidth=this.designWidth;
+		var canvasHeight=this.designHeight;
+		var realWidth=screenWidth;
+		var realHeight=screenHeight;
+		var pixelRatio=Browser.pixelRatio;
+		this._width=this.designWidth;
+		this._height=this.designHeight;
+		switch (scaleMode){
+			case "noscale":
+				scaleX=scaleY=1;
+				realWidth=this.designWidth;
+				realHeight=this.designHeight;
+				break ;
+			case "showall":
+				scaleX=scaleY=Math.min(scaleX,scaleY);
+				canvasWidth=realWidth=Math.round(this.designWidth *scaleX);
+				canvasHeight=realHeight=Math.round(this.designHeight *scaleY);
+				break ;
+			case "noborder":
+				scaleX=scaleY=Math.max(scaleX,scaleY);
+				realWidth=Math.round(this.designWidth *scaleX);
+				realHeight=Math.round(this.designHeight *scaleY);
+				break ;
+			case "full":
+				scaleX=scaleY=1;
+				this._width=canvasWidth=screenWidth;
+				this._height=canvasHeight=screenHeight;
+				break ;
+			case "fixedwidth":
+				scaleY=scaleX;
+				this._height=canvasHeight=Math.round(screenHeight / scaleX);
+				break ;
+			case "fixedheight":
+				scaleX=scaleY;
+				this._width=canvasWidth=Math.round(screenWidth / scaleY);
+				break ;
+			case "fixedauto":
+				if ((screenWidth / screenHeight)< (this.designWidth / this.designHeight)){
+					scaleY=scaleX;
+					this._height=canvasHeight=Math.round(screenHeight / scaleX);
+					}else {
+					scaleX=scaleY;
+					this._width=canvasWidth=Math.round(screenWidth / scaleY);
+				}
+				break ;
+			}
+		if (this.conchModel)this.conchModel.size(this._width,this._height);
+		scaleX *=this.scaleX;
+		scaleY *=this.scaleY;
+		if (scaleX===1 && scaleY===1){
+			this.transform.identity();
+			}else {
+			this.transform.a=this._formatData(scaleX / (realWidth / canvasWidth));
+			this.transform.d=this._formatData(scaleY / (realHeight / canvasHeight));
+			this.conchModel && this.conchModel.scale(this.transform.a,this.transform.d);
+		}
+		canvas.size(canvasWidth,canvasHeight);
+		RunDriver.changeWebGLSize(canvasWidth,canvasHeight);
+		mat.scale(realWidth / canvasWidth / pixelRatio,realHeight / canvasHeight / pixelRatio);
+		if (this._alignH==="left")this.offset.x=0;
+		else if (this._alignH==="right")this.offset.x=(screenWidth-realWidth)/pixelRatio;
+		else this.offset.x=(screenWidth-realWidth)*0.5 / pixelRatio;
+		if (this._alignV==="top")this.offset.y=0;
+		else if (this._alignV==="bottom")this.offset.y=(screenHeight-realHeight)/pixelRatio;
+		else this.offset.y=(screenHeight-realHeight)*0.5 / pixelRatio;
+		this.offset.x=Math.round(this.offset.x);
+		this.offset.y=Math.round(this.offset.y);
+		mat.translate(this.offset.x,this.offset.y);
+		this.canvasDegree=0;
+		if (rotation){
+			if (this._screenMode==="horizontal"){
+				mat.rotate(Math.PI / 2);
+				mat.translate(screenHeight / pixelRatio,0);
+				this.canvasDegree=90;
+				}else {
+				mat.rotate(-Math.PI / 2);
+				mat.translate(0,screenWidth / pixelRatio);
+				this.canvasDegree=-90;
+			}
+		}
+		mat.a=this._formatData(mat.a);
+		mat.d=this._formatData(mat.d);
+		mat.tx=this._formatData(mat.tx);
+		mat.ty=this._formatData(mat.ty);
+		canvasStyle.transformOrigin=canvasStyle.webkitTransformOrigin=canvasStyle.msTransformOrigin=canvasStyle.mozTransformOrigin=canvasStyle.oTransformOrigin="0px 0px 0px";
+		canvasStyle.transform=canvasStyle.webkitTransform=canvasStyle.msTransform=canvasStyle.mozTransform=canvasStyle.oTransform="matrix("+mat.toString()+")";
+		mat.translate(parseInt(canvasStyle.left)|| 0,parseInt(canvasStyle.top)|| 0);
+		this.visible=true;
+		this._repaint=1;
+		this.event("resize");
+	}
+
+	/**@private */
+	__proto._formatData=function(value){
+		if (Math.abs(value)< 0.000001)return 0;
+		if (Math.abs(1-value)< 0.001)return value > 0 ? 1 :-1;
+		return value;
+	}
+
+	/**@inheritDoc */
+	__proto.getMousePoint=function(){
+		return Point.TEMP.setTo(this.mouseX,this.mouseY);
+	}
+
+	/**@inheritDoc */
+	__proto.repaint=function(){
+		this._repaint=1;
+	}
+
+	/**@inheritDoc */
+	__proto.parentRepaint=function(){}
+	/**@private */
+	__proto._loop=function(){
+		this.render(Render.context,0,0);
+		return true;
+	}
+
+	/**@private */
+	__proto._onmouseMove=function(e){
+		this._mouseMoveTime=Browser.now();
+	}
+
+	/**
+	*<p>获得距当前帧开始后，过了多少时间，单位为毫秒。</p>
+	*<p>可以用来判断函数内时间消耗，通过合理控制每帧函数处理消耗时长，避免一帧做事情太多，对复杂计算分帧处理，能有效降低帧率波动。</p>
+	*/
+	__proto.getTimeFromFrameStart=function(){
+		return Browser.now()-this._frameStartTime;
+	}
+
+	/**@inheritDoc */
+	__proto.render=function(context,x,y){
+		if (this._frameRate==="sleep" && !Render.isConchApp){
+			var now=Browser.now();
+			if (now-this._frameStartTime >=1000)this._frameStartTime=now;
+			else return;
+		}
+		this._renderCount++;
+		Render.isFlash && this.repaint();
+		if (!this._style.visible){
+			if (this._renderCount % 5===0){
+				Stat.loopCount++;
+				MouseManager.instance.runEvent();
+				Laya.timer._update();
+			}
+			return;
+		}
+		this._frameStartTime=Browser.now();
+		var frameMode=this._frameRate==="mouse" ? (((this._frameStartTime-this._mouseMoveTime)< 2000)? "fast" :"slow"):this._frameRate;
+		var isFastMode=(frameMode!=="slow");
+		var isDoubleLoop=(this._renderCount % 2===0);
+		Stat.renderSlow=!isFastMode;
+		if (isFastMode || isDoubleLoop || Render.isConchApp){
+			Stat.loopCount++;
+			MouseManager.instance.runEvent();
+			Laya.timer._update();
+			RunDriver.update3DLoop();
+			var scene;
+			var i=0,n=0;
+			if (Render.isConchNode){
+				for (i=0,n=this._scenes.length;i < n;i++){
+					scene=this._scenes[i];
+					(scene)&& (scene._updateSceneConch());
+				}
+				}else {
+				for (i=0,n=this._scenes.length;i < n;i++){
+					scene=this._scenes[i];
+					(scene)&& (scene._updateScene());
+				}
+			}
+			if (Render.isConchNode){
+				var customList=Sprite["CustomList"];
+				for (i=0,n=customList.length;i < n;i++){
+					var customItem=customList[i];
+					customItem.customRender(customItem.customContext,0,0);
+				}
+				return;
+			}
+		}
+		if (Render.isConchNode)return;
+		if (this.renderingEnabled && (isFastMode || !isDoubleLoop || Render.isConchWebGL)){
+			if (Render.isWebGL){
+				context.clear();
+				_super.prototype.render.call(this,context,x,y);
+				Stat._show&& Stat._sp && Stat._sp.render(context,x,y);
+				RunDriver.clear(this._bgColor);
+				RunDriver.beginFlush();
+				context.flush();
+				RunDriver.endFinish();
+				VectorGraphManager.instance && VectorGraphManager.getInstance().endDispose();
+				}else {
+				RunDriver.clear(this._bgColor);
+				_super.prototype.render.call(this,context,x,y);
+				Stat._show&& Stat._sp && Stat._sp.render(context,x,y);
+			}
+		}
+	}
+
+	/**@private */
+	__proto._requestFullscreen=function(){
+		var element=Browser.document.documentElement;
+		if (element.requestFullscreen){
+			element.requestFullscreen();
+			}else if (element.mozRequestFullScreen){
+			element.mozRequestFullScreen();
+			}else if (element.webkitRequestFullscreen){
+			element.webkitRequestFullscreen();
+			}else if (element.msRequestFullscreen){
+			element.msRequestFullscreen();
+		}
+	}
+
+	/**@private */
+	__proto._fullScreenChanged=function(){
+		Laya.stage.event("fullscreenchange");
+	}
+
+	/**退出全屏模式*/
+	__proto.exitFullscreen=function(){
+		var document=Browser.document;
+		if (document.exitFullscreen){
+			document.exitFullscreen();
+			}else if (document.mozCancelFullScreen){
+			document.mozCancelFullScreen();
+			}else if (document.webkitExitFullscreen){
+			document.webkitExitFullscreen();
+		}
+	}
+
+	/**当前视窗由缩放模式导致的 X 轴缩放系数。*/
+	__getset(0,__proto,'clientScaleX',function(){
+		return this._transform ? this._transform.getScaleX():1;
+	});
+
+	//[Deprecated]
+	__getset(0,__proto,'desginHeight',function(){
+		console.debug("desginHeight已经弃用，请使用designHeight代替");
+		return this.designHeight;
+	});
+
+	/**帧率类型，支持三种模式：fast-60帧(默认)，slow-30帧，mouse-30帧（鼠标活动后会自动加速到60，鼠标不动2秒后降低为30帧，以节省消耗），sleep-1帧。*/
+	__getset(0,__proto,'frameRate',function(){
+		return this._frameRate;
+		},function(value){
+		this._frameRate=value;
+		if (Render.isConchApp){
+			switch (this._frameRate){
+				case "slow":
+					Browser.window.conch && Browser.window.conchConfig.setSlowFrame && Browser.window.conchConfig.setSlowFrame(true);
+					break ;
+				case "fast":
+					Browser.window.conch && Browser.window.conchConfig.setSlowFrame && Browser.window.conchConfig.setSlowFrame(false);
+					break ;
+				case "mouse":
+					Browser.window.conch && Browser.window.conchConfig.setMouseFrame && Browser.window.conchConfig.setMouseFrame(2000);
+					break ;
+				case "sleep":
+					Browser.window.conch && Browser.window.conchConfig.setLimitFPS && Browser.window.conchConfig.setLimitFPS(1);
+					break ;
+				default :
+					throw new Error("Stage:frameRate invalid.");
+					break ;
+				}
+		}
+	});
+
+	/**当前视窗由缩放模式导致的 Y 轴缩放系数。*/
+	__getset(0,__proto,'clientScaleY',function(){
+		return this._transform ? this._transform.getScaleY():1;
+	});
+
+	__getset(0,__proto,'width',_super.prototype._$get_width,function(value){
+		this.designWidth=value;
+		Laya.superSet(Sprite,this,'width',value);
+		Laya.timer.callLater(this,this._changeCanvasSize);
+	});
+
+	/**
+	*<p>水平对齐方式。默认值为"left"。</p>
+	*<p><ul>取值范围：
+	*<li>"left" ：居左对齐；</li>
+	*<li>"center" ：居中对齐；</li>
+	*<li>"right" ：居右对齐；</li>
+	*</ul></p>
+	*/
+	__getset(0,__proto,'alignH',function(){
+		return this._alignH;
+		},function(value){
+		this._alignH=value;
+		Laya.timer.callLater(this,this._changeCanvasSize);
+	});
+
+	/**
+	*舞台是否获得焦点。
+	*/
+	__getset(0,__proto,'isFocused',function(){
+		return this._isFocused;
+	});
+
+	__getset(0,__proto,'height',_super.prototype._$get_height,function(value){
+		this.designHeight=value;
+		Laya.superSet(Sprite,this,'height',value);
+		Laya.timer.callLater(this,this._changeCanvasSize);
+	});
+
+	__getset(0,__proto,'transform',function(){
+		if (this._tfChanged)this._adjustTransform();
+		return this._transform=this._transform|| Matrix.create();
+	},_super.prototype._$set_transform);
+
+	/**
+	*舞台是否处于可见状态(是否进入后台)。
+	*/
+	__getset(0,__proto,'isVisibility',function(){
+		return this._isVisibility;
+	});
+
+	//[Deprecated]
+	__getset(0,__proto,'desginWidth',function(){
+		console.debug("desginWidth已经弃用，请使用designWidth代替");
+		return this.designWidth;
+	});
+
+	/**
+	*<p>缩放模式。默认值为 "noscale"。</p>
+	*<p><ul>取值范围：
+	*<li>"noscale" ：不缩放；</li>
+	*<li>"exactfit" ：全屏不等比缩放；</li>
+	*<li>"showall" ：最小比例缩放；</li>
+	*<li>"noborder" ：最大比例缩放；</li>
+	*<li>"full" ：不缩放，stage的宽高等于屏幕宽高；</li>
+	*<li>"fixedwidth" ：宽度不变，高度根据屏幕比缩放；</li>
+	*<li>"fixedheight" ：高度不变，宽度根据屏幕比缩放；</li>
+	*<li>"fixedauto" ：根据宽高比，自动选择使用fixedwidth或fixedheight；</li>
+	*</ul></p>
+	*/
+	__getset(0,__proto,'scaleMode',function(){
+		return this._scaleMode;
+		},function(value){
+		this._scaleMode=value;
+		Laya.timer.callLater(this,this._changeCanvasSize);
+	});
+
+	/**
+	*<p>垂直对齐方式。默认值为"top"。</p>
+	*<p><ul>取值范围：
+	*<li>"top" ：居顶部对齐；</li>
+	*<li>"middle" ：居中对齐；</li>
+	*<li>"bottom" ：居底部对齐；</li>
+	*</ul></p>
+	*/
+	__getset(0,__proto,'alignV',function(){
+		return this._alignV;
+		},function(value){
+		this._alignV=value;
+		Laya.timer.callLater(this,this._changeCanvasSize);
+	});
+
+	/**舞台的背景颜色，默认为黑色，null为透明。*/
+	__getset(0,__proto,'bgColor',function(){
+		return this._bgColor;
+		},function(value){
+		this._bgColor=value;
+		this.conchModel && this.conchModel.bgColor(value);
+		if (Render.isWebGL){
+			if (value){
+				Stage._wgColor=Color$1.create(value)._color;
+				}else {
+				if (!Browser.onMiniGame)Stage._wgColor=null;
+			}
+		}
+		if (Browser.onLimixiu){
+			Stage._wgColor=Color$1.create(value)._color;
+		}else
+		if (value){
+			Render.canvas.style.background=value;
+			}else {
+			Render.canvas.style.background="none";
+		}
+	});
+
+	/**鼠标在 Stage 上的 X 轴坐标。*/
+	__getset(0,__proto,'mouseX',function(){
+		return Math.round(MouseManager.instance.mouseX / this.clientScaleX);
+	});
+
+	/**鼠标在 Stage 上的 Y 轴坐标。*/
+	__getset(0,__proto,'mouseY',function(){
+		return Math.round(MouseManager.instance.mouseY / this.clientScaleY);
+	});
+
+	/**
+	*<p>场景布局类型。</p>
+	*<p><ul>取值范围：
+	*<li>"none" ：不更改屏幕</li>
+	*<li>"horizontal" ：自动横屏</li>
+	*<li>"vertical" ：自动竖屏</li>
+	*</ul></p>
+	*/
+	__getset(0,__proto,'screenMode',function(){
+		return this._screenMode;
+		},function(value){
+		this._screenMode=value;
+	});
+
+	__getset(0,__proto,'visible',_super.prototype._$get_visible,function(value){
+		if (this.visible!==value){
+			Laya.superSet(Sprite,this,'visible',value);
+			var style=Render._mainCanvas.source.style;
+			style.visibility=value ? "visible" :"hidden";
+		}
+	});
+
+	/**
+	*<p>是否开启全屏，用户点击后进入全屏。</p>
+	*<p>兼容性提示：部分浏览器不允许点击进入全屏，比如Iphone等。</p>
+	*/
+	__getset(0,__proto,'fullScreenEnabled',null,function(value){
+		var document=Browser.document;
+		var canvas=Render.canvas;
+		if (value){
+			canvas.addEventListener('mousedown',this._requestFullscreen);
+			canvas.addEventListener('touchstart',this._requestFullscreen);
+			document.addEventListener("fullscreenchange",this._fullScreenChanged);
+			document.addEventListener("mozfullscreenchange",this._fullScreenChanged);
+			document.addEventListener("webkitfullscreenchange",this._fullScreenChanged);
+			document.addEventListener("msfullscreenchange",this._fullScreenChanged);
+			}else {
+			canvas.removeEventListener('mousedown',this._requestFullscreen);
+			canvas.removeEventListener('touchstart',this._requestFullscreen);
+			document.removeEventListener("fullscreenchange",this._fullScreenChanged);
+			document.removeEventListener("mozfullscreenchange",this._fullScreenChanged);
+			document.removeEventListener("webkitfullscreenchange",this._fullScreenChanged);
+			document.removeEventListener("msfullscreenchange",this._fullScreenChanged);
+		}
+	});
+
+	Stage.SCALE_NOSCALE="noscale";
+	Stage.SCALE_EXACTFIT="exactfit";
+	Stage.SCALE_SHOWALL="showall";
+	Stage.SCALE_NOBORDER="noborder";
+	Stage.SCALE_FULL="full";
+	Stage.SCALE_FIXED_WIDTH="fixedwidth";
+	Stage.SCALE_FIXED_HEIGHT="fixedheight";
+	Stage.SCALE_FIXED_AUTO="fixedauto";
+	Stage.ALIGN_LEFT="left";
+	Stage.ALIGN_RIGHT="right";
+	Stage.ALIGN_CENTER="center";
+	Stage.ALIGN_TOP="top";
+	Stage.ALIGN_MIDDLE="middle";
+	Stage.ALIGN_BOTTOM="bottom";
+	Stage.SCREEN_NONE="none";
+	Stage.SCREEN_HORIZONTAL="horizontal";
+	Stage.SCREEN_VERTICAL="vertical";
+	Stage.FRAME_FAST="fast";
+	Stage.FRAME_SLOW="slow";
+	Stage.FRAME_MOUSE="mouse";
+	Stage.FRAME_SLEEP="sleep";
+	Stage.FRAME_MOUSE_THREDHOLD=2000;
+	__static(Stage,
+	['_wgColor',function(){return this._wgColor=[0,0,0,1];}
+	]);
+	return Stage;
+})(Sprite)
+
+
+/**
 *<code>BoxCollider</code> 类用于创建盒子碰撞器。
 */
 //class laya.d3.component.physics.BoxCollider extends laya.d3.component.physics.Collider
@@ -63719,644 +64566,6 @@ var ExtendTerrainMaterial=(function(_super){
 	]);
 	return ExtendTerrainMaterial;
 })(BaseMaterial)
-
-
-/**
-*<p> <code>Stage</code> 是舞台类，显示列表的根节点，所有显示对象都在舞台上显示。通过 Laya.stage 单例访问。</p>
-*<p>Stage提供几种适配模式，不同的适配模式会产生不同的画布大小，画布越大，渲染压力越大，所以要选择合适的适配方案。</p>
-*<p>Stage提供不同的帧率模式，帧率越高，渲染压力越大，越费电，合理使用帧率甚至动态更改帧率有利于改进手机耗电。</p>
-*/
-//class laya.display.Stage extends laya.display.Sprite
-var Stage=(function(_super){
-	function Stage(){
-		/**当前焦点对象，此对象会影响当前键盘事件的派发主体。*/
-		this.focus=null;
-		/**设计宽度（初始化时设置的宽度Laya.init(width,height)）*/
-		this.designWidth=0;
-		/**设计高度（初始化时设置的高度Laya.init(width,height)）*/
-		this.designHeight=0;
-		/**画布是否发生翻转。*/
-		this.canvasRotation=false;
-		/**画布的旋转角度。*/
-		this.canvasDegree=0;
-		/**
-		*<p>设置是否渲染，设置为false，可以停止渲染，画面会停留到最后一次渲染上，减少cpu消耗，此设置不影响时钟。</p>
-		*<p>比如非激活状态，可以设置renderingEnabled=false以节省消耗。</p>
-		**/
-		this.renderingEnabled=true;
-		/**是否启用屏幕适配，可以适配后，在某个时候关闭屏幕适配，防止某些操作导致的屏幕以外改变*/
-		this.screenAdaptationEnabled=true;
-		/**@private */
-		this._screenMode="none";
-		/**@private */
-		this._scaleMode="noscale";
-		/**@private */
-		this._alignV="top";
-		/**@private */
-		this._alignH="left";
-		/**@private */
-		this._bgColor="black";
-		/**@private */
-		this._mouseMoveTime=0;
-		/**@private */
-		this._renderCount=0;
-		/**@private */
-		this._frameStartTime=NaN;
-		/**@private */
-		this._isFocused=false;
-		/**@private */
-		this._isVisibility=false;
-		/**@private 3D场景*/
-		this._scenes=null;
-		/**@private */
-		this._frameRate="fast";
-		Stage.__super.call(this);
-		this.offset=new Point();
-		this._canvasTransform=new Matrix();
-		this._previousOrientation=Browser.window.orientation;
-		var _$this=this;
-		this.transform=Matrix.create();
-		this._scenes=[];
-		this.mouseEnabled=true;
-		this.hitTestPrior=true;
-		this.autoSize=false;
-		this._displayedInStage=true;
-		this._isFocused=true;
-		this._isVisibility=true;
-		var window=Browser.window;
-		var _this=this;
-		window.addEventListener("focus",function(){
-			_$this._isFocused=true;
-			_this.event("focus");
-			_this.event("focuschange");
-		});
-		window.addEventListener("blur",function(){
-			_$this._isFocused=false;
-			_this.event("blur");
-			_this.event("focuschange");
-			if (_this._isInputting())Input["inputElement"].target.focus=false;
-		});
-		var hidden="hidden",state="visibilityState",visibilityChange="visibilitychange";
-		var document=window.document;
-		if (typeof document.hidden!=="undefined"){
-			visibilityChange="visibilitychange";
-			state="visibilityState";
-			}else if (typeof document.mozHidden!=="undefined"){
-			visibilityChange="mozvisibilitychange";
-			state="mozVisibilityState";
-			}else if (typeof document.msHidden!=="undefined"){
-			visibilityChange="msvisibilitychange";
-			state="msVisibilityState";
-			}else if (typeof document.webkitHidden!=="undefined"){
-			visibilityChange="webkitvisibilitychange";
-			state="webkitVisibilityState";
-		}
-		window.document.addEventListener(visibilityChange,visibleChangeFun);
-		function visibleChangeFun (){
-			if (Browser.document[state]=="hidden"){
-				_this._setStageVisible(false);
-				}else {
-				_this._setStageVisible(true);
-			}
-		}
-		window.document.addEventListener("qbrowserVisibilityChange",qbroserVisibleChangeFun);
-		function qbroserVisibleChangeFun (e){
-			_this._setStageVisible(!e.hidden);
-		}
-		window.addEventListener("resize",function(){
-			var orientation=Browser.window.orientation;
-			if (orientation !=null && orientation !=_$this._previousOrientation && _this._isInputting()){
-				Input["inputElement"].target.focus=false;
-			}
-			_$this._previousOrientation=orientation;
-			if (_this._isInputting())return;
-			_this._resetCanvas();
-		});
-		window.addEventListener("orientationchange",function(e){
-			_this._resetCanvas();
-		});
-		this.on("mousemove",this,this._onmouseMove);
-		if (Browser.onMobile)this.on("mousedown",this,this._onmouseMove);
-	}
-
-	__class(Stage,'laya.display.Stage',_super);
-	var __proto=Stage.prototype;
-	__proto._setStageVisible=function(value){
-		if (this._isVisibility==value)return;
-		this._isVisibility=value;
-		if (!this._isVisibility)if (this._isInputting())Input["inputElement"].target.focus=false;
-		this.event("visibilitychange");
-	}
-
-	/**
-	*@private
-	*在移动端输入时，输入法弹出期间不进行画布尺寸重置。
-	*/
-	__proto._isInputting=function(){
-		return (Browser.onMobile && Input.isInputting);
-	}
-
-	/**@private */
-	__proto._changeCanvasSize=function(){
-		this.setScreenSize(Browser.clientWidth *Browser.pixelRatio,Browser.clientHeight *Browser.pixelRatio);
-	}
-
-	/**@private */
-	__proto._resetCanvas=function(){
-		if (!this.screenAdaptationEnabled)return;
-		var canvas=Render._mainCanvas;
-		var canvasStyle=canvas.source.style;
-		canvas.size(1,1);
-		Laya.timer.once(100,this,this._changeCanvasSize);
-	}
-
-	/**
-	*设置屏幕大小，场景会根据屏幕大小进行适配。可以动态调用此方法，来更改游戏显示的大小。
-	*@param screenWidth 屏幕宽度。
-	*@param screenHeight 屏幕高度。
-	*/
-	__proto.setScreenSize=function(screenWidth,screenHeight){
-		var rotation=false;
-		if (this._screenMode!=="none"){
-			var screenType=screenWidth / screenHeight < 1 ? "vertical" :"horizontal";
-			rotation=screenType!==this._screenMode;
-			if (rotation){
-				var temp=screenHeight;
-				screenHeight=screenWidth;
-				screenWidth=temp;
-			}
-		}
-		this.canvasRotation=rotation;
-		var canvas=Render._mainCanvas;
-		var canvasStyle=canvas.source.style;
-		var mat=this._canvasTransform.identity();
-		var scaleMode=this._scaleMode;
-		var scaleX=screenWidth / this.designWidth;
-		var scaleY=screenHeight / this.designHeight;
-		var canvasWidth=this.designWidth;
-		var canvasHeight=this.designHeight;
-		var realWidth=screenWidth;
-		var realHeight=screenHeight;
-		var pixelRatio=Browser.pixelRatio;
-		this._width=this.designWidth;
-		this._height=this.designHeight;
-		switch (scaleMode){
-			case "noscale":
-				scaleX=scaleY=1;
-				realWidth=this.designWidth;
-				realHeight=this.designHeight;
-				break ;
-			case "showall":
-				scaleX=scaleY=Math.min(scaleX,scaleY);
-				canvasWidth=realWidth=Math.round(this.designWidth *scaleX);
-				canvasHeight=realHeight=Math.round(this.designHeight *scaleY);
-				break ;
-			case "noborder":
-				scaleX=scaleY=Math.max(scaleX,scaleY);
-				realWidth=Math.round(this.designWidth *scaleX);
-				realHeight=Math.round(this.designHeight *scaleY);
-				break ;
-			case "full":
-				scaleX=scaleY=1;
-				this._width=canvasWidth=screenWidth;
-				this._height=canvasHeight=screenHeight;
-				break ;
-			case "fixedwidth":
-				scaleY=scaleX;
-				this._height=canvasHeight=Math.round(screenHeight / scaleX);
-				break ;
-			case "fixedheight":
-				scaleX=scaleY;
-				this._width=canvasWidth=Math.round(screenWidth / scaleY);
-				break ;
-			case "fixedauto":
-				if ((screenWidth / screenHeight)< (this.designWidth / this.designHeight)){
-					scaleY=scaleX;
-					this._height=canvasHeight=Math.round(screenHeight / scaleX);
-					}else {
-					scaleX=scaleY;
-					this._width=canvasWidth=Math.round(screenWidth / scaleY);
-				}
-				break ;
-			}
-		if (this.conchModel)this.conchModel.size(this._width,this._height);
-		scaleX *=this.scaleX;
-		scaleY *=this.scaleY;
-		if (scaleX===1 && scaleY===1){
-			this.transform.identity();
-			}else {
-			this.transform.a=this._formatData(scaleX / (realWidth / canvasWidth));
-			this.transform.d=this._formatData(scaleY / (realHeight / canvasHeight));
-			this.conchModel && this.conchModel.scale(this.transform.a,this.transform.d);
-		}
-		canvas.size(canvasWidth,canvasHeight);
-		RunDriver.changeWebGLSize(canvasWidth,canvasHeight);
-		mat.scale(realWidth / canvasWidth / pixelRatio,realHeight / canvasHeight / pixelRatio);
-		if (this._alignH==="left")this.offset.x=0;
-		else if (this._alignH==="right")this.offset.x=(screenWidth-realWidth)/pixelRatio;
-		else this.offset.x=(screenWidth-realWidth)*0.5 / pixelRatio;
-		if (this._alignV==="top")this.offset.y=0;
-		else if (this._alignV==="bottom")this.offset.y=(screenHeight-realHeight)/pixelRatio;
-		else this.offset.y=(screenHeight-realHeight)*0.5 / pixelRatio;
-		this.offset.x=Math.round(this.offset.x);
-		this.offset.y=Math.round(this.offset.y);
-		mat.translate(this.offset.x,this.offset.y);
-		this.canvasDegree=0;
-		if (rotation){
-			if (this._screenMode==="horizontal"){
-				mat.rotate(Math.PI / 2);
-				mat.translate(screenHeight / pixelRatio,0);
-				this.canvasDegree=90;
-				}else {
-				mat.rotate(-Math.PI / 2);
-				mat.translate(0,screenWidth / pixelRatio);
-				this.canvasDegree=-90;
-			}
-		}
-		mat.a=this._formatData(mat.a);
-		mat.d=this._formatData(mat.d);
-		mat.tx=this._formatData(mat.tx);
-		mat.ty=this._formatData(mat.ty);
-		canvasStyle.transformOrigin=canvasStyle.webkitTransformOrigin=canvasStyle.msTransformOrigin=canvasStyle.mozTransformOrigin=canvasStyle.oTransformOrigin="0px 0px 0px";
-		canvasStyle.transform=canvasStyle.webkitTransform=canvasStyle.msTransform=canvasStyle.mozTransform=canvasStyle.oTransform="matrix("+mat.toString()+")";
-		mat.translate(parseInt(canvasStyle.left)|| 0,parseInt(canvasStyle.top)|| 0);
-		this.visible=true;
-		this._repaint=1;
-		this.event("resize");
-	}
-
-	/**@private */
-	__proto._formatData=function(value){
-		if (Math.abs(value)< 0.000001)return 0;
-		if (Math.abs(1-value)< 0.001)return value > 0 ? 1 :-1;
-		return value;
-	}
-
-	/**@inheritDoc */
-	__proto.getMousePoint=function(){
-		return Point.TEMP.setTo(this.mouseX,this.mouseY);
-	}
-
-	/**@inheritDoc */
-	__proto.repaint=function(){
-		this._repaint=1;
-	}
-
-	/**@inheritDoc */
-	__proto.parentRepaint=function(){}
-	/**@private */
-	__proto._loop=function(){
-		this.render(Render.context,0,0);
-		return true;
-	}
-
-	/**@private */
-	__proto._onmouseMove=function(e){
-		this._mouseMoveTime=Browser.now();
-	}
-
-	/**
-	*<p>获得距当前帧开始后，过了多少时间，单位为毫秒。</p>
-	*<p>可以用来判断函数内时间消耗，通过合理控制每帧函数处理消耗时长，避免一帧做事情太多，对复杂计算分帧处理，能有效降低帧率波动。</p>
-	*/
-	__proto.getTimeFromFrameStart=function(){
-		return Browser.now()-this._frameStartTime;
-	}
-
-	/**@inheritDoc */
-	__proto.render=function(context,x,y){
-		if (this._frameRate==="sleep" && !Render.isConchApp){
-			var now=Browser.now();
-			if (now-this._frameStartTime >=1000)this._frameStartTime=now;
-			else return;
-		}
-		this._renderCount++;
-		Render.isFlash && this.repaint();
-		if (!this._style.visible){
-			if (this._renderCount % 5===0){
-				Stat.loopCount++;
-				MouseManager.instance.runEvent();
-				Laya.timer._update();
-			}
-			return;
-		}
-		this._frameStartTime=Browser.now();
-		var frameMode=this._frameRate==="mouse" ? (((this._frameStartTime-this._mouseMoveTime)< 2000)? "fast" :"slow"):this._frameRate;
-		var isFastMode=(frameMode!=="slow");
-		var isDoubleLoop=(this._renderCount % 2===0);
-		Stat.renderSlow=!isFastMode;
-		if (isFastMode || isDoubleLoop || Render.isConchApp){
-			Stat.loopCount++;
-			MouseManager.instance.runEvent();
-			Laya.timer._update();
-			RunDriver.update3DLoop();
-			var scene;
-			var i=0,n=0;
-			if (Render.isConchNode){
-				for (i=0,n=this._scenes.length;i < n;i++){
-					scene=this._scenes[i];
-					(scene)&& (scene._updateSceneConch());
-				}
-				}else {
-				for (i=0,n=this._scenes.length;i < n;i++){
-					scene=this._scenes[i];
-					(scene)&& (scene._updateScene());
-				}
-			}
-			if (Render.isConchNode){
-				var customList=Sprite["CustomList"];
-				for (i=0,n=customList.length;i < n;i++){
-					var customItem=customList[i];
-					customItem.customRender(customItem.customContext,0,0);
-				}
-				return;
-			}
-		}
-		if (Render.isConchNode)return;
-		if (this.renderingEnabled && (isFastMode || !isDoubleLoop || Render.isConchWebGL)){
-			if (Render.isWebGL){
-				context.clear();
-				_super.prototype.render.call(this,context,x,y);
-				Stat._show&& Stat._sp && Stat._sp.render(context,x,y);
-				RunDriver.clear(this._bgColor);
-				RunDriver.beginFlush();
-				context.flush();
-				RunDriver.endFinish();
-				VectorGraphManager.instance && VectorGraphManager.getInstance().endDispose();
-				}else {
-				RunDriver.clear(this._bgColor);
-				_super.prototype.render.call(this,context,x,y);
-				Stat._show&& Stat._sp && Stat._sp.render(context,x,y);
-			}
-		}
-	}
-
-	/**@private */
-	__proto._requestFullscreen=function(){
-		var element=Browser.document.documentElement;
-		if (element.requestFullscreen){
-			element.requestFullscreen();
-			}else if (element.mozRequestFullScreen){
-			element.mozRequestFullScreen();
-			}else if (element.webkitRequestFullscreen){
-			element.webkitRequestFullscreen();
-			}else if (element.msRequestFullscreen){
-			element.msRequestFullscreen();
-		}
-	}
-
-	/**@private */
-	__proto._fullScreenChanged=function(){
-		Laya.stage.event("fullscreenchange");
-	}
-
-	/**退出全屏模式*/
-	__proto.exitFullscreen=function(){
-		var document=Browser.document;
-		if (document.exitFullscreen){
-			document.exitFullscreen();
-			}else if (document.mozCancelFullScreen){
-			document.mozCancelFullScreen();
-			}else if (document.webkitExitFullscreen){
-			document.webkitExitFullscreen();
-		}
-	}
-
-	/**当前视窗由缩放模式导致的 X 轴缩放系数。*/
-	__getset(0,__proto,'clientScaleX',function(){
-		return this._transform ? this._transform.getScaleX():1;
-	});
-
-	//[Deprecated]
-	__getset(0,__proto,'desginHeight',function(){
-		console.debug("desginHeight已经弃用，请使用designHeight代替");
-		return this.designHeight;
-	});
-
-	/**帧率类型，支持三种模式：fast-60帧(默认)，slow-30帧，mouse-30帧（鼠标活动后会自动加速到60，鼠标不动2秒后降低为30帧，以节省消耗），sleep-1帧。*/
-	__getset(0,__proto,'frameRate',function(){
-		return this._frameRate;
-		},function(value){
-		this._frameRate=value;
-		if (Render.isConchApp){
-			switch (this._frameRate){
-				case "slow":
-					Browser.window.conch && Browser.window.conchConfig.setSlowFrame && Browser.window.conchConfig.setSlowFrame(true);
-					break ;
-				case "fast":
-					Browser.window.conch && Browser.window.conchConfig.setSlowFrame && Browser.window.conchConfig.setSlowFrame(false);
-					break ;
-				case "mouse":
-					Browser.window.conch && Browser.window.conchConfig.setMouseFrame && Browser.window.conchConfig.setMouseFrame(2000);
-					break ;
-				case "sleep":
-					Browser.window.conch && Browser.window.conchConfig.setLimitFPS && Browser.window.conchConfig.setLimitFPS(1);
-					break ;
-				default :
-					throw new Error("Stage:frameRate invalid.");
-					break ;
-				}
-		}
-	});
-
-	/**当前视窗由缩放模式导致的 Y 轴缩放系数。*/
-	__getset(0,__proto,'clientScaleY',function(){
-		return this._transform ? this._transform.getScaleY():1;
-	});
-
-	__getset(0,__proto,'width',_super.prototype._$get_width,function(value){
-		this.designWidth=value;
-		Laya.superSet(Sprite,this,'width',value);
-		Laya.timer.callLater(this,this._changeCanvasSize);
-	});
-
-	/**
-	*<p>水平对齐方式。默认值为"left"。</p>
-	*<p><ul>取值范围：
-	*<li>"left" ：居左对齐；</li>
-	*<li>"center" ：居中对齐；</li>
-	*<li>"right" ：居右对齐；</li>
-	*</ul></p>
-	*/
-	__getset(0,__proto,'alignH',function(){
-		return this._alignH;
-		},function(value){
-		this._alignH=value;
-		Laya.timer.callLater(this,this._changeCanvasSize);
-	});
-
-	/**
-	*舞台是否获得焦点。
-	*/
-	__getset(0,__proto,'isFocused',function(){
-		return this._isFocused;
-	});
-
-	__getset(0,__proto,'height',_super.prototype._$get_height,function(value){
-		this.designHeight=value;
-		Laya.superSet(Sprite,this,'height',value);
-		Laya.timer.callLater(this,this._changeCanvasSize);
-	});
-
-	__getset(0,__proto,'transform',function(){
-		if (this._tfChanged)this._adjustTransform();
-		return this._transform=this._transform|| Matrix.create();
-	},_super.prototype._$set_transform);
-
-	/**
-	*舞台是否处于可见状态(是否进入后台)。
-	*/
-	__getset(0,__proto,'isVisibility',function(){
-		return this._isVisibility;
-	});
-
-	//[Deprecated]
-	__getset(0,__proto,'desginWidth',function(){
-		console.debug("desginWidth已经弃用，请使用designWidth代替");
-		return this.designWidth;
-	});
-
-	/**
-	*<p>缩放模式。默认值为 "noscale"。</p>
-	*<p><ul>取值范围：
-	*<li>"noscale" ：不缩放；</li>
-	*<li>"exactfit" ：全屏不等比缩放；</li>
-	*<li>"showall" ：最小比例缩放；</li>
-	*<li>"noborder" ：最大比例缩放；</li>
-	*<li>"full" ：不缩放，stage的宽高等于屏幕宽高；</li>
-	*<li>"fixedwidth" ：宽度不变，高度根据屏幕比缩放；</li>
-	*<li>"fixedheight" ：高度不变，宽度根据屏幕比缩放；</li>
-	*<li>"fixedauto" ：根据宽高比，自动选择使用fixedwidth或fixedheight；</li>
-	*</ul></p>
-	*/
-	__getset(0,__proto,'scaleMode',function(){
-		return this._scaleMode;
-		},function(value){
-		this._scaleMode=value;
-		Laya.timer.callLater(this,this._changeCanvasSize);
-	});
-
-	/**
-	*<p>垂直对齐方式。默认值为"top"。</p>
-	*<p><ul>取值范围：
-	*<li>"top" ：居顶部对齐；</li>
-	*<li>"middle" ：居中对齐；</li>
-	*<li>"bottom" ：居底部对齐；</li>
-	*</ul></p>
-	*/
-	__getset(0,__proto,'alignV',function(){
-		return this._alignV;
-		},function(value){
-		this._alignV=value;
-		Laya.timer.callLater(this,this._changeCanvasSize);
-	});
-
-	/**舞台的背景颜色，默认为黑色，null为透明。*/
-	__getset(0,__proto,'bgColor',function(){
-		return this._bgColor;
-		},function(value){
-		this._bgColor=value;
-		this.conchModel && this.conchModel.bgColor(value);
-		if (Render.isWebGL){
-			if (value){
-				Stage._wgColor=Color$1.create(value)._color;
-				}else {
-				if (!Browser.onMiniGame)Stage._wgColor=null;
-			}
-		}
-		if (Browser.onLimixiu){
-			Stage._wgColor=Color$1.create(value)._color;
-		}else
-		if (value){
-			Render.canvas.style.background=value;
-			}else {
-			Render.canvas.style.background="none";
-		}
-	});
-
-	/**鼠标在 Stage 上的 X 轴坐标。*/
-	__getset(0,__proto,'mouseX',function(){
-		return Math.round(MouseManager.instance.mouseX / this.clientScaleX);
-	});
-
-	/**鼠标在 Stage 上的 Y 轴坐标。*/
-	__getset(0,__proto,'mouseY',function(){
-		return Math.round(MouseManager.instance.mouseY / this.clientScaleY);
-	});
-
-	/**
-	*<p>场景布局类型。</p>
-	*<p><ul>取值范围：
-	*<li>"none" ：不更改屏幕</li>
-	*<li>"horizontal" ：自动横屏</li>
-	*<li>"vertical" ：自动竖屏</li>
-	*</ul></p>
-	*/
-	__getset(0,__proto,'screenMode',function(){
-		return this._screenMode;
-		},function(value){
-		this._screenMode=value;
-	});
-
-	__getset(0,__proto,'visible',_super.prototype._$get_visible,function(value){
-		if (this.visible!==value){
-			Laya.superSet(Sprite,this,'visible',value);
-			var style=Render._mainCanvas.source.style;
-			style.visibility=value ? "visible" :"hidden";
-		}
-	});
-
-	/**
-	*<p>是否开启全屏，用户点击后进入全屏。</p>
-	*<p>兼容性提示：部分浏览器不允许点击进入全屏，比如Iphone等。</p>
-	*/
-	__getset(0,__proto,'fullScreenEnabled',null,function(value){
-		var document=Browser.document;
-		var canvas=Render.canvas;
-		if (value){
-			canvas.addEventListener('mousedown',this._requestFullscreen);
-			canvas.addEventListener('touchstart',this._requestFullscreen);
-			document.addEventListener("fullscreenchange",this._fullScreenChanged);
-			document.addEventListener("mozfullscreenchange",this._fullScreenChanged);
-			document.addEventListener("webkitfullscreenchange",this._fullScreenChanged);
-			document.addEventListener("msfullscreenchange",this._fullScreenChanged);
-			}else {
-			canvas.removeEventListener('mousedown',this._requestFullscreen);
-			canvas.removeEventListener('touchstart',this._requestFullscreen);
-			document.removeEventListener("fullscreenchange",this._fullScreenChanged);
-			document.removeEventListener("mozfullscreenchange",this._fullScreenChanged);
-			document.removeEventListener("webkitfullscreenchange",this._fullScreenChanged);
-			document.removeEventListener("msfullscreenchange",this._fullScreenChanged);
-		}
-	});
-
-	Stage.SCALE_NOSCALE="noscale";
-	Stage.SCALE_EXACTFIT="exactfit";
-	Stage.SCALE_SHOWALL="showall";
-	Stage.SCALE_NOBORDER="noborder";
-	Stage.SCALE_FULL="full";
-	Stage.SCALE_FIXED_WIDTH="fixedwidth";
-	Stage.SCALE_FIXED_HEIGHT="fixedheight";
-	Stage.SCALE_FIXED_AUTO="fixedauto";
-	Stage.ALIGN_LEFT="left";
-	Stage.ALIGN_RIGHT="right";
-	Stage.ALIGN_CENTER="center";
-	Stage.ALIGN_TOP="top";
-	Stage.ALIGN_MIDDLE="middle";
-	Stage.ALIGN_BOTTOM="bottom";
-	Stage.SCREEN_NONE="none";
-	Stage.SCREEN_HORIZONTAL="horizontal";
-	Stage.SCREEN_VERTICAL="vertical";
-	Stage.FRAME_FAST="fast";
-	Stage.FRAME_SLOW="slow";
-	Stage.FRAME_MOUSE="mouse";
-	Stage.FRAME_SLEEP="sleep";
-	Stage.FRAME_MOUSE_THREDHOLD=2000;
-	__static(Stage,
-	['_wgColor',function(){return this._wgColor=[0,0,0,1];}
-	]);
-	return Stage;
-})(Sprite)
 
 
 /**
@@ -71200,6 +71409,7 @@ var CCharacterBuilder=(function(_super){
 	Laya.imps(__proto,{"laya.resource.IDispose":true})
 	__proto.dispose=function(){}
 	__proto.build=function(obj,data){
+		obj.system=this.system;
 		var type=data["type"];
 		if (CCharacterDataDescriptor.isPlayer(type)){
 			this.m_pPlayerBuilder.build(obj,data);
@@ -71430,12 +71640,28 @@ var CViewBean=(function(_super){
 *...
 *@author
 */
+//class core.character.property.CPlayerProperty extends core.character.property.CCharacterProperty
+var CPlayerProperty=(function(_super){
+	function CPlayerProperty(){
+		CPlayerProperty.__super.call(this);
+	}
+
+	__class(CPlayerProperty,'core.character.property.CPlayerProperty',_super);
+	return CPlayerProperty;
+})(CCharacterProperty)
+
+
+/**
+*...
+*@author
+*/
 //class core.fsm.CFsmManager extends core.framework.CBean
 var CFsmManager=(function(_super){
 	function CFsmManager(){
+		// }
 		this.m_fsms=null;
 		CFsmManager.__super.call(this);
-		this.m_fsms=new Dictionary();
+		this.m_fsms=new Object();
 	}
 
 	__class(CFsmManager,'core.fsm.CFsmManager',_super);
@@ -71451,21 +71677,21 @@ var CFsmManager=(function(_super){
 
 	__proto.onDestroy=function(){
 		_super.prototype.onDestroy.call(this);
-		var temp=this.m_fsms.values;
-		for (var i=0;i < temp.length;i++){
-			var fsm=temp[i];
+		for (var key in this.m_fsms){
+			var fsm=this.m_fsms[key];
+			delete this.m_fsms[key];
 			if (fsm.isDestroyed){
 				continue ;
 			}
 			fsm.shutDown();
 		}
-		this.m_fsms.clear();
+		this.m_fsms=null;
 	}
 
+	// m_fsms.clear();
 	__proto.update=function(deltaTime){
-		var temp=this.m_fsms.values;
-		for (var i=0;i < temp.length;i++){
-			var fsm=temp[i];
+		for (var key in this.m_fsms){
+			var fsm=this.m_fsms[key];
 			if (fsm.isDestroyed){
 				continue ;
 			}
@@ -71473,22 +71699,44 @@ var CFsmManager=(function(_super){
 		}
 	}
 
+	/**
+	var temp:Array=m_fsms.values;
+	for (var i:int=0;i < temp.length;i++){
+		var fsm:CFsmBase=temp[i];
+		if (fsm.isDestroyed){
+			continue;
+		}
+		fsm.update(deltaTime);
+	}*/
+
 	__proto.getAllFsms=function(){
-		return this.m_fsms.values;
+		return this.m_fsms;
 	}
 
 	__proto.getFsm=function(name){
-		return this.m_fsms.get(name);
+		return this.m_fsms[name];
 	}
 
 	__proto.getFsmByOwnerType=function(clazz){
-		var values=this.m_fsms.values;
 		var fsm;
 		var $each_fsm;
-		for($each_fsm in values){
-			fsm=values[$each_fsm];
+		for($each_fsm in this.m_fsms){
+			fsm=this.m_fsms[$each_fsm];
 			if (Laya.__typeof(fsm.owner,clazz)){
 				return fsm;
+			}
+		}
+		return null;
+	}
+
+	__proto.getFsmsByOwnerType=function(clazz){
+		var ret=[];
+		var fsm;
+		var $each_fsm;
+		for($each_fsm in this.m_fsms){
+			fsm=this.m_fsms[$each_fsm];
+			if (Laya.__typeof(fsm.owner,clazz)){
+				ret.push(fsm);
 			}
 		}
 		return null;
@@ -71501,44 +71749,26 @@ var CFsmManager=(function(_super){
 		var fsm=new CFsm(name,owner,stateList);
 		fsm.system=this.system;
 		fsm.initialize();
-		this.m_fsms.set(name,fsm);
+		this.m_fsms[name]=fsm;
 		return fsm;
 	}
 
 	__proto.destroyFsm=function(name){
-		var fsm=this.m_fsms.get(name);
+		var fsm=this.m_fsms[name];
 		if (fsm){
 			fsm.shutDown();
-			return this.m_fsms.remove(name);
+			delete this.m_fsms[name];
+			return fsm;
 		}
 		return false;
 	}
 
 	__proto.hasFsm=function(name){
-		return this.m_fsms.get(name)!=null;
+		return this.m_fsms.hasOwnProperty(name);
 	}
-
-	__getset(0,__proto,'count',function(){
-		return this.m_fsms.keys.length;
-	});
 
 	return CFsmManager;
 })(CBean)
-
-
-/**
-*...
-*@author
-*/
-//class core.character.property.CPlayerProperty extends core.character.property.CCharacterProperty
-var CPlayerProperty=(function(_super){
-	function CPlayerProperty(){
-		CPlayerProperty.__super.call(this);
-	}
-
-	__class(CPlayerProperty,'core.character.property.CPlayerProperty',_super);
-	return CPlayerProperty;
-})(CCharacterProperty)
 
 
 /**
@@ -71566,7 +71796,6 @@ var CGameSystem=(function(_super){
 		this.m_pCharacterSystem=this.stage.getSystem(CCharacterSystem);
 		this.m_pSceneSystem=this.stage.getSystem(CSceneSystem);
 		this.m_pEcsLoop=this.stage.getSystem(CECSLoop);
-		this.m_pSceneSystem.on("SceneAddCharacter",this,this._onSceneChacterAdded);
 		this.m_pSceneSystem.on("SceneAddCharacter",this,this._onSceneChacterAdded);
 		return ret;
 	}
@@ -71607,6 +71836,7 @@ var CGameSystem=(function(_super){
 	__proto.removeCharacter=function(obj){
 		this.m_pSceneSystem.removeCharacter(obj);
 		this.m_pEcsLoop.removeObject(obj);
+		this.m_pCharacterSystem.characterPool.recoverObject(obj);
 	}
 
 	return CGameSystem;
@@ -72231,6 +72461,52 @@ var CSceneObjectList=(function(_super){
 *...
 *@author
 */
+//class core.scene.CSceneRendering extends core.framework.CBean
+var CSceneRendering=(function(_super){
+	function CSceneRendering(){
+		this.m_root=null;
+		this.m_sceneLayer=null;
+		CSceneRendering.__super.call(this);
+	}
+
+	__class(CSceneRendering,'core.scene.CSceneRendering',_super);
+	var __proto=CSceneRendering.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_root=new CSceneLayer();
+		CCommon.stage.addChildAt(this.m_root,0);
+		this.m_sceneLayer=new CSceneLayer();
+		this.m_root.addChild(this.m_sceneLayer);
+		return ret;
+	}
+
+	__proto.addDisplayObject=function(c){
+		this.m_sceneLayer.addChild(c);
+	}
+
+	__proto.update=function(delta){}
+	__proto.createScene=function(sceneID){
+		while (this.m_sceneLayer.numChildren > 0){
+			this.m_sceneLayer.removeChildAt(0);
+		};
+		var bgUrl=CPathUtils.getScenePath("b");
+		var bg=new Image(bgUrl);
+		this.m_sceneLayer.addChild(bg);
+	}
+
+	__getset(0,__proto,'isReady',function(){
+		return true;
+	});
+
+	return CSceneRendering;
+})(CBean)
+
+
+/**
+*...
+*@author
+*/
 //class core.pool.CPoolSystem extends core.framework.CAppSystem
 var CPoolSystem=(function(_super){
 	function CPoolSystem(){
@@ -72296,52 +72572,6 @@ var CPoolSystem=(function(_super){
 
 	return CPoolSystem;
 })(CAppSystem)
-
-
-/**
-*...
-*@author
-*/
-//class core.scene.CSceneRendering extends core.framework.CBean
-var CSceneRendering=(function(_super){
-	function CSceneRendering(){
-		this.m_root=null;
-		this.m_sceneLayer=null;
-		CSceneRendering.__super.call(this);
-	}
-
-	__class(CSceneRendering,'core.scene.CSceneRendering',_super);
-	var __proto=CSceneRendering.prototype;
-	Laya.imps(__proto,{"core.framework.IUpdate":true})
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		this.m_root=new CSceneLayer();
-		CCommon.stage.addChildAt(this.m_root,0);
-		this.m_sceneLayer=new CSceneLayer();
-		this.m_root.addChild(this.m_sceneLayer);
-		return ret;
-	}
-
-	__proto.addDisplayObject=function(c){
-		this.m_sceneLayer.addChild(c);
-	}
-
-	__proto.update=function(delta){}
-	__proto.createScene=function(sceneID){
-		while (this.m_sceneLayer.numChildren > 0){
-			this.m_sceneLayer.removeChildAt(0);
-		};
-		var bgUrl=CPathUtils.getScenePath("b");
-		var bg=new Image(bgUrl);
-		this.m_sceneLayer.addChild(bg);
-	}
-
-	__getset(0,__proto,'isReady',function(){
-		return true;
-	});
-
-	return CSceneRendering;
-})(CBean)
 
 
 /**
@@ -72489,6 +72719,7 @@ var CSceneSystem=(function(_super){
 			character=characters[$each_character];
 			var propertyData=character.getComponentByClass(CCharacterProperty);
 			this.m_sceneObjectList.addObject(propertyData.ID,character,propertyData.type);
+			this.event("SceneAddCharacter",character);
 		}
 	}
 
@@ -72767,6 +72998,43 @@ var CPlayerSystem=(function(_super){
 
 /**
 *...
+*@author
+*/
+//class game.procedure.CProcedureSystem extends core.framework.CAppSystem
+var CProcedureSystem=(function(_super){
+	function CProcedureSystem(){
+		this.m_procedureManager=null;
+		CProcedureSystem.__super.call(this);
+	}
+
+	__class(CProcedureSystem,'game.procedure.CProcedureSystem',_super);
+	var __proto=CProcedureSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		var fsmSystem=this.stage.getSystem(CFsmSystem);
+		var procedureList=[
+		new CProcedureEntry(),new CProcedureLaunch(),new CProcedureCheckVersion(),new CProcedureLoadDataTable,
+		new CProcedureStageStart(),new CProcedureChangeScene(),
+		new CProcedureLoginMenu(),new CProcedureGaming()];
+		this.m_procedureManager=fsmSystem.createProcedure("gameProcedure",procedureList);
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_procedureManager.startProcedure(CProcedureEntry);
+		return ret;
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	return CProcedureSystem;
+})(CAppSystem)
+
+
+/**
+*...
 *@author auto
 */
 //class game.CGameStage extends core.framework.CAppStage
@@ -72819,43 +73087,6 @@ var CGameStage=(function(_super){
 	CGameStage.m_stage=null;
 	return CGameStage;
 })(CAppStage)
-
-
-/**
-*...
-*@author
-*/
-//class game.procedure.CProcedureSystem extends core.framework.CAppSystem
-var CProcedureSystem=(function(_super){
-	function CProcedureSystem(){
-		this.m_procedureManager=null;
-		CProcedureSystem.__super.call(this);
-	}
-
-	__class(CProcedureSystem,'game.procedure.CProcedureSystem',_super);
-	var __proto=CProcedureSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-		var fsmSystem=this.stage.getSystem(CFsmSystem);
-		var procedureList=[
-		new CProcedureEntry(),new CProcedureLaunch(),new CProcedureCheckVersion(),new CProcedureLoadDataTable,
-		new CProcedureStageStart(),new CProcedureChangeScene(),
-		new CProcedureLoginMenu(),new CProcedureGaming()];
-		this.m_procedureManager=fsmSystem.createProcedure("gameProcedure",procedureList);
-	}
-
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		this.m_procedureManager.startProcedure(CProcedureEntry);
-		return ret;
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	return CProcedureSystem;
-})(CAppSystem)
 
 
 /**
@@ -74417,181 +74648,6 @@ var Button=(function(_super){
 
 
 /**
-*<code>Terrain</code> 类用于创建地块。
-*/
-//class laya.d3.terrain.Terrain extends laya.d3.core.Sprite3D
-var Terrain=(function(_super){
-	function Terrain(terrainRes){
-		this._terrainRes=null;
-		this._lightmapScaleOffset=null;
-		Terrain.__super.call(this);
-		this._lightmapScaleOffset=new Vector4(1,1,0,0);
-		if (terrainRes){
-			this._terrainRes=terrainRes;
-			if (terrainRes.loaded)
-				this.buildTerrain(terrainRes);
-			else
-			terrainRes.once("loaded",this,this.buildTerrain);
-		}
-	}
-
-	__class(Terrain,'laya.d3.terrain.Terrain',_super);
-	var __proto=Terrain.prototype;
-	/**
-	*@inheritDoc
-	*/
-	__proto._parseCustomProps=function(rootNode,innerResouMap,customProps,json){
-		this.terrainRes=Loader.getRes(innerResouMap[customProps.dataPath]);
-		var lightmapIndex=customProps.lightmapIndex;
-		if (lightmapIndex !=null)
-			this.setLightmapIndex(lightmapIndex);
-		var lightmapScaleOffsetArray=customProps.lightmapScaleOffset;
-		if (lightmapScaleOffsetArray)
-			this.setLightmapScaleOffset(new Vector4(lightmapScaleOffsetArray[0],lightmapScaleOffsetArray[1],lightmapScaleOffsetArray[2],lightmapScaleOffsetArray[3]));
-	}
-
-	__proto.setLightmapIndex=function(value){
-		for (var i=0;i < this._childs.length;i++){
-			var terrainChunk=this._childs[i];
-			terrainChunk.terrainRender.lightmapIndex=value;
-		}
-	}
-
-	__proto.setLightmapScaleOffset=function(value){
-		if (!value)return;
-		value.cloneTo(this._lightmapScaleOffset);
-		for (var i=0;i < this._childs.length;i++){
-			var terrainChunk=this._childs[i];
-			terrainChunk.terrainRender.lightmapScaleOffset=this._lightmapScaleOffset;
-		}
-	}
-
-	__proto.disableLight=function(){
-		for (var i=0,n=this._childs.length;i < n;i++){
-			var terrainChunk=this._childs[i];
-			for (var j=0,m=terrainChunk._render.sharedMaterials.length;j < m;j++){
-				var terrainMaterial=terrainChunk._render.sharedMaterials [j];
-				terrainMaterial.disableLight();
-			}
-		}
-	}
-
-	__proto.buildTerrain=function(terrainRes){
-		var chunkNumX=terrainRes._chunkNumX;
-		var chunkNumZ=terrainRes._chunkNumZ;
-		var heightData=terrainRes._heightData;
-		var n=0;
-		for (var i=0;i < chunkNumZ;i++){
-			for (var j=0;j < chunkNumX;j++){
-				var terrainChunk=new TerrainChunk(j,i,terrainRes._gridSize,heightData._terrainHeightData,heightData._width,heightData._height,terrainRes._cameraCoordinateInverse);
-				var chunkInfo=terrainRes._chunkInfos[n++];
-				for (var k=0;k < chunkInfo.alphaMap.length;k++){
-					var nNum=chunkInfo.detailID[k].length;
-					var sDetialTextureUrl1=(nNum > 0)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][0]].diffuseTexture :null;
-					var sDetialTextureUrl2=(nNum > 1)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][1]].diffuseTexture :null;
-					var sDetialTextureUrl3=(nNum > 2)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][2]].diffuseTexture :null;
-					var sDetialTextureUrl4=(nNum > 3)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][3]].diffuseTexture :null;
-					var detialScale1=(nNum > 0)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][0]].scale :null;
-					var detialScale2=(nNum > 1)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][1]].scale :null;
-					var detialScale3=(nNum > 2)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][2]].scale :null;
-					var detialScale4=(nNum > 3)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][3]].scale :null;
-					terrainChunk.buildRenderElementAndMaterial(nNum,chunkInfo.normalMap,chunkInfo.alphaMap[k],sDetialTextureUrl1,sDetialTextureUrl2,sDetialTextureUrl3,sDetialTextureUrl4,terrainRes._materialInfo.ambientColor,terrainRes._materialInfo.diffuseColor,terrainRes._materialInfo.specularColor,detialScale1 ? detialScale1.x :1,detialScale1 ? detialScale1.y :1,detialScale2 ? detialScale2.x :1,detialScale2 ? detialScale2.y :1,detialScale3 ? detialScale3.x :1,detialScale3 ? detialScale3.y :1,detialScale4 ? detialScale4.x :1,detialScale4 ? detialScale4.y :1);
-				}
-				terrainChunk.terrainRender.receiveShadow=true;
-				terrainChunk.terrainRender.lightmapScaleOffset=this._lightmapScaleOffset;
-				this.addChild(terrainChunk);
-			}
-		}
-	}
-
-	/**
-	*获取地形X轴长度。
-	*@return 地形X轴长度。
-	*/
-	__proto.width=function(){
-		return this._terrainRes._chunkNumX *TerrainLeaf.CHUNK_GRID_NUM *this._terrainRes._gridSize;
-	}
-
-	/**
-	*获取地形Z轴长度。
-	*@return 地形Z轴长度。
-	*/
-	__proto.depth=function(){
-		return this._terrainRes._chunkNumZ *TerrainLeaf.CHUNK_GRID_NUM *this._terrainRes._gridSize;
-	}
-
-	/**
-	*获取地形高度。
-	*@param x X轴坐标。
-	*@param z Z轴坐标。
-	*/
-	__proto.getHeightXZ=function(x,z){
-		if (!this._terrainRes || !this._terrainRes.loaded)
-			return NaN;
-		x-=this.transform.position.x;
-		z-=this.transform.position.z;
-		if (!Terrain.__VECTOR3__){
-			Terrain.__VECTOR3__=new Vector3();
-		}
-		Terrain.__VECTOR3__.elements[0]=x;
-		Terrain.__VECTOR3__.elements[1]=0;
-		Terrain.__VECTOR3__.elements[2]=z;
-		Vector3.transformV3ToV3(Terrain.__VECTOR3__,TerrainLeaf.__ADAPT_MATRIX_INV__,Terrain.__VECTOR3__);
-		x=Terrain.__VECTOR3__.elements[0];
-		z=Terrain.__VECTOR3__.elements[2];
-		if (x < 0 || x > this.width()|| z < 0 || z > this.depth())
-			return NaN;
-		var gridSize=this._terrainRes._gridSize;
-		var nIndexX=parseInt(""+x / gridSize);
-		var nIndexZ=parseInt(""+z / gridSize);
-		var offsetX=x-nIndexX *gridSize;
-		var offsetZ=z-nIndexZ *gridSize;
-		var h1=NaN;
-		var h2=NaN;
-		var h3=NaN;
-		var u=NaN;
-		var v=NaN;
-		var heightData=this._terrainRes._heightData;
-		if (offsetX+offsetZ > gridSize){
-			h1=heightData._terrainHeightData[(nIndexZ+1-1)*heightData._width+nIndexX+1];
-			h2=heightData._terrainHeightData[(nIndexZ+1-1)*heightData._width+nIndexX];
-			h3=heightData._terrainHeightData[(nIndexZ-1)*heightData._width+nIndexX+1];
-			u=(gridSize-offsetX)/ gridSize;
-			v=(gridSize-offsetZ)/ gridSize;
-			return h1+(h2-h1)*u+(h3-h1)*v;
-			}else {
-			h1=heightData._terrainHeightData[Math.max(0.0,nIndexZ-1)*heightData._width+nIndexX];
-			h2=heightData._terrainHeightData[Math.min(heightData._width *heightData._height-1,(nIndexZ+1-1)*heightData._width+nIndexX)];
-			h3=heightData._terrainHeightData[Math.min(heightData._width *heightData._height-1,Math.max(0.0,nIndexZ-1)*heightData._width+nIndexX+1)];
-			u=offsetX / gridSize;
-			v=offsetZ / gridSize;
-			return h1+(h2-h1)*v+(h3-h1)*u;
-		}
-	}
-
-	__getset(0,__proto,'terrainRes',null,function(value){
-		if (value){
-			this._terrainRes=value;
-			if (value.loaded)
-				this.buildTerrain(value);
-			else
-			value.once("loaded",this,this.buildTerrain);
-		}
-	});
-
-	Terrain.load=function(url){
-		return Laya.loader.create(url,null,null,Terrain,null,1,false);
-	}
-
-	Terrain.RENDER_LINE_MODEL=false;
-	Terrain.LOD_TOLERANCE_VALUE=4;
-	Terrain.LOD_DISTANCE_FACTOR=2.0;
-	Terrain.__VECTOR3__=null;
-	return Terrain;
-})(Sprite3D)
-
-
-/**
 *<p> <code>Clip</code> 类是位图切片动画。</p>
 *<p> <code>Clip</code> 可将一张图片，按横向分割数量 <code>clipX</code> 、竖向分割数量 <code>clipY</code> ，
 *或横向分割每个切片的宽度 <code>clipWidth</code> 、竖向分割每个切片的高度 <code>clipHeight</code> ，
@@ -75986,6 +76042,181 @@ var ComboBox=(function(_super){
 
 	return ComboBox;
 })(Component)
+
+
+/**
+*<code>Terrain</code> 类用于创建地块。
+*/
+//class laya.d3.terrain.Terrain extends laya.d3.core.Sprite3D
+var Terrain=(function(_super){
+	function Terrain(terrainRes){
+		this._terrainRes=null;
+		this._lightmapScaleOffset=null;
+		Terrain.__super.call(this);
+		this._lightmapScaleOffset=new Vector4(1,1,0,0);
+		if (terrainRes){
+			this._terrainRes=terrainRes;
+			if (terrainRes.loaded)
+				this.buildTerrain(terrainRes);
+			else
+			terrainRes.once("loaded",this,this.buildTerrain);
+		}
+	}
+
+	__class(Terrain,'laya.d3.terrain.Terrain',_super);
+	var __proto=Terrain.prototype;
+	/**
+	*@inheritDoc
+	*/
+	__proto._parseCustomProps=function(rootNode,innerResouMap,customProps,json){
+		this.terrainRes=Loader.getRes(innerResouMap[customProps.dataPath]);
+		var lightmapIndex=customProps.lightmapIndex;
+		if (lightmapIndex !=null)
+			this.setLightmapIndex(lightmapIndex);
+		var lightmapScaleOffsetArray=customProps.lightmapScaleOffset;
+		if (lightmapScaleOffsetArray)
+			this.setLightmapScaleOffset(new Vector4(lightmapScaleOffsetArray[0],lightmapScaleOffsetArray[1],lightmapScaleOffsetArray[2],lightmapScaleOffsetArray[3]));
+	}
+
+	__proto.setLightmapIndex=function(value){
+		for (var i=0;i < this._childs.length;i++){
+			var terrainChunk=this._childs[i];
+			terrainChunk.terrainRender.lightmapIndex=value;
+		}
+	}
+
+	__proto.setLightmapScaleOffset=function(value){
+		if (!value)return;
+		value.cloneTo(this._lightmapScaleOffset);
+		for (var i=0;i < this._childs.length;i++){
+			var terrainChunk=this._childs[i];
+			terrainChunk.terrainRender.lightmapScaleOffset=this._lightmapScaleOffset;
+		}
+	}
+
+	__proto.disableLight=function(){
+		for (var i=0,n=this._childs.length;i < n;i++){
+			var terrainChunk=this._childs[i];
+			for (var j=0,m=terrainChunk._render.sharedMaterials.length;j < m;j++){
+				var terrainMaterial=terrainChunk._render.sharedMaterials [j];
+				terrainMaterial.disableLight();
+			}
+		}
+	}
+
+	__proto.buildTerrain=function(terrainRes){
+		var chunkNumX=terrainRes._chunkNumX;
+		var chunkNumZ=terrainRes._chunkNumZ;
+		var heightData=terrainRes._heightData;
+		var n=0;
+		for (var i=0;i < chunkNumZ;i++){
+			for (var j=0;j < chunkNumX;j++){
+				var terrainChunk=new TerrainChunk(j,i,terrainRes._gridSize,heightData._terrainHeightData,heightData._width,heightData._height,terrainRes._cameraCoordinateInverse);
+				var chunkInfo=terrainRes._chunkInfos[n++];
+				for (var k=0;k < chunkInfo.alphaMap.length;k++){
+					var nNum=chunkInfo.detailID[k].length;
+					var sDetialTextureUrl1=(nNum > 0)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][0]].diffuseTexture :null;
+					var sDetialTextureUrl2=(nNum > 1)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][1]].diffuseTexture :null;
+					var sDetialTextureUrl3=(nNum > 2)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][2]].diffuseTexture :null;
+					var sDetialTextureUrl4=(nNum > 3)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][3]].diffuseTexture :null;
+					var detialScale1=(nNum > 0)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][0]].scale :null;
+					var detialScale2=(nNum > 1)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][1]].scale :null;
+					var detialScale3=(nNum > 2)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][2]].scale :null;
+					var detialScale4=(nNum > 3)? terrainRes._detailTextureInfos[chunkInfo.detailID[k][3]].scale :null;
+					terrainChunk.buildRenderElementAndMaterial(nNum,chunkInfo.normalMap,chunkInfo.alphaMap[k],sDetialTextureUrl1,sDetialTextureUrl2,sDetialTextureUrl3,sDetialTextureUrl4,terrainRes._materialInfo.ambientColor,terrainRes._materialInfo.diffuseColor,terrainRes._materialInfo.specularColor,detialScale1 ? detialScale1.x :1,detialScale1 ? detialScale1.y :1,detialScale2 ? detialScale2.x :1,detialScale2 ? detialScale2.y :1,detialScale3 ? detialScale3.x :1,detialScale3 ? detialScale3.y :1,detialScale4 ? detialScale4.x :1,detialScale4 ? detialScale4.y :1);
+				}
+				terrainChunk.terrainRender.receiveShadow=true;
+				terrainChunk.terrainRender.lightmapScaleOffset=this._lightmapScaleOffset;
+				this.addChild(terrainChunk);
+			}
+		}
+	}
+
+	/**
+	*获取地形X轴长度。
+	*@return 地形X轴长度。
+	*/
+	__proto.width=function(){
+		return this._terrainRes._chunkNumX *TerrainLeaf.CHUNK_GRID_NUM *this._terrainRes._gridSize;
+	}
+
+	/**
+	*获取地形Z轴长度。
+	*@return 地形Z轴长度。
+	*/
+	__proto.depth=function(){
+		return this._terrainRes._chunkNumZ *TerrainLeaf.CHUNK_GRID_NUM *this._terrainRes._gridSize;
+	}
+
+	/**
+	*获取地形高度。
+	*@param x X轴坐标。
+	*@param z Z轴坐标。
+	*/
+	__proto.getHeightXZ=function(x,z){
+		if (!this._terrainRes || !this._terrainRes.loaded)
+			return NaN;
+		x-=this.transform.position.x;
+		z-=this.transform.position.z;
+		if (!Terrain.__VECTOR3__){
+			Terrain.__VECTOR3__=new Vector3();
+		}
+		Terrain.__VECTOR3__.elements[0]=x;
+		Terrain.__VECTOR3__.elements[1]=0;
+		Terrain.__VECTOR3__.elements[2]=z;
+		Vector3.transformV3ToV3(Terrain.__VECTOR3__,TerrainLeaf.__ADAPT_MATRIX_INV__,Terrain.__VECTOR3__);
+		x=Terrain.__VECTOR3__.elements[0];
+		z=Terrain.__VECTOR3__.elements[2];
+		if (x < 0 || x > this.width()|| z < 0 || z > this.depth())
+			return NaN;
+		var gridSize=this._terrainRes._gridSize;
+		var nIndexX=parseInt(""+x / gridSize);
+		var nIndexZ=parseInt(""+z / gridSize);
+		var offsetX=x-nIndexX *gridSize;
+		var offsetZ=z-nIndexZ *gridSize;
+		var h1=NaN;
+		var h2=NaN;
+		var h3=NaN;
+		var u=NaN;
+		var v=NaN;
+		var heightData=this._terrainRes._heightData;
+		if (offsetX+offsetZ > gridSize){
+			h1=heightData._terrainHeightData[(nIndexZ+1-1)*heightData._width+nIndexX+1];
+			h2=heightData._terrainHeightData[(nIndexZ+1-1)*heightData._width+nIndexX];
+			h3=heightData._terrainHeightData[(nIndexZ-1)*heightData._width+nIndexX+1];
+			u=(gridSize-offsetX)/ gridSize;
+			v=(gridSize-offsetZ)/ gridSize;
+			return h1+(h2-h1)*u+(h3-h1)*v;
+			}else {
+			h1=heightData._terrainHeightData[Math.max(0.0,nIndexZ-1)*heightData._width+nIndexX];
+			h2=heightData._terrainHeightData[Math.min(heightData._width *heightData._height-1,(nIndexZ+1-1)*heightData._width+nIndexX)];
+			h3=heightData._terrainHeightData[Math.min(heightData._width *heightData._height-1,Math.max(0.0,nIndexZ-1)*heightData._width+nIndexX+1)];
+			u=offsetX / gridSize;
+			v=offsetZ / gridSize;
+			return h1+(h2-h1)*v+(h3-h1)*u;
+		}
+	}
+
+	__getset(0,__proto,'terrainRes',null,function(value){
+		if (value){
+			this._terrainRes=value;
+			if (value.loaded)
+				this.buildTerrain(value);
+			else
+			value.once("loaded",this,this.buildTerrain);
+		}
+	});
+
+	Terrain.load=function(url){
+		return Laya.loader.create(url,null,null,Terrain,null,1,false);
+	}
+
+	Terrain.RENDER_LINE_MODEL=false;
+	Terrain.LOD_TOLERANCE_VALUE=4;
+	Terrain.LOD_DISTANCE_FACTOR=2.0;
+	Terrain.__VECTOR3__=null;
+	return Terrain;
+})(Sprite3D)
 
 
 /**
@@ -84848,6 +85079,104 @@ var VScrollBar=(function(_super){
 
 
 /**
+*使用 <code>VSlider</code> 控件，用户可以通过在滑块轨道的终点之间移动滑块来选择值。
+*<p> <code>VSlider</code> 控件采用垂直方向。滑块轨道从下往上扩展，而标签位于轨道的左右两侧。</p>
+*
+*@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
+*package
+*{
+	*import laya.ui.HSlider;
+	*import laya.ui.VSlider;
+	*import laya.utils.Handler;
+	*public class VSlider_Example
+	*{
+		*private var vSlider:VSlider;
+		*public function VSlider_Example()
+		*{
+			*Laya.init(640,800);//设置游戏画布宽高。
+			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
+			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
+			*}
+		*private function onLoadComplete():void
+		*{
+			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+			*vSlider.min=0;//设置 vSlider 最低位置值。
+			*vSlider.max=10;//设置 vSlider 最高位置值。
+			*vSlider.value=2;//设置 vSlider 当前位置值。
+			*vSlider.tick=1;//设置 vSlider 刻度值。
+			*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+			*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+			*vSlider.changeHandler=new Handler(this,onChange);//设置 vSlider 位置变化处理器。
+			*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
+			*}
+		*private function onChange(value:Number):void
+		*{
+			*trace("滑块的位置： value="+value);
+			*}
+		*}
+	*}
+*@example
+*Laya.init(640,800);//设置游戏画布宽高
+*Laya.stage.bgColor="#efefef";//设置画布的背景颜色
+*var vSlider;
+*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
+*function onLoadComplete(){
+	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+	*vSlider.min=0;//设置 vSlider 最低位置值。
+	*vSlider.max=10;//设置 vSlider 最高位置值。
+	*vSlider.value=2;//设置 vSlider 当前位置值。
+	*vSlider.tick=1;//设置 vSlider 刻度值。
+	*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+	*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+	*vSlider.changeHandler=new laya.utils.Handler(this,onChange);//设置 vSlider 位置变化处理器。
+	*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
+	*}
+*function onChange(value){
+	*console.log("滑块的位置： value="+value);
+	*}
+*@example
+*import HSlider=laya.ui.HSlider;
+*import VSlider=laya.ui.VSlider;
+*import Handler=laya.utils.Handler;
+*class VSlider_Example {
+	*private vSlider:VSlider;
+	*constructor(){
+		*Laya.init(640,800);//设置游戏画布宽高。
+		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
+		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
+		*}
+	*private onLoadComplete():void {
+		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
+		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
+		*this.vSlider.min=0;//设置 vSlider 最低位置值。
+		*this.vSlider.max=10;//设置 vSlider 最高位置值。
+		*this.vSlider.value=2;//设置 vSlider 当前位置值。
+		*this.vSlider.tick=1;//设置 vSlider 刻度值。
+		*this.vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
+		*this.vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
+		*this.vSlider.changeHandler=new Handler(this,this.onChange);//设置 vSlider 位置变化处理器。
+		*Laya.stage.addChild(this.vSlider);//把 vSlider 添加到显示列表。
+		*}
+	*private onChange(value:number):void {
+		*console.log("滑块的位置： value="+value);
+		*}
+	*}
+*@see laya.ui.Slider
+*/
+//class laya.ui.VSlider extends laya.ui.Slider
+var VSlider=(function(_super){
+	function VSlider(){
+		VSlider.__super.call(this);;
+	}
+
+	__class(VSlider,'laya.ui.VSlider',_super);
+	return VSlider;
+})(Slider)
+
+
+/**
 *<code>TextInput</code> 类用于创建显示对象以显示和输入文本。
 *
 *@example <caption>以下示例代码，创建了一个 <code>TextInput</code> 实例。</caption>
@@ -85170,104 +85499,6 @@ var TextInput=(function(_super){
 
 	return TextInput;
 })(Label)
-
-
-/**
-*使用 <code>VSlider</code> 控件，用户可以通过在滑块轨道的终点之间移动滑块来选择值。
-*<p> <code>VSlider</code> 控件采用垂直方向。滑块轨道从下往上扩展，而标签位于轨道的左右两侧。</p>
-*
-*@example <caption>以下示例代码，创建了一个 <code>VSlider</code> 实例。</caption>
-*package
-*{
-	*import laya.ui.HSlider;
-	*import laya.ui.VSlider;
-	*import laya.utils.Handler;
-	*public class VSlider_Example
-	*{
-		*private var vSlider:VSlider;
-		*public function VSlider_Example()
-		*{
-			*Laya.init(640,800);//设置游戏画布宽高。
-			*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-			*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,onLoadComplete));//加载资源。
-			*}
-		*private function onLoadComplete():void
-		*{
-			*vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-			*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-			*vSlider.min=0;//设置 vSlider 最低位置值。
-			*vSlider.max=10;//设置 vSlider 最高位置值。
-			*vSlider.value=2;//设置 vSlider 当前位置值。
-			*vSlider.tick=1;//设置 vSlider 刻度值。
-			*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-			*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-			*vSlider.changeHandler=new Handler(this,onChange);//设置 vSlider 位置变化处理器。
-			*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
-			*}
-		*private function onChange(value:Number):void
-		*{
-			*trace("滑块的位置： value="+value);
-			*}
-		*}
-	*}
-*@example
-*Laya.init(640,800);//设置游戏画布宽高
-*Laya.stage.bgColor="#efefef";//设置画布的背景颜色
-*var vSlider;
-*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],laya.utils.Handler.create(this,onLoadComplete));//加载资源。
-*function onLoadComplete(){
-	*vSlider=new laya.ui.VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-	*vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-	*vSlider.min=0;//设置 vSlider 最低位置值。
-	*vSlider.max=10;//设置 vSlider 最高位置值。
-	*vSlider.value=2;//设置 vSlider 当前位置值。
-	*vSlider.tick=1;//设置 vSlider 刻度值。
-	*vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-	*vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-	*vSlider.changeHandler=new laya.utils.Handler(this,onChange);//设置 vSlider 位置变化处理器。
-	*Laya.stage.addChild(vSlider);//把 vSlider 添加到显示列表。
-	*}
-*function onChange(value){
-	*console.log("滑块的位置： value="+value);
-	*}
-*@example
-*import HSlider=laya.ui.HSlider;
-*import VSlider=laya.ui.VSlider;
-*import Handler=laya.utils.Handler;
-*class VSlider_Example {
-	*private vSlider:VSlider;
-	*constructor(){
-		*Laya.init(640,800);//设置游戏画布宽高。
-		*Laya.stage.bgColor="#efefef";//设置画布的背景颜色。
-		*Laya.loader.load(["resource/ui/vslider.png","resource/ui/vslider$bar.png"],Handler.create(this,this.onLoadComplete));//加载资源。
-		*}
-	*private onLoadComplete():void {
-		*this.vSlider=new VSlider();//创建一个 VSlider 类的实例对象 vSlider 。
-		*this.vSlider.skin="resource/ui/vslider.png";//设置 vSlider 的皮肤。
-		*this.vSlider.min=0;//设置 vSlider 最低位置值。
-		*this.vSlider.max=10;//设置 vSlider 最高位置值。
-		*this.vSlider.value=2;//设置 vSlider 当前位置值。
-		*this.vSlider.tick=1;//设置 vSlider 刻度值。
-		*this.vSlider.x=100;//设置 vSlider 对象的属性 x 的值，用于控制 vSlider 对象的显示位置。
-		*this.vSlider.y=100;//设置 vSlider 对象的属性 y 的值，用于控制 vSlider 对象的显示位置。
-		*this.vSlider.changeHandler=new Handler(this,this.onChange);//设置 vSlider 位置变化处理器。
-		*Laya.stage.addChild(this.vSlider);//把 vSlider 添加到显示列表。
-		*}
-	*private onChange(value:number):void {
-		*console.log("滑块的位置： value="+value);
-		*}
-	*}
-*@see laya.ui.Slider
-*/
-//class laya.ui.VSlider extends laya.ui.Slider
-var VSlider=(function(_super){
-	function VSlider(){
-		VSlider.__super.call(this);;
-	}
-
-	__class(VSlider,'laya.ui.VSlider',_super);
-	return VSlider;
-})(Slider)
 
 
 /**
@@ -86037,26 +86268,6 @@ var WebGLImage=(function(_super){
 
 	return WebGLImage;
 })(HTMLImage)
-
-
-//class ui.GameBgUI extends laya.ui.View
-var GameBgUI=(function(_super){
-	function GameBgUI(){
-		this.bg1=null;
-		this.bg2=null;
-		GameBgUI.__super.call(this);
-	}
-
-	__class(GameBgUI,'ui.GameBgUI',_super);
-	var __proto=GameBgUI.prototype;
-	__proto.createChildren=function(){
-		laya.ui.Component.prototype.createChildren.call(this);
-		this.createView(GameBgUI.uiView);
-	}
-
-	GameBgUI.uiView={"type":"View","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"var":"bg1","skin":"background.png"}},{"type":"Image","props":{"y":-1280,"x":0,"var":"bg2","skin":"background.png"}}]};
-	return GameBgUI;
-})(View)
 
 
 /**
@@ -86930,7 +87141,7 @@ var GameStartUI=(function(_super){
 })(Dialog)
 
 
-	Laya.__init([LoaderManager,EventDispatcher,CSequentiaProcedureSystem,DrawText,CECSLoop,CSequentialProcedureManager,Browser,Timer,Render,WebGLContext2D,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
+	Laya.__init([LoaderManager,EventDispatcher,DrawText,CECSLoop,CSequentialProcedureManager,CSequentiaProcedureSystem,Browser,Timer,Render,WebGLContext2D,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
 	/**LayaGameStart**/
 	new LayaUISample();
 

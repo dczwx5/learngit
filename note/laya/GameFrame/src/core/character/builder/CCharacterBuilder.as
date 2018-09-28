@@ -22,6 +22,8 @@ public class CCharacterBuilder extends CBean implements IDispose {
 	}
 
 	public function build(obj:CGameObject, data:Object) : void {
+		obj.system = system;
+		
 		var type:int = data[CBaseData._TYPE];
 
 		if (CCharacterDataDescriptor.isPlayer(type)) {

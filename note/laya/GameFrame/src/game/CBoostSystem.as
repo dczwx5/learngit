@@ -5,6 +5,7 @@ package game
 	import core.framework.ILifeCycle;
 	import core.framework.CLifeCycle;
 	import core.framework.CAppSystem;
+	import core.character.CPlayHandler;
 
 	/**
 	 * ...
@@ -31,6 +32,7 @@ package game
 				// new CTickHandler(),
 				// new CNPCHandler(),
 				// new CMapObjectHandler()
+				new CPlayHandler()
 			];
 
 			for each (var handler:IGameSystemHandler in handlers) {

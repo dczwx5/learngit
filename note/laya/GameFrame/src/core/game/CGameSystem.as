@@ -7,6 +7,7 @@ package core.game
 	import core.game.ecsLoop.CGameObject;
 	import core.character.CCharacterSystem;
 	import core.character.builder.CCharacterBuilder;
+	import core.character.CPlayHandler;
 
 	/**
 	 * ...
@@ -30,7 +31,6 @@ package core.game
 			m_pEcsLoop = stage.getSystem(CECSLoop) as CECSLoop;
 
 			m_pSceneSystem.on(CSceneEvent.EVENT_CHARACTER_ADDED, this, _onSceneChacterAdded);
-			m_pSceneSystem.on(CSceneEvent.EVENT_CHARACTER_ADDED, this, _onSceneChacterAdded);
 
 			return ret;
 		}
@@ -49,18 +49,24 @@ package core.game
 		public function createScene(sceneID:String) : void {
 			m_pSceneSystem.createScene(sceneID);
 			// test data
-			spawnCharacter({ID:1, type:0, skin:"1001", defAni:"die", x:300, y:100});
+			var gameObj:CGameObject = spawnCharacter({ID:1, type:0, skin:"1001", defAni:"die", x:300, y:100});
+			var pPlayHandler:CPlayHandler = m_pEcsLoop.getBean(CPlayHandler) as CPlayHandler;
+			pPlayHandler.hero = gameObj; // 假设这就是玩家控制的角色
+
 			spawnCharacter({ID:2, type:0, skin:"1001", defAni:"idle", x:300, y:300});
 			spawnCharacter({ID:3, type:0, skin:"1001", defAni:"move", x:500, y:300});
+
+			
 		}
 
 		
-		public function spawnCharacter(data:Object) : void {
+		public function spawnCharacter(data:Object) : CGameObject {
 			var gameObj:CGameObject = m_pCharacterSystem.characterPool.createObject();
 			var characterBuilder:CCharacterBuilder = m_pCharacterSystem.getBean(CCharacterBuilder) as CCharacterBuilder;
 			characterBuilder.build(gameObj, data);
 
 			m_pSceneSystem.spawnCharacter(gameObj); // spawn不是即时, 需要等　characterAdded
+			return gameObj;
 		}
 		private function _onSceneChacterAdded(...characters) : void {
 			for each (var character:CGameObject in characters) {
@@ -71,6 +77,7 @@ package core.game
 		public function removeCharacter(obj:CGameObject) : void {
 			m_pSceneSystem.removeCharacter(obj);
 			m_pEcsLoop.removeObject(obj);
+			m_pCharacterSystem.characterPool.recoverObject(obj);
 		}
 
 		private var m_pSceneSystem:CSceneSystem;

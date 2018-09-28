@@ -7,6 +7,7 @@ import core.game.ecsLoop.IGameComponent;
 import core.game.ecsLoop.ITransform;
 import laya.ani.bone.Transform;
 import core.game.ecsLoop.CGameComponent;
+import core.framework.CAppSystem;
 
 public class CGameObject extends EventDispatcher implements IDispose, IDataHolder {
     internal static const COMPONENT_CLASS_IDS:Object = {}; // 缓存所有组件ＩＤ：CLASS
@@ -257,6 +258,16 @@ public class CGameObject extends EventDispatcher implements IDispose, IDataHolde
             }
         }
     }
+
+    public function get system() : CAppSystem {
+        return m_pSystem;
+    }
+
+    public function set system(v:CAppSystem) : void {
+        m_pSystem = v;
+    }
+
+    private var m_pSystem:CAppSystem;
 
 }
     

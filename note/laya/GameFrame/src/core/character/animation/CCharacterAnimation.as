@@ -16,8 +16,14 @@ public class CCharacterAnimation extends CGameComponent implements IDisplay {
 		
 	}
 
-	public function create(propertyData:CCharacterProperty) : void {
+	protected override function onEnter() : void {
+		super.onEnter();
+		var propertyData:CCharacterProperty = owner.getComponentByClass(CCharacterProperty) as CCharacterProperty;
 		m_animation.create(propertyData);
+	}
+
+	public function get isRunning() : Boolean {
+		return m_animation.isRunning;
 	}
 
 	public function playAnimation(aniName:String) : void {
@@ -31,6 +37,10 @@ public class CCharacterAnimation extends CGameComponent implements IDisplay {
 
 	public function get displayObject() : CCharacterDisplay {
 		return m_animation.displayObject;
+	}
+ 
+	override protected function onExit() : void {
+		super.onExit();
 	}
 
 	private var m_animation:ICharacterAnimation;

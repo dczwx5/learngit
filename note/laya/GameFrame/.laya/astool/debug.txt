@@ -1,19 +1,19 @@
-1,0.00,,0,Project command:d:\myGit\learngit\note\laya\GameFrame/.actionScriptProperties;iflash=false;windowshow=false;chromerun=false;quickcompile=true
-Project configuration:d:\myGit\learngit\note\laya\GameFrame/.actionScriptProperties.
-1,0.00,,0,output path:d:/myGit/learngit/note/laya/GameFrame/bin/h5/
-1,0.00,,0,Main Class:d:/myGit/learngit/note/laya/GameFrame/src/LayaUISample.as
+1,0.00,,0,Project command:f:\auto\autoGit\learngit\note\laya\GameFrame/.actionScriptProperties;iflash=false;windowshow=false;chromerun=false;quickcompile=true
+Project configuration:f:\auto\autoGit\learngit\note\laya\GameFrame/.actionScriptProperties.
+1,0.00,,0,output path:f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/
+1,0.00,,0,Main Class:f:/auto/autoGit/learngit/note/laya/GameFrame/src/LayaUISample.as
 1,0.00,,0,output file:LayaUISample
-1,0.00,,0,compilerSourcePath d:/myGit/learngit/note/laya/GameFrame/libs/laya/src/
+1,0.00,,0,compilerSourcePath f:/auto/autoGit/learngit/note/laya/GameFrame/libs/laya/src/
 
-1,0.00,,0,Compile Path:d:/myGit/learngit/note/laya/GameFrame/src/
+1,0.00,,0,Compile Path:f:/auto/autoGit/learngit/note/laya/GameFrame/src/
 
-1,0.00,,0,Compile Path:d:/myGit/learngit/note/laya/GameFrame/libs/laya/src/
+1,0.00,,0,Compile Path:f:/auto/autoGit/learngit/note/laya/GameFrame/libs/laya/src/
 
-1,0.00,d:/myGit/learngit/note/laya/GameFrame/src,0,Collect
-1,0.00,d:/myGit/learngit/note/laya/GameFrame/libs/laya/src,0,Collect
+1,0.00,f:/auto/autoGit/learngit/note/laya/GameFrame/src,0,Collect
+1,0.00,f:/auto/autoGit/learngit/note/laya/GameFrame/libs/laya/src,0,Collect
 1,2.00,,0,read class message
-1,89.67,,0,Disable Flash3D d:/myGit/learngit/note/laya/GameFrame/src/LayaUISample.as
-12,89.67,d:/myGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.js,2816016,
-11,89.67,d:/myGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
+1,89.72,,0,Disable Flash3D f:/auto/autoGit/learngit/note/laya/GameFrame/src/LayaUISample.as
+12,89.72,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.js,2821427,
+11,89.72,f:/auto/autoGit/learngit/note/laya/GameFrame/bin/h5/LayaUISample.max.html,895,
 ******************************************************************************
-14,89.67,,0,
+14,89.72,,0,
