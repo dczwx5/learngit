@@ -20,7 +20,7 @@ package game.procedure
 			super.onEnter(fsm);
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
-			super.onUpdate(fsm);
+			super.onUpdate(fsm, deltaTime);
 			changeProcedure(fsm, CProcedureCheckVersion);
 		}
 		protected override function onLeave(fsm:IFsm, isShutDown:Boolean) : void {

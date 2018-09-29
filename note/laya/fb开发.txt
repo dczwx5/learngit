@@ -1,0 +1,23 @@
+1.用fb新建 actionScript项目
+2.使用laya项目的文件夹
+3.下一步 
+4.LayaAirAs3库(没有的话要下载)
+
+// 库路径
+5.LayaAirAs3\as\playerglobal.swf添加到库路径
+6.删除原本flex sdk
+
+// 源路径
+7.添加LayaAirAs3xxxxx\as\libs\src
+
+8.输出文件夹改为bin
+
+
+// ==============外部设置
+1.添加laya.js.exe
+
+2.
+每次编译都运行 "${project_loc}\.actionScriptProperties;iflash=false;chromerun=false;quickcompile=true;out=bin/js/bundle.js;subpath=" 
+
+编译不运行 
+ "${project_loc}\.actionScriptProperties;iflash=false;chromerun=false;quickcompile=true;out=bin/js/bundle.js;subpath=" 

@@ -1,6 +1,6 @@
 
 /***********************************/
-/*http://www.layabox.com  2017/12/12*/
+/*http://www.layabox.com  2017/3/23*/
 /***********************************/
 var Laya=window.Laya=(function(window,document){
 	var Laya={
@@ -73,10 +73,7 @@ var Laya=window.Laya=(function(window,document){
 		},
 		__as:function(value,type){
 			return (this.__typeof(value,type))?value:null;
-		},
-        __int:function(value){
-            return value?parseInt(value):0;
-        },
+		},		
 		interface:function(name,_super){
 			Laya.__package(name,{});
 			var ins=Laya.__internals;
@@ -161,10 +158,10 @@ var Laya=window.Laya=(function(window,document){
 				setfn && (o['_$SET_'+name]=setfn);
 			}
 			if(getfn && setfn) 
-				Object.defineProperty(o,name,{get:getfn,set:setfn,enumerable:false,configurable:true});
+				Object.defineProperty(o,name,{get:getfn,set:setfn,enumerable:false});
 			else{
-				getfn && Object.defineProperty(o,name,{get:getfn,enumerable:false,configurable:true});
-				setfn && Object.defineProperty(o,name,{set:setfn,enumerable:false,configurable:true});
+				getfn && Object.defineProperty(o,name,{get:getfn,enumerable:false});
+				setfn && Object.defineProperty(o,name,{set:setfn,enumerable:false});
 			}
 		},
 		static:function(_class,def){
@@ -273,7 +270,7 @@ var RunDriver=(function(){
 
 	RunDriver.createShaderCondition=function(conditionScript){
 		var fn="(function() {return "+conditionScript+";})";
-		return Laya._runScript(fn);
+		return Browser.window.eval(fn);
 	}
 
 	RunDriver.fontMap=[];
@@ -331,9 +328,6 @@ var RunDriver=(function(){
 		Render._context.ctx.clear();
 	}
 
-	RunDriver.cancelLoadByUrl=function(url){
-	};
-
 	RunDriver.clearAtlas=function(value){
 	};
 
@@ -378,7 +372,7 @@ var ___Laya=(function(){
 		if (value){
 			Browser.window.onerror=function (msg,url,line,column,detail){
 				if (erralert++< 5 && detail)
-					alert("出错啦，请把此信息截图给研发商\n"+msg+"\n"+detail.stack || detail);
+					alert("出错啦，请把此信息截图给研发商\n"+msg+"\n"+detail.stack||detail);
 			}
 			}else {
 			Browser.window.onerror=null;
@@ -406,7 +400,7 @@ var ___Laya=(function(){
 		CacheManager.beginCheck();
 		Laya._currentStage=Laya.stage=new Stage();
 		Laya.stage.conchModel && Laya.stage.conchModel.setRootNode();
-		Laya._getUrlPath();
+		Laya.getUrlPath();
 		Laya.render=new Render(0,0);
 		Laya.stage.size(width,height);
 		RenderSprite.__init__();
@@ -418,7 +412,7 @@ var ___Laya=(function(){
 		return Render.canvas;
 	}
 
-	Laya._getUrlPath=function(){
+	Laya.getUrlPath=function(){
 		var location=Browser.window.location;
 		var pathName=location.pathname;
 		pathName=pathName.charAt(2)==':' ? pathName.substring(1):pathName;
@@ -433,21 +427,16 @@ var ___Laya=(function(){
 		return newU8List.buffer;
 	}
 
-	Laya._runScript=function(script){
-		return Browser.window[Laya._evcode](script);
-	}
-
 	Laya.stage=null;
 	Laya.timer=null;
 	Laya.scaleTimer=null;
 	Laya.loader=null;
-	Laya.version="1.7.20beta";
+	Laya.version="1.7.16beta";
 	Laya.render=null;
 	Laya._currentStage=null;
 	Laya._isinit=false;
-	Laya.MiniAdpter={init:function(){if (window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf("MiniGame")>-1)console.error("请先引用小游戏适配库laya.wxmini.js,详细教程：https://ldc.layabox.com/doc/?nav=zh-ts-5-0-0")}};
 	__static(Laya,
-	['conchMarket',function(){return this.conchMarket=window.conch?conchMarket:null;},'PlatformClass',function(){return this.PlatformClass=window.PlatformClass;},'_evcode',function(){return this._evcode="e"+String.fromCharCode(100+10+8)+"a"+"l";}
+	['conchMarket',function(){return this.conchMarket=window.conch?conchMarket:null;},'PlatformClass',function(){return this.PlatformClass=window.PlatformClass;},'MiniAdpter',function(){return this.MiniAdpter={init:function(){if (window.navigator && window.navigator.userAgent && window.navigator.userAgent.indexOf("MiniGame")>-1)console.error("请先引用小游戏适配库laya.wxmini.js,详细教程：https://ldc.layabox.com/doc/?nav=zh-ts-5-0-0")}};}
 	]);
 	return Laya;
 })()
@@ -1080,10 +1069,6 @@ var EventDispatcher=(function(){
 				var count=0;
 				for (var i=0,n=listeners.length;i < n;i++){
 					var item=listeners[i];
-					if (!item){
-						count++;
-						continue ;
-					}
 					if (item && (!caller || item.caller===caller)&& item.method===listener && (!onceOnly || item.once)){
 						count++;
 						listeners[i]=null;
@@ -1139,7 +1124,9 @@ var EventDispatcher=(function(){
 		return EventDispatcher.MOUSE_EVENTS[type];
 	}
 
-	EventDispatcher.MOUSE_EVENTS={"rightmousedown":true,"rightmouseup":true,"rightclick":true,"mousedown":true,"mouseup":true,"mousemove":true,"mouseover":true,"mouseout":true,"click":true,"doubleclick":true};
+	__static(EventDispatcher,
+	['MOUSE_EVENTS',function(){return this.MOUSE_EVENTS={"rightmousedown":true,"rightmouseup":true,"rightclick":true,"mousedown":true,"mouseup":true,"mousemove":true,"mouseover":true,"mouseout":true,"click":true,"doubleclick":true};}
+	]);
 	EventDispatcher.__init$=function(){
 		Object.defineProperty(laya.events.EventDispatcher.prototype,"_events",{enumerable:false,writable:true});
 		/**@private */
@@ -3063,7 +3050,7 @@ var Graphics=(function(){
 		if (!width)width=tex.sourceWidth;
 		if (!height)height=tex.sourceHeight;
 		alpha=alpha < 0 ? 0 :(alpha > 1 ? 1 :alpha);
-		var offset=(!Render.isWebGL && (Browser.onFirefox || Browser.onEdge||Browser.onIE||Browser.onSafari))? 0.5 :0;
+		var offset=(!Render.isWebGL && Browser.onFirefox || Browser.onEdge)? 0.5 :0;
 		var wRate=width / tex.sourceWidth;
 		var hRate=height / tex.sourceHeight;
 		width=tex.width *wRate;
@@ -3125,7 +3112,6 @@ var Graphics=(function(){
 			this._one[2]=y;
 			this._one[3]=width;
 			this._one[4]=height;
-			this._repaint();
 			}else {
 			this.clear();
 			tex && this.drawTexture(tex,x,y,width,height);
@@ -3168,65 +3154,6 @@ var Graphics=(function(){
 		param[3]=param[3] || tex.width;
 		param[4]=param[4] || tex.height;
 		this._repaint();
-	}
-
-	/**
-	*填充一个圆形。这是一个临时函数，以后会删除，建议用户自己实现。
-	*@param x
-	*@param y
-	*@param tex
-	*@param cx 圆心位置。
-	*@param cy
-	*@param radius
-	*@param segNum 分段数，越大越平滑。
-	*/
-	__proto.fillCircle=function(x,y,tex,cx,cy,radius,segNum){
-		tex.bitmap.enableMerageInAtlas=false;
-		var verts=new Float32Array((segNum+1)*2);
-		var uvs=new Float32Array((segNum+1)*2);
-		var indices=new Uint16Array(segNum*3);
-		var dang=2 *Math.PI / segNum;
-		var cang=0;
-		verts[0]=cx;
-		verts[1]=cy;
-		uvs[0]=cx / tex.width;
-		uvs[1]=cy / tex.height;
-		var idx=2;
-		for (var i=0;i < segNum;i++){
-			var px=radius *Math.cos(cang)+cx;
-			var py=radius *Math.sin(cang)+cy;
-			verts[idx]=px;
-			verts[idx+1]=py;
-			uvs[idx]=px / tex.width;
-			uvs[idx+1]=py / tex.height;
-			cang+=dang;
-			idx+=2;
-		}
-		idx=0;
-		for (i=0;i < segNum;i++){
-			indices[idx++]=0;
-			indices[idx++]=i+1;
-			indices[idx++]=(i+2 >=segNum+1)?1:(i+2);
-		}
-		this.drawTriangles(tex,x,y,verts,uvs,indices);
-	}
-
-	/**
-	*绘制一组三角形
-	*@param texture 纹理。
-	*@param x X轴偏移量。
-	*@param y Y轴偏移量。
-	*@param vertices 顶点数组。
-	*@param indices 顶点索引。
-	*@param uvData UV数据。
-	*@param matrix 缩放矩阵。
-	*@param alpha alpha
-	*@param color 颜色变换
-	*@param blendMode blend模式
-	*/
-	__proto.drawTriangles=function(texture,x,y,vertices,uvs,indices,matrix,alpha,color,blendMode){
-		(alpha===void 0)&& (alpha=1);
-		this._saveToCmd(Render._context.drawTriangles,[texture,x,y,vertices,uvs,indices,matrix,alpha,color,blendMode]);
 	}
 
 	/**
@@ -3717,12 +3644,7 @@ var Graphics=(function(){
 				x+=tex.offsetX;
 				y+=tex.offsetY;
 				var uv=tex.uv,w=tex.bitmap.width,h=tex.bitmap.height;
-				if (uv[4] < uv[0] && uv[5] < uv[1]){
-					this.drawImageM(tex.bitmap.source,uv[4] *w,uv[5] *h,(uv[0]-uv[4])*w,(uv[1]-uv[5])*h,x,y,width,height,m,alpha);
-				}
-				else {
-					this.drawImageM(tex.bitmap.source,uv[0] *w,uv[1] *h,(uv[2]-uv[0])*w,(uv[5]-uv[3])*h,x,y,width,height,m,alpha);
-				}
+				this.drawImageM(tex.bitmap.source,uv[0] *w,uv[1] *h,(uv[2]-uv[0])*w,(uv[5]-uv[3])*h,x,y,width,height,m,alpha);
 				this._repaint();
 			}
 			from.fillTexture=function (tex,x,y,width,height,type,offset){
@@ -4295,20 +4217,6 @@ var AnimationNode=(function(){
 		AnimationNode.registerAnimationNodeProperty("skinnedMeshRender.sharedMaterial.albedoColor",AnimationNode._getSkinnedMeshRenderSharedMaterialAlbedo,AnimationNode._setSkinnedMeshRenderSharedMaterialAlbedo);
 		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.albedo",AnimationNode._getMeshRenderSharedMaterialAlbedo,AnimationNode._setMeshRenderSharedMaterialAlbedo);
 		AnimationNode.registerAnimationNodeProperty("skinnedMeshRender.sharedMaterial.albedo",AnimationNode._getSkinnedMeshRenderSharedMaterialAlbedo,AnimationNode._setSkinnedMeshRenderSharedMaterialAlbedo);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.intensity",AnimationNode._getMeshRenderSharedMaterialIntensity,AnimationNode._setMeshRenderSharedMaterialIntensity);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.alpha",AnimationNode._getMeshRenderSharedMaterialAlpha,AnimationNode._setMeshRenderSharedMaterialAlpha);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.alphaColor",AnimationNode._getMeshRenderSharedMaterialAlphaColor,AnimationNode._setMeshRenderSharedMaterialAlphaColor);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.baseColor",AnimationNode._getMeshRenderSharedMaterialBaseColor,AnimationNode._setMeshRenderSharedMaterialBaseColor);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.dissolve",AnimationNode._getMeshRenderSharedMaterialDissolve,AnimationNode._setMeshRenderSharedMaterialDissolve);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.dissolveSpeed",AnimationNode._getMeshRenderSharedMaterialDissolveSpeed,AnimationNode._setMeshRenderSharedMaterialDissolveSpeed);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.mMultiplier",AnimationNode._getMeshRenderSharedMaterialMMultiplier,AnimationNode._setMeshRenderSharedMaterialMMultiplier);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.baseScrollSpeedX",AnimationNode._getMeshRenderSharedMaterialBaseScrollSpeedX,AnimationNode._setMeshRenderSharedMaterialBaseScrollSpeedX);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.baseScrollSpeedY",AnimationNode._getMeshRenderSharedMaterialBaseScrollSpeedY,AnimationNode._setMeshRenderSharedMaterialBaseScrollSpeedY);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.secondScrollSpeedX",AnimationNode._getMeshRenderSharedMaterialSecondScrollSpeedX,AnimationNode._setMeshRenderSharedMaterialSecondScrollSpeedX);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.secondScrollSpeedY",AnimationNode._getMeshRenderSharedMaterialSecondScrollSpeedY,AnimationNode._setMeshRenderSharedMaterialSecondScrollSpeedY);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.detailTilingOffset",AnimationNode._getMeshRenderSharedMaterialDetailTilingOffset,AnimationNode._setMeshRenderSharedMaterialDetailTilingOffset);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.dissolveTilingOffset",AnimationNode._getMeshRenderSharedMaterialDissolveTilingOffset,AnimationNode._setMeshRenderSharedMaterialDissolveTilingOffset);
-		AnimationNode.registerAnimationNodeProperty("meshRender.sharedMaterial.maskTilingOffset",AnimationNode._getMeshRenderSharedMaterialMaskTilingOffset,AnimationNode._setMeshRenderSharedMaterialMaskTilingOffset);
 	}
 
 	AnimationNode.registerAnimationNodeProperty=function(propertyName,getFunc,setFunc){
@@ -4557,432 +4465,6 @@ var AnimationNode=(function(){
 			tintColor=material.tintColor;
 			tintColor.elements=value;
 			material.tintColor=tintColor;
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialAlphaColor=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.alphaColor.elements;
-			}else
-			return null;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.alphaColor.elements;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialAlphaColor=function(animationNode,sprite3D,value){
-		var material,alphaColor;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				alphaColor=material.alphaColor;
-				alphaColor.elements=value;
-				material.alphaColor=alphaColor;
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			alphaColor=material.alphaColor;
-			alphaColor.elements=value;
-			material.alphaColor=alphaColor;
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialBaseColor=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.baseColor.elements;
-			}else
-			return null;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.baseColor.elements;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialBaseColor=function(animationNode,sprite3D,value){
-		var material,baseColor;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				baseColor=material.baseColor;
-				baseColor.elements=value;
-				material.baseColor=baseColor;
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			baseColor=material.baseColor;
-			baseColor.elements=value;
-			material.baseColor=baseColor;
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialDissolve=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.dissolve;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.dissolve;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialDissolve=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.dissolve=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.dissolve=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialDissolveSpeed=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.dissolveSpeed;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.dissolveSpeed;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialDissolveSpeed=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.dissolveSpeed=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.dissolveSpeed=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialMMultiplier=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.mMultiplier;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.mMultiplier;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialMMultiplier=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.mMultiplier=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.mMultiplier=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialBaseScrollSpeedX=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.baseScrollSpeedX;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.baseScrollSpeedX;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialBaseScrollSpeedX=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.baseScrollSpeedX=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.baseScrollSpeedX=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialBaseScrollSpeedY=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.baseScrollSpeedY;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.baseScrollSpeedY;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialBaseScrollSpeedY=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.baseScrollSpeedY=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.baseScrollSpeedY=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialSecondScrollSpeedX=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.secondScrollSpeedX;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.secondScrollSpeedX;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialSecondScrollSpeedX=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.secondScrollSpeedX=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.secondScrollSpeedX=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialSecondScrollSpeedY=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.secondScrollSpeedY;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.secondScrollSpeedY;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialSecondScrollSpeedY=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.secondScrollSpeedY=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.secondScrollSpeedY=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialAlpha=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.alpha;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.alpha;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialAlpha=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.alpha=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.alpha=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialIntensity=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.intensity;
-			}else
-			return 0.0;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.intensity;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialIntensity=function(animationNode,sprite3D,value){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				material.intensity=value[0];
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			material.intensity=value[0];
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialDetailTilingOffset=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.detailTilingOffset.elements;
-			}else
-			return null;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.detailTilingOffset.elements;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialDetailTilingOffset=function(animationNode,sprite3D,value){
-		var material,detailTilingOffset;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				detailTilingOffset=material.detailTilingOffset;
-				detailTilingOffset.elements=value;
-				material.detailTilingOffset=detailTilingOffset;
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			detailTilingOffset=material.detailTilingOffset;
-			detailTilingOffset.elements=value;
-			material.detailTilingOffset=detailTilingOffset;
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialDissolveTilingOffset=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.dissolveTilingOffset.elements;
-			}else
-			return null;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.dissolveTilingOffset.elements;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialDissolveTilingOffset=function(animationNode,sprite3D,value){
-		var material,dissolveTilingOffset;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				dissolveTilingOffset=material.dissolveTilingOffset;
-				dissolveTilingOffset.elements=value;
-				material.dissolveTilingOffset=dissolveTilingOffset;
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			dissolveTilingOffset=material.dissolveTilingOffset;
-			dissolveTilingOffset.elements=value;
-			material.dissolveTilingOffset=dissolveTilingOffset;
-		}
-	}
-
-	AnimationNode._getMeshRenderSharedMaterialMaskTilingOffset=function(animationNode,sprite3D){
-		var material;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.sharedMaterial;
-				return material.maskTilingOffset.elements;
-			}else
-			return null;
-			}else {
-			material=(sprite3D).meshRender.sharedMaterial;
-			return material.maskTilingOffset.elements;
-		}
-	}
-
-	AnimationNode._setMeshRenderSharedMaterialMaskTilingOffset=function(animationNode,sprite3D,value){
-		var material,maskTilingOffset;
-		if (animationNode){
-			var entity=animationNode.transform._entity;
-			if (entity){
-				material=(entity.owner).meshRender.material;
-				maskTilingOffset=material.maskTilingOffset;
-				maskTilingOffset.elements=value;
-				material.maskTilingOffset=maskTilingOffset;
-			}
-			}else {
-			material=(sprite3D).meshRender.material;
-			maskTilingOffset=material.maskTilingOffset;
-			maskTilingOffset.elements=value;
-			material.maskTilingOffset=maskTilingOffset;
 		}
 	}
 
@@ -8200,9 +7682,14 @@ var RenderElement=(function(){
 		/**当前ShaderValue。*/
 		this._shaderValue=null;
 		this._onPreRenderFunction=null;
+		/**@private */
+		this._conchSubmesh=null;
 		this._id=++RenderElement._uniqueIDCounter;
 		this._canDynamicBatch=true;
 		this._shaderValue=new ValusArray();
+		if (Render.isConchNode){
+			this._conchSubmesh=new ConchSubmesh();
+		}
 	}
 
 	__class(RenderElement,'laya.d3.core.render.RenderElement');
@@ -8296,27 +7783,16 @@ var RenderQueue=(function(){
 	__class(RenderQueue,'laya.d3.core.render.RenderQueue');
 	var __proto=RenderQueue.prototype;
 	__proto._sortOpaqueFunc=function(a,b){
-		if (a._render && b._render){
-			var renderQueue=a._material.renderQueue-b._material.renderQueue;
-			if (renderQueue===0){
-				return a._render._distanceForSort-b._render._distanceForSort;
-				}else {
-				return renderQueue
-			}
-			}else {
-			return 0;
-		}
+		if (a._render && b._render)
+			return a._render._distanceForSort-b._render._distanceForSort;
+		else
+		return 0;
 	}
 
 	__proto._sortAlphaFunc=function(a,b){
-		if (a._render && b._render){
-			var renderQueue=a._material.renderQueue-b._material.renderQueue;
-			if (renderQueue===0){
-				return b._render._distanceForSort-a._render._distanceForSort;
-				}else {
-				return renderQueue;
-			}
-		}else
+		if (a._render && b._render)
+			return b._render._distanceForSort-a._render._distanceForSort;
+		else
 		return 0;
 	}
 
@@ -8580,6 +8056,8 @@ var RenderQueue=(function(){
 	});
 
 	RenderQueue._uniqueIDCounter=0;
+	RenderQueue.OPAQUE=1;
+	RenderQueue.TRANSPARENT=2;
 	RenderQueue._cameraPosition=null;
 	return RenderQueue;
 })()
@@ -8913,31 +8391,19 @@ var OctreeNode=(function(){
 //class laya.d3.core.trail.module.Color
 var Color=(function(){
 	function Color(r,g,b,a){
-		this._r=NaN;
-		this._g=NaN;
-		this._b=NaN;
-		this._a=NaN;
-		(r===void 0)&& (r=1);
-		(g===void 0)&& (g=1);
-		(b===void 0)&& (b=1);
-		(a===void 0)&& (a=1);
-		this._r=r;
-		this._g=g;
-		this._b=b;
-		this._a=a;
+		this.r=NaN;
+		this.g=NaN;
+		this.b=NaN;
+		this.a=NaN;
+		this.r=r;
+		this.g=g;
+		this.b=b;
+		this.a=a;
 	}
 
 	__class(Color,'laya.d3.core.trail.module.Color');
-	var __proto=Color.prototype;
-	__proto.cloneTo=function(destObject){
-		destObject._r=this._r;
-		destObject._g=this._g;
-		destObject._b=this._b;
-		destObject._a=this._a;
-	}
-
 	__static(Color,
-	['RED',function(){return this.RED=new Color(1,0,0,1);},'GREEN',function(){return this.GREEN=new Color(0,1,0,1);},'BLUE',function(){return this.BLUE=new Color(0,0,1,1);},'CYAN',function(){return this.CYAN=new Color(0,1,1,1);},'YELLOW',function(){return this.YELLOW=new Color(1,0.92,0.016,1);},'MAGENTA',function(){return this.MAGENTA=new Color(1,0,1,1);},'GRAY',function(){return this.GRAY=new Color(0.5,0.5,0.5,1);},'WHITE',function(){return this.WHITE=new Color(1,1,1,1);},'BLACK',function(){return this.BLACK=new Color(0,0,0,1);}
+	['red',function(){return this.red=new Color(1,0,0,1);},'green',function(){return this.green=new Color(0,1,0,1);},'blue',function(){return this.blue=new Color(0,0,1,1);},'cyan',function(){return this.cyan=new Color(0,1,1,1);},'yellow',function(){return this.yellow=new Color(1,0.92,0.016,1);},'magenta',function(){return this.magenta=new Color(1,0,1,1);},'gray',function(){return this.gray=new Color(0.5,0.5,0.5,1);},'white',function(){return this.white=new Color(1,1,1,1);},'black',function(){return this.black=new Color(0,0,0,1);}
 	]);
 	return Color;
 })()
@@ -8979,9 +8445,9 @@ var Gradient=(function(){
 		for (var i=0;i < colorKeys.length;i++){
 			gradientColorKey=colorKeys[i];
 			var color=gradientColorKey.color;
-			this._colorKeyData[this.index++]=color._r;
-			this._colorKeyData[this.index++]=color._g;
-			this._colorKeyData[this.index++]=color._b;
+			this._colorKeyData[this.index++]=color.r;
+			this._colorKeyData[this.index++]=color.g;
+			this._colorKeyData[this.index++]=color.b;
 			this._colorKeyData[this.index++]=gradientColorKey.time;
 		}
 		this._alphaKeys=alphaKeys;
@@ -8992,25 +8458,6 @@ var Gradient=(function(){
 			this._alphaKeyData[this.index++]=gradientAlphaKey.alpha;
 			this._alphaKeyData[this.index++]=gradientAlphaKey.time;
 		}
-	}
-
-	__proto.cloneTo=function(destObject){
-		var i=0,j=0;
-		var cks=this.colorKeys;
-		var _cks=[];
-		for (i=0,j=cks.length;i < j;i++){
-			var _ck=new GradientColorKey();
-			cks[i].cloneTo(_ck);
-			_cks.push(_ck);
-		};
-		var aks=this.alphaKeys;
-		var _aks=[];
-		for (i=0,j=aks.length;i < j;i++){
-			var _ak=new GradientAlphaKey();
-			aks[i].cloneTo(_ak);
-			_aks.push(_ak);
-		}
-		destObject.setKeys(_cks,_aks);
 	}
 
 	/**
@@ -9041,9 +8488,9 @@ var Gradient=(function(){
 		for (var i=0;i < values.length;i++){
 			var value=values[i];
 			var color=value.color;
-			this._colorKeyData[this.index++]=color._r;
-			this._colorKeyData[this.index++]=color._g;
-			this._colorKeyData[this.index++]=color._b;
+			this._colorKeyData[this.index++]=color.r;
+			this._colorKeyData[this.index++]=color.g;
+			this._colorKeyData[this.index++]=color.b;
 			this._colorKeyData[this.index++]=value.time;
 		}
 	});
@@ -9075,19 +8522,12 @@ var GradientAlphaKey=(function(){
 	function GradientAlphaKey(alpha,time){
 		this._alpha=NaN;
 		this._time=NaN;
-		(alpha===void 0)&& (alpha=0);
-		(time===void 0)&& (time=0);
 		this._alpha=alpha;
 		this._time=time;
 	}
 
 	__class(GradientAlphaKey,'laya.d3.core.trail.module.GradientAlphaKey');
 	var __proto=GradientAlphaKey.prototype;
-	__proto.cloneTo=function(destObject){
-		destObject.alpha=this.alpha;
-		destObject.time=this.time;
-	}
-
 	/**
 	*设置透明度。
 	*@param value 透明度。
@@ -9125,18 +8565,12 @@ var GradientColorKey=(function(){
 	function GradientColorKey(color,time){
 		this._color=null;
 		this._time=NaN;
-		(time===void 0)&& (time=0);
-		this._color=color||new Color();
+		this._color=color;
 		this._time=time;
 	}
 
 	__class(GradientColorKey,'laya.d3.core.trail.module.GradientColorKey');
 	var __proto=GradientColorKey.prototype;
-	__proto.cloneTo=function(destObject){
-		this.color.cloneTo(destObject.color);
-		destObject.time=this.time;
-	}
-
 	/**
 	*设置颜色值。
 	*@param value 颜色值。
@@ -9207,14 +8641,6 @@ var TrailKeyFrame=(function(){
 	}
 
 	__class(TrailKeyFrame,'laya.d3.core.trail.module.TrailKeyFrame');
-	var __proto=TrailKeyFrame.prototype;
-	__proto.cloneTo=function(destObject){
-		destObject.time=this.time;
-		destObject.inTangent=this.inTangent;
-		destObject.outTangent=this.outTangent;
-		destObject.value=this.value;
-	}
-
 	return TrailKeyFrame;
 })()
 
@@ -9399,7 +8825,8 @@ var TrailRenderElement=(function(){
 		for (i=0,j=(this._verticesCount+this._virtualVerticesCount)/ 2;i < j;i++){
 			if (this._owner.textureMode==0){
 				_uvX=(this._VerticesToTailLength[i]-this._owner._trailDeadLength)/ (this._owner._trailTotalLength+this._owner._trailSupplementLength-this._owner._trailDeadLength);
-				}else {
+			}
+			else{
 				_uvX=this._owner._trailTotalLength+this._owner._trailSupplementLength-this._VerticesToTailLength[i];
 			}
 			this._vertices2[_uvIndex++]=1.0-_uvX;
@@ -9447,10 +8874,6 @@ var TrailRenderElement=(function(){
 		this._owner._owner.transform.position.cloneTo(this._curPosition);
 		if (!this._isDead){
 			if (this._verticesCount < this._maxVerticesCount){
-				if (!this._owner._isStart){
-					this._owner._owner.transform.position.cloneTo(this._lastPosition);
-					this._owner._isStart=true;
-				}
 				if (!Vector3.equals(this._lastPosition,this._curPosition)){
 					this._updateTrail();
 				}
@@ -9477,7 +8900,6 @@ var TrailRenderElement=(function(){
 		if (this._isDead)
 			return;
 		WebGL.mainContext.drawArrays(0x0005,this._curDisappearIndex *2,this._verticesCount+this._virtualVerticesCount-this._curDisappearIndex *2);
-		console.log(this._curDisappearIndex *2,this._verticesCount+this._virtualVerticesCount-this._curDisappearIndex *2);
 		Stat.drawCall++;
 		Stat.trianglesFaces+=(this._verticesCount+this._virtualVerticesCount-this._curDisappearIndex *2-2);
 	}
@@ -9513,6 +8935,10 @@ var TrailRenderElement=(function(){
 		return null;
 	}
 
+	/**
+	*@private
+	*/
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){}
 	/**
 	*重新激活该renderElement
 	*/
@@ -9600,9 +9026,9 @@ var VertexTrail=(function(){
 	__static(VertexTrail,
 	['_vertexDeclaration1',function(){return this._vertexDeclaration1=new VertexDeclaration(32,
 		[new VertexElement(0,"vector3",0),
-		new VertexElement(12,"vector3",41),
+		new VertexElement(12,"vector3",40),
 		new VertexElement(24,"single",33),
-		new VertexElement(28,"single",40)]);},'_vertexDeclaration2',function(){return this._vertexDeclaration2=new VertexDeclaration(4,
+		new VertexElement(28,"single",39)]);},'_vertexDeclaration2',function(){return this._vertexDeclaration2=new VertexDeclaration(4,
 		[new VertexElement(0,"single",38)]);}
 	]);
 	return VertexTrail;
@@ -9782,6 +9208,8 @@ var DynamicBatch=(function(){
 		return null;
 	}
 
+	/**NATIVE*/
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){}
 	__getset(0,__proto,'_vertexBufferCount',function(){
 		return 1;
 	});
@@ -10400,6 +9828,8 @@ var StaticBatch=(function(){
 		return null;
 	}
 
+	/**NATIVE*/
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){}
 	//..................临时.................................
 	__getset(0,__proto,'_vertexBufferCount',function(){
 		return 1;
@@ -10433,6 +9863,7 @@ var VertexDeclaration=(function(){
 		this._vertexStride=0;
 		this._vertexElements=null;
 		this._vertexElementsDic=null;
+		this._conchVertexDeclaration=null;
 		this._id=++VertexDeclaration._uniqueIDCounter;
 		if (this._id > VertexDeclaration.maxVertexDeclaration)
 			throw new Error("VertexDeclaration: VertexDeclaration count should not large than ",VertexDeclaration.maxVertexDeclaration);
@@ -10440,6 +9871,9 @@ var VertexDeclaration=(function(){
 		this._vertexElementsDic={};
 		this._vertexStride=vertexStride;
 		this._vertexElements=vertexElements;
+		if (Render.isConchNode){
+			this._conchVertexDeclaration=new ConchVertexDeclare();
+		}
 		for (var i=0;i < vertexElements.length;i++){
 			var vertexElement=vertexElements[i];
 			var attributeName=vertexElement.elementUsage;
@@ -10458,6 +9892,24 @@ var VertexDeclaration=(function(){
 					break ;
 				}
 		}
+		if (Render.isConchNode){
+			var conchVertexElements=[];
+			for (var ci=0,cn=vertexElements.length;ci < cn;ci++){
+				var cVertexElement=vertexElements[ci];
+				switch (cVertexElement.elementFormat){
+					case "vector2":
+						conchVertexElements.push({offset:cVertexElement.offset,elementFormat:0x8B50,elementUsage:cVertexElement.elementUsage});
+						break ;
+					case "vector3":
+						conchVertexElements.push({offset:cVertexElement.offset,elementFormat:0x8B51,elementUsage:cVertexElement.elementUsage});
+						break ;
+					case "vector4":
+						conchVertexElements.push({offset:cVertexElement.offset,elementFormat:0x8B52,elementUsage:cVertexElement.elementUsage});
+						break ;
+					}
+			}
+			this._conchVertexDeclaration.setDelcare(conchVertexElements);
+		}
 	}
 
 	__class(VertexDeclaration,'laya.d3.graphics.VertexDeclaration');
@@ -10468,6 +9920,9 @@ var VertexDeclaration=(function(){
 	*/
 	__proto._addShaderDefine=function(value){
 		this._shaderDefineValue |=value;
+		if (this._conchVertexDeclaration){
+			this._conchVertexDeclaration.addShaderDefine(value);
+		}
 	}
 
 	/**
@@ -10476,6 +9931,9 @@ var VertexDeclaration=(function(){
 	*/
 	__proto._removeShaderDefine=function(value){
 		this._shaderDefineValue &=~value;
+		if (this._conchVertexDeclaration){
+			this._conchVertexDeclaration.removeShaderDefine(value)
+		}
 	}
 
 	__proto.getVertexElements=function(){
@@ -10646,9 +10104,8 @@ var VertexElementUsage=(function(){
 	VertexElementUsage.SIMULATIONWORLDPOSTION=36;
 	VertexElementUsage.SIMULATIONWORLDROTATION=37;
 	VertexElementUsage.TEXTURECOORDINATE0X=38;
-	VertexElementUsage.TEXTURECOORDINATE0X1=39;
-	VertexElementUsage.TEXTURECOORDINATE0Y=40;
-	VertexElementUsage.OFFSETVECTOR=41;
+	VertexElementUsage.TEXTURECOORDINATE0Y=39;
+	VertexElementUsage.OFFSETVECTOR=40;
 	return VertexElementUsage;
 })()
 
@@ -13595,7 +13052,9 @@ var LoadModelV01=(function(){
 		return this._mesh;
 	});
 
-	LoadModelV01._attrReg=new RegExp("(\\w+)|([:,;])","g");
+	__static(LoadModelV01,
+	['_attrReg',function(){return this._attrReg=new RegExp("(\\w+)|([:,;])","g");}
+	]);
 	return LoadModelV01;
 })()
 
@@ -13834,7 +13293,6 @@ var LoadModelV02=(function(){
 		return vertexDeclaration;
 	}
 
-	LoadModelV02._attrReg=new RegExp("(\\w+)|([:,;])","g");
 	LoadModelV02._strings=[];
 	LoadModelV02._readData=null;
 	LoadModelV02._version=null;
@@ -13843,7 +13301,7 @@ var LoadModelV02=(function(){
 	LoadModelV02._subMeshes=null;
 	LoadModelV02._materialMap=null;
 	__static(LoadModelV02,
-	['_BLOCK',function(){return this._BLOCK={count:0};},'_DATA',function(){return this._DATA={offset:0,size:0};}
+	['_attrReg',function(){return this._attrReg=new RegExp("(\\w+)|([:,;])","g");},'_BLOCK',function(){return this._BLOCK={count:0};},'_DATA',function(){return this._DATA={offset:0,size:0};}
 	]);
 	return LoadModelV02;
 })()
@@ -14910,13 +14368,14 @@ var Collision=(function(){
 		var ray2deZ=ray2de[2];
 		Vector3.cross(ray1d,ray2d,Collision._tempV30);
 		var tempV3e=Collision._tempV30.elements;
-		var denominator=Vector3.scalarLengthSquared(Collision._tempV30);
+		var denominator=Vector3.scalarLength(Collision._tempV30);
 		if (MathUtils3D.isZero(denominator)){
 			if (MathUtils3D.nearEqual(ray2oeX,ray1oeX)&& MathUtils3D.nearEqual(ray2oeY,ray1oeY)&& MathUtils3D.nearEqual(ray2oeZ,ray1oeZ)){
-				Vector3.ZERO.cloneTo(out);
+				out=Vector3.ZERO;
 				return true;
 			}
-		};
+		}
+		denominator=denominator *denominator;
 		var m11=ray2oeX-ray1oeX;
 		var m12=ray2oeY-ray1oeY;
 		var m13=ray2oeZ-ray1oeZ;
@@ -14934,16 +14393,16 @@ var Collision=(function(){
 		var s=dets / denominator;
 		var t=dett / denominator;
 		Vector3.scale(ray1d,s,Collision._tempV30);
-		Vector3.scale(ray2d,t,Collision._tempV31);
+		Vector3.scale(ray2d,s,Collision._tempV31);
 		Vector3.add(ray1o,Collision._tempV30,Collision._tempV32);
 		Vector3.add(ray2o,Collision._tempV31,Collision._tempV33);
 		var point1e=Collision._tempV32.elements;
 		var point2e=Collision._tempV33.elements;
 		if (!MathUtils3D.nearEqual(point2e[0],point1e[0])|| !MathUtils3D.nearEqual(point2e[1],point1e[1])|| !MathUtils3D.nearEqual(point2e[2],point1e[2])){
-			Vector3.ZERO.cloneTo(out);
+			out=Vector3.ZERO;
 			return false;
 		}
-		Collision._tempV32.cloneTo(out);
+		out=Collision._tempV32;
 		return true;
 	}
 
@@ -15811,9 +15270,8 @@ var Matrix3x3=(function(){
 		me[8]=v0e[2];
 	}
 
-	Matrix3x3.DEFAULT=new Matrix3x3();
 	__static(Matrix3x3,
-	['_tempV30',function(){return this._tempV30=new Vector3();},'_tempV31',function(){return this._tempV31=new Vector3();},'_tempV32',function(){return this._tempV32=new Vector3();}
+	['DEFAULT',function(){return this.DEFAULT=new Matrix3x3();},'_tempV30',function(){return this._tempV30=new Vector3();},'_tempV31',function(){return this._tempV31=new Vector3();},'_tempV32',function(){return this._tempV32=new Vector3();}
 	]);
 	return Matrix3x3;
 })()
@@ -16594,7 +16052,7 @@ var OrientedBoundBox=(function(){
 			var _tempV30ez=Math.abs(_tempV30e[2]);
 			if (MathUtils3D.nearEqual(_tempV30ex,extentsex)&& MathUtils3D.nearEqual(_tempV30ey,extentsey)&& MathUtils3D.nearEqual(_tempV30ez,extentsez))
 				containsAny=true;
-			if (_tempV30ex < extentsex && _tempV30ey < extentsey && _tempV30ez < extentsez)
+			if (_tempV30ex < extentsex && _tempV30ey < extentsey && extentsez < _tempV30ez)
 				containsAny=true;
 			else
 			containsAll=false;
@@ -16650,8 +16108,6 @@ var OrientedBoundBox=(function(){
 	}
 
 	/**
-	*For accuracy,The transformation matrix for both <see cref="OrientedBoundingBox"/> must not have any scaling applied to it.
-	*Anyway,scaling using Scale method will keep this method accurate.
 	*该包围盒是否包含空间中另一OBB包围盒
 	*@param obb OBB包围盒
 	*@return 返回位置关系
@@ -16716,8 +16172,8 @@ var OrientedBoundBox=(function(){
 			for (k=0;k < 3;k++){
 				var i1=(i+1)% 3,i2=(i+2)% 3;
 				var k1=(k+1)% 3,k2=(k+2)% 3;
-				extentA=sizeAe[i1] *OrientedBoundBox._tempM1.getElementByRowColumn(i2,k)+sizeAe[i2] *OrientedBoundBox._tempM1.getElementByRowColumn(i1,k);
-				extentB=sizeBe[k1] *OrientedBoundBox._tempM1.getElementByRowColumn(i,k2)+sizeBe[k2] *OrientedBoundBox._tempM1.getElementByRowColumn(i,k1);
+				extentA=sizeAe[i1] *OrientedBoundBox._tempM1.getElementByRowColumn(i2,k)+sizeBe[i2] *OrientedBoundBox._tempM1.getElementByRowColumn(i1,k);
+				extentB=sizeAe[k1] *OrientedBoundBox._tempM1.getElementByRowColumn(i,k2)+sizeBe[k2] *OrientedBoundBox._tempM1.getElementByRowColumn(i,k1);
 				separation=Math.abs(vsepAe[i2] *OrientedBoundBox._tempM0.getElementByRowColumn(i1,k)-vsepAe[i1] *OrientedBoundBox._tempM0.getElementByRowColumn(i2,k));
 				if (separation > extentA+extentB)
 					return 0;
@@ -17602,9 +17058,8 @@ var Quaternion=(function(){
 		}
 	}
 
-	Quaternion.DEFAULT=new Quaternion();
 	__static(Quaternion,
-	['TEMPVector30',function(){return this.TEMPVector30=new Vector3();},'TEMPVector31',function(){return this.TEMPVector31=new Vector3();},'TEMPVector32',function(){return this.TEMPVector32=new Vector3();},'TEMPVector33',function(){return this.TEMPVector33=new Vector3();},'TEMPMatrix0',function(){return this.TEMPMatrix0=new Matrix4x4();},'TEMPMatrix1',function(){return this.TEMPMatrix1=new Matrix4x4();},'_tempMatrix3x3',function(){return this._tempMatrix3x3=new Matrix3x3();},'NAN',function(){return this.NAN=new Quaternion(NaN,NaN,NaN,NaN);}
+	['TEMPVector30',function(){return this.TEMPVector30=new Vector3();},'TEMPVector31',function(){return this.TEMPVector31=new Vector3();},'TEMPVector32',function(){return this.TEMPVector32=new Vector3();},'TEMPVector33',function(){return this.TEMPVector33=new Vector3();},'TEMPMatrix0',function(){return this.TEMPMatrix0=new Matrix4x4();},'TEMPMatrix1',function(){return this.TEMPMatrix1=new Matrix4x4();},'_tempMatrix3x3',function(){return this._tempMatrix3x3=new Matrix3x3();},'DEFAULT',function(){return this.DEFAULT=new Quaternion();},'NAN',function(){return this.NAN=new Quaternion(NaN,NaN,NaN,NaN);}
 	]);
 	return Quaternion;
 })()
@@ -18115,18 +17570,8 @@ var Vector3=(function(){
 		return MathUtils3D.nearEqual(Math.abs(ae[0]),Math.abs(be[0]))&& MathUtils3D.nearEqual(Math.abs(ae[1]),Math.abs(be[1]))&& MathUtils3D.nearEqual(Math.abs(ae[2]),Math.abs(be[2]));
 	}
 
-	Vector3.ZERO=new Vector3(0.0,0.0,0.0);
-	Vector3.ONE=new Vector3(1.0,1.0,1.0);
-	Vector3.NegativeUnitX=new Vector3(-1,0,0);
-	Vector3.UnitX=new Vector3(1,0,0);
-	Vector3.UnitY=new Vector3(0,1,0);
-	Vector3.UnitZ=new Vector3(0,0,1);
-	Vector3.ForwardRH=new Vector3(0,0,-1);
-	Vector3.ForwardLH=new Vector3(0,0,1);
-	Vector3.Up=new Vector3(0,1,0);
-	Vector3.NAN=new Vector3(NaN,NaN,NaN);
 	__static(Vector3,
-	['_tempVector4',function(){return this._tempVector4=new Vector4();}
+	['_tempVector4',function(){return this._tempVector4=new Vector4();},'ZERO',function(){return this.ZERO=new Vector3(0.0,0.0,0.0);},'ONE',function(){return this.ONE=new Vector3(1.0,1.0,1.0);},'NegativeUnitX',function(){return this.NegativeUnitX=new Vector3(-1,0,0);},'UnitX',function(){return this.UnitX=new Vector3(1,0,0);},'UnitY',function(){return this.UnitY=new Vector3(0,1,0);},'UnitZ',function(){return this.UnitZ=new Vector3(0,0,1);},'ForwardRH',function(){return this.ForwardRH=new Vector3(0,0,-1);},'ForwardLH',function(){return this.ForwardLH=new Vector3(0,0,1);},'Up',function(){return this.Up=new Vector3(0,1,0);},'NAN',function(){return this.NAN=new Vector3(NaN,NaN,NaN);}
 	]);
 	return Vector3;
 })()
@@ -18552,8 +17997,13 @@ var Sky=(function(){
 		//this._environmentDiffuse=null;
 		/**@private */
 		//this._environmentSpecular=null;
+		/**@private */
+		//this._conchSky=null;
 		;
 		this._shaderValue=new ValusArray();
+		if (Render.isConchNode){
+			this._conchSky=new ConchSkyMesh();
+		}
 	}
 
 	__class(Sky,'laya.d3.resource.models.Sky');
@@ -18636,6 +18086,9 @@ var Sky=(function(){
 			this._alphaBlending=0;
 		if (this._alphaBlending > 1)
 			this._alphaBlending=1;
+		if (this._conchSky){
+			this._conchSky.setShaderValue(2,this._alphaBlending,2);
+		}
 	});
 
 	__getset(0,__proto,'envDiffuseSHBlue',null,function(value){
@@ -18656,6 +18109,9 @@ var Sky=(function(){
 		this._colorIntensity=value;
 		if (this._colorIntensity < 0)
 			this._colorIntensity=0;
+		if (this._conchSky){
+			this._conchSky.setShaderValue(1,this._colorIntensity,2);
+		}
 	});
 
 	__getset(0,__proto,'envDiffuseSHGreen',null,function(value){
@@ -18934,6 +18390,12 @@ var SubMesh=(function(){
 		this._bufferUsage=null;
 		this._vertexBuffer=null;
 		this._indexBuffer=null;
+	}
+
+	/**NATIVE*/
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){
+		var material=renderElement._material,owner=renderElement._sprite3D;
+		conchGraphics3D.drawSubmesh(renderElement._conchSubmesh,0,0x0004,0,this._indexBuffer.indexCount);
 	}
 
 	/**
@@ -19237,12 +18699,9 @@ var ShaderCompile=(function(){
 	ShaderCompile.IFDEF_YES=1;
 	ShaderCompile.IFDEF_ELSE=2;
 	ShaderCompile.IFDEF_PARENT=3;
-	ShaderCompile._removeAnnotation=new RegExp("(/\\*([^*]|[\\r\\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)|(//.*)","g");
-	ShaderCompile._reg=new RegExp("(\".*\")|('.*')|([#\\w\\*-\\.+/()=<>{}\\\\]+)|([,;:\\\\])","g");
-	ShaderCompile._splitToWordExps=new RegExp("[(\".*\")]+|[('.*')]+|([ \\t=\\+\\-*/&%!<>!%\(\),;])","g");
 	ShaderCompile.includes={};
 	__static(ShaderCompile,
-	['shaderParamsMap',function(){return this.shaderParamsMap={"float":0x1406,"int":0x1404,"bool":0x8B56,"vec2":0x8B50,"vec3":0x8B51,"vec4":0x8B52,"ivec2":0x8B53,"ivec3":0x8B54,"ivec4":0x8B55,"bvec2":0x8B57,"bvec3":0x8B58,"bvec4":0x8B59,"mat2":0x8B5A,"mat3":0x8B5B,"mat4":0x8B5C,"sampler2D":0x8B5E,"samplerCube":0x8B60};},'_splitToWordExps3',function(){return this._splitToWordExps3=new RegExp("[ \\t=\\+\\-*/&%!<>!%\(\),;\\|]","g");}
+	['_removeAnnotation',function(){return this._removeAnnotation=new RegExp("(/\\*([^*]|[\\r\\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/)|(//.*)","g");},'_reg',function(){return this._reg=new RegExp("(\".*\")|('.*')|([#\\w\\*-\\.+/()=<>{}\\\\]+)|([,;:\\\\])","g");},'_splitToWordExps',function(){return this._splitToWordExps=new RegExp("[(\".*\")]+|[('.*')]+|([ \\t=\\+\\-*/&%!<>!%\(\),;])","g");},'shaderParamsMap',function(){return this.shaderParamsMap={"float":0x1406,"int":0x1404,"bool":0x8B56,"vec2":0x8B50,"vec3":0x8B51,"vec4":0x8B52,"ivec2":0x8B53,"ivec3":0x8B54,"ivec4":0x8B55,"bvec2":0x8B57,"bvec3":0x8B58,"bvec4":0x8B59,"mat2":0x8B5A,"mat3":0x8B5B,"mat4":0x8B5C,"sampler2D":0x8B5E,"samplerCube":0x8B60};},'_splitToWordExps3',function(){return this._splitToWordExps3=new RegExp("[ \\t=\\+\\-*/&%!<>!%\(\),;\\|]","g");}
 	]);
 	ShaderCompile.__init$=function(){
 		//class ShaderNode
@@ -19494,7 +18953,7 @@ var ShaderInit3D=(function(){
 			'u_lightShadowVP':[16,4],
 			'u_shadowPCFoffset':[17,4]};
 		var BLINNPHONG=Shader3D.nameKey.add("BLINNPHONG");
-		vs="attribute vec4 a_Position;\nuniform mat4 u_MvpMatrix;\n\n#if defined(DIFFUSEMAP)||((defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&(defined(SPECULARMAP)||defined(NORMALMAP)))||(defined(LIGHTMAP)&&defined(UV))\n	attribute vec2 a_Texcoord0;\n	varying vec2 v_Texcoord0;\n#endif\n\n#if defined(LIGHTMAP)&&defined(UV1)\n	attribute vec2 a_Texcoord1;\n#endif\n\n#ifdef LIGHTMAP\n	uniform vec4 u_LightmapScaleOffset;\n	varying vec2 v_LightMapUV;\n#endif\n\n#ifdef COLOR\n	attribute vec4 a_Color;\n	varying vec4 v_Color;\n#endif\n\n#ifdef BONE\n	const int c_MaxBoneCount = 24;\n	attribute vec4 a_BoneIndices;\n	attribute vec4 a_BoneWeights;\n	uniform mat4 u_Bones[c_MaxBoneCount];\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n	attribute vec3 a_Normal;\n	varying vec3 v_Normal; \n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n	uniform vec3 u_CameraPos;\n	varying vec3 v_ViewDir; \n#endif\n\n#if (defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP))&&defined(NORMALMAP)\n	attribute vec4 a_Tangent0;\n	varying vec3 v_Tangent;\n	varying vec3 v_Binormal;\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)||defined(RECEIVESHADOW)\n	uniform mat4 u_WorldMat;\n	varying vec3 v_PositionWorld;\n#endif\n\nvarying float v_posViewZ;\n#ifdef RECEIVESHADOW\n  #ifdef SHADOWMAP_PSSM1 \n  varying vec4 v_lightMVPPos;\n  uniform mat4 u_lightShadowVP[4];\n  #endif\n#endif\n\n#ifdef TILINGOFFSET\n	uniform vec4 u_TilingOffset;\n#endif\n\nvoid main_castShadow()\n{\n	#ifdef BONE\n		mat4 skinTransform=mat4(0.0);\n		skinTransform += u_Bones[int(a_BoneIndices.x)] * a_BoneWeights.x;\n		skinTransform += u_Bones[int(a_BoneIndices.y)] * a_BoneWeights.y;\n		skinTransform += u_Bones[int(a_BoneIndices.z)] * a_BoneWeights.z;\n		skinTransform += u_Bones[int(a_BoneIndices.w)] * a_BoneWeights.w;\n		vec4 position=skinTransform*a_Position;\n		gl_Position = u_MvpMatrix * position;\n	#else\n		gl_Position = u_MvpMatrix * a_Position;\n	#endif\n	 \n	//TODO没考虑UV动画呢\n	#if defined(DIFFUSEMAP)&&defined(ALPHATEST)\n		v_Texcoord0=a_Texcoord0;\n	#endif\n		v_posViewZ = gl_Position.z;\n}\n\nvoid main_normal()\n{\n	#ifdef BONE\n		mat4 skinTransform=mat4(0.0);\n		skinTransform += u_Bones[int(a_BoneIndices.x)] * a_BoneWeights.x;\n		skinTransform += u_Bones[int(a_BoneIndices.y)] * a_BoneWeights.y;\n		skinTransform += u_Bones[int(a_BoneIndices.z)] * a_BoneWeights.z;\n		skinTransform += u_Bones[int(a_BoneIndices.w)] * a_BoneWeights.w;\n		vec4 position=skinTransform*a_Position;\n		gl_Position = u_MvpMatrix * position;\n	#else\n		gl_Position = u_MvpMatrix * a_Position;\n	#endif\n\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n		mat3 worldMat;\n		#ifdef BONE\n			worldMat=mat3(u_WorldMat*skinTransform);\n		#else\n			worldMat=mat3(u_WorldMat);\n		#endif  \n		v_Normal=worldMat*a_Normal;//TODO:法线可以用\"魔法\"矩阵\n		#if (defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&defined(NORMALMAP)\n			v_Tangent=worldMat*a_Tangent0.xyz;\n			v_Binormal=cross(v_Normal,v_Tangent)*a_Tangent0.w;\n		#endif\n	#endif\n\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)||defined(RECEIVESHADOW)\n		#ifdef BONE\n			v_PositionWorld=(u_WorldMat*position).xyz;\n		#else\n			v_PositionWorld=(u_WorldMat*a_Position).xyz;\n		#endif\n	#endif\n	\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n		v_ViewDir=u_CameraPos-v_PositionWorld;\n	#endif\n\n	#if defined(DIFFUSEMAP)||((defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&(defined(SPECULARMAP)||defined(NORMALMAP)))\n		v_Texcoord0=a_Texcoord0;\n		#ifdef TILINGOFFSET\n			v_Texcoord0=(vec2(v_Texcoord0.x,v_Texcoord0.y-1.0)*u_TilingOffset.xy)+u_TilingOffset.zw;\n			v_Texcoord0=vec2(v_Texcoord0.x,1.0+v_Texcoord0.y);\n		#endif\n	#endif\n\n	#ifdef LIGHTMAP\n		#ifdef SCALEOFFSETLIGHTINGMAPUV\n			#ifdef UV1\n				v_LightMapUV=vec2(a_Texcoord1.x*u_LightmapScaleOffset.x+u_LightmapScaleOffset.z,1.0+a_Texcoord1.y*u_LightmapScaleOffset.y+u_LightmapScaleOffset.w);\n			#else\n				v_LightMapUV=vec2(a_Texcoord0.x,a_Texcoord0.y-1.0)*u_LightmapScaleOffset.xy+u_LightmapScaleOffset.zw;\n			#endif \n		#else\n			#ifdef UV1\n				v_LightMapUV=a_Texcoord1;\n			#else\n				v_LightMapUV=a_Texcoord0;\n			#endif \n		#endif \n	#endif\n\n	#ifdef COLOR\n		v_Color=a_Color;\n	#endif\n\n	#ifdef RECEIVESHADOW\n		v_posViewZ = gl_Position.w;\n		#ifdef SHADOWMAP_PSSM1 \n			v_lightMVPPos = u_lightShadowVP[0] * vec4(v_PositionWorld,1.0);\n		#endif\n	#endif\n}\n\nvoid main()\n{\n	#ifdef CASTSHADOW\n		main_castShadow();\n	#else\n		main_normal();\n	#endif\n}";
+		vs="attribute vec4 a_Position;\nuniform mat4 u_MvpMatrix;\n\n#if defined(DIFFUSEMAP)||((defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&(defined(SPECULARMAP)||defined(NORMALMAP)))||(defined(LIGHTMAP)&&defined(UV))\n	attribute vec2 a_Texcoord0;\n	varying vec2 v_Texcoord0;\n#endif\n\n#if defined(LIGHTMAP)&&defined(UV1)\n	attribute vec2 a_Texcoord1;\n#endif\n\n#ifdef LIGHTMAP\n	uniform vec4 u_LightmapScaleOffset;\n	varying vec2 v_LightMapUV;\n#endif\n\n#ifdef COLOR\n	attribute vec4 a_Color;\n	varying vec4 v_Color;\n#endif\n\n#ifdef BONE\n	const int c_MaxBoneCount = 24;\n	attribute vec4 a_BoneIndices;\n	attribute vec4 a_BoneWeights;\n	uniform mat4 u_Bones[c_MaxBoneCount];\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n	attribute vec3 a_Normal;\n	varying vec3 v_Normal; \n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n	uniform vec3 u_CameraPos;\n	varying vec3 v_ViewDir; \n#endif\n\n#if (defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP))&&defined(NORMALMAP)\n	attribute vec4 a_Tangent0;\n	varying vec3 v_Tangent;\n	varying vec3 v_Binormal;\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)||defined(RECEIVESHADOW)\n	uniform mat4 u_WorldMat;\n	varying vec3 v_PositionWorld;\n#endif\n\nvarying float v_posViewZ;\n#ifdef RECEIVESHADOW\n  #ifdef SHADOWMAP_PSSM1 \n  varying vec4 v_lightMVPPos;\n  uniform mat4 u_lightShadowVP[4];\n  #endif\n#endif\n\n#ifdef TILINGOFFSET\n	uniform vec4 u_TilingOffset;\n#endif\n\nvoid main_castShadow()\n{\n	#ifdef BONE\n		mat4 skinTransform=mat4(0.0);\n		skinTransform += u_Bones[int(a_BoneIndices.x)] * a_BoneWeights.x;\n		skinTransform += u_Bones[int(a_BoneIndices.y)] * a_BoneWeights.y;\n		skinTransform += u_Bones[int(a_BoneIndices.z)] * a_BoneWeights.z;\n		skinTransform += u_Bones[int(a_BoneIndices.w)] * a_BoneWeights.w;\n		vec4 position=skinTransform*a_Position;\n		gl_Position = u_MvpMatrix * position;\n	#else\n		gl_Position = u_MvpMatrix * a_Position;\n	#endif\n	 \n	//TODO没考虑UV动画呢\n	#if defined(DIFFUSEMAP)&&defined(ALPHATEST)\n		v_Texcoord0=a_Texcoord0;\n	#endif\n		v_posViewZ = gl_Position.z;\n}\n\nvoid main_normal()\n{\n	#ifdef BONE\n		mat4 skinTransform=mat4(0.0);\n		skinTransform += u_Bones[int(a_BoneIndices.x)] * a_BoneWeights.x;\n		skinTransform += u_Bones[int(a_BoneIndices.y)] * a_BoneWeights.y;\n		skinTransform += u_Bones[int(a_BoneIndices.z)] * a_BoneWeights.z;\n		skinTransform += u_Bones[int(a_BoneIndices.w)] * a_BoneWeights.w;\n		vec4 position=skinTransform*a_Position;\n		gl_Position = u_MvpMatrix * position;\n	#else\n		gl_Position = u_MvpMatrix * a_Position;\n	#endif\n\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n		mat3 worldMat;\n		#ifdef BONE\n			worldMat=mat3(u_WorldMat*skinTransform);\n		#else\n			worldMat=mat3(u_WorldMat);\n		#endif  \n		v_Normal=worldMat*a_Normal;//TODO:法线可以用\"魔法\"矩阵\n		#if (defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&defined(NORMALMAP)\n			v_Tangent=worldMat*a_Tangent0.xyz;\n			v_Binormal=cross(v_Normal,v_Tangent)*a_Tangent0.w;\n		#endif\n	#endif\n\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)||defined(RECEIVESHADOW)\n		#ifdef BONE\n			v_PositionWorld=(u_WorldMat*position).xyz;\n		#else\n			v_PositionWorld=(u_WorldMat*a_Position).xyz;\n		#endif\n	#endif\n	\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n		v_ViewDir=u_CameraPos-v_PositionWorld;\n	#endif\n\n	#if defined(DIFFUSEMAP)||((defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&(defined(SPECULARMAP)||defined(NORMALMAP)))\n		v_Texcoord0=a_Texcoord0;\n		#ifdef TILINGOFFSET\n			v_Texcoord0=(vec2(v_Texcoord0.x,v_Texcoord0.y-1.0)*u_TilingOffset.xy)+u_TilingOffset.zw;\n			v_Texcoord0=vec2(v_Texcoord0.x,1.0+v_Texcoord0.y);\n		#endif\n	#endif\n\n	#ifdef LIGHTMAP\n		#ifdef UV1\n			v_LightMapUV=vec2(a_Texcoord1.x*u_LightmapScaleOffset.x+u_LightmapScaleOffset.z,1.0+a_Texcoord1.y*u_LightmapScaleOffset.y+u_LightmapScaleOffset.w);\n		#else\n			v_LightMapUV=vec2(a_Texcoord0.x,a_Texcoord0.y-1.0)*u_LightmapScaleOffset.xy+u_LightmapScaleOffset.zw;\n		#endif \n	#endif\n\n	#ifdef COLOR\n		v_Color=a_Color;\n	#endif\n\n	#ifdef RECEIVESHADOW\n		v_posViewZ = gl_Position.w;\n		#ifdef SHADOWMAP_PSSM1 \n			v_lightMVPPos = u_lightShadowVP[0] * vec4(v_PositionWorld,1.0);\n		#endif\n	#endif\n}\n\nvoid main()\n{\n	#ifdef CASTSHADOW\n		main_castShadow();\n	#else\n		main_normal();\n	#endif\n}";
 		ps="#ifdef HIGHPRECISION\n	precision highp float;\n#else\n	precision mediump float;\n#endif\n\n#include \"Lighting.glsl\";\n\nuniform vec4 u_DiffuseColor;\n\n#ifdef COLOR\n	varying vec4 v_Color;\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n	varying vec3 v_ViewDir; \n#endif\n\n#ifdef ALPHATEST\n	uniform float u_AlphaTestValue;\n#endif\n\n#ifdef DIFFUSEMAP\n	uniform sampler2D u_DiffuseTexture;\n#endif\n\n#ifdef REFLECTMAP\n	uniform samplerCube u_ReflectTexture;\n	uniform vec3 u_MaterialReflect;\n#endif\n\n#if defined(DIFFUSEMAP)||((defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&(defined(SPECULARMAP)||defined(NORMALMAP)))\n	varying vec2 v_Texcoord0;\n#endif\n\n#ifdef LIGHTMAP\n	varying vec2 v_LightMapUV;\n	uniform sampler2D u_LightMap;\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n	uniform vec3 u_MaterialSpecular;\n	uniform float u_Shininess;\n	#ifdef SPECULARMAP \n		uniform sampler2D u_SpecularTexture;\n	#endif\n#endif\n\n#ifdef FOG\n	uniform float u_FogStart;\n	uniform float u_FogRange;\n	#ifdef ADDTIVEFOG\n	#else\n		uniform vec3 u_FogColor;\n	#endif\n#endif\n\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n	varying vec3 v_Normal;\n#endif\n\n#if (defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&defined(NORMALMAP)\n	uniform sampler2D u_NormalTexture;\n	varying vec3 v_Tangent;\n	varying vec3 v_Binormal;\n#endif\n\n#ifdef DIRECTIONLIGHT\n	uniform DirectionLight u_DirectionLight;\n#endif\n\n#ifdef POINTLIGHT\n	uniform PointLight u_PointLight;\n#endif\n\n#ifdef SPOTLIGHT\n	uniform SpotLight u_SpotLight;\n#endif\n\nuniform vec3 u_AmbientColor;\n\n\n#if defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)||defined(RECEIVESHADOW)\n	varying vec3 v_PositionWorld;\n#endif\n\n#include \"ShadowHelper.glsl\"\nvarying float v_posViewZ;\n#ifdef RECEIVESHADOW\n	#if defined(SHADOWMAP_PSSM2)||defined(SHADOWMAP_PSSM3)\n		uniform mat4 u_lightShadowVP[4];\n	#endif\n	#ifdef SHADOWMAP_PSSM1 \n		varying vec4 v_lightMVPPos;\n	#endif\n#endif\n\nvoid main_castShadow()\n{\n	//gl_FragColor=vec4(v_posViewZ,0.0,0.0,1.0);\n	gl_FragColor=packDepth(v_posViewZ);\n	#if defined(DIFFUSEMAP)&&defined(ALPHATEST)\n		float alpha = texture2D(u_DiffuseTexture,v_Texcoord0).w;\n		if( alpha < u_AlphaTestValue )\n		{\n			discard;\n		}\n	#endif\n}\nvoid main_normal()\n{\n	vec4 mainColor=u_DiffuseColor;\n	#ifdef DIFFUSEMAP\n		vec4 difTexColor=texture2D(u_DiffuseTexture, v_Texcoord0);\n		mainColor=mainColor*difTexColor;\n	#endif \n	#ifdef COLOR\n		mainColor=mainColor*v_Color;\n	#endif \n    \n	#ifdef ALPHATEST\n		if(mainColor.a<u_AlphaTestValue)\n			discard;\n	#endif\n  \n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(REFLECTMAP)\n		vec3 normal;\n		#if (defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT))&&defined(NORMALMAP)\n			vec3 normalMapSample = texture2D(u_NormalTexture, v_Texcoord0).rgb;\n			normal = normalize(NormalSampleToWorldSpace(normalMapSample, v_Normal, v_Tangent,v_Binormal));\n		#else\n			normal = normalize(v_Normal);\n		#endif\n	#endif\n	\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n		vec3 viewDir= normalize(v_ViewDir);\n		vec3 diffuse = vec3(0.0);\n		vec3 specular= vec3(0.0);\n		vec3 dif,spe;\n		#ifdef SPECULARMAP\n			vec3 gloss=texture2D(u_SpecularTexture, v_Texcoord0).rgb;\n		#else\n			#ifdef DIFFUSEMAP\n				vec3 gloss=vec3(difTexColor.a);\n			#else\n				vec3 gloss=vec3(1.0);\n			#endif\n		#endif\n	#endif\n\n	\n	#ifdef DIRECTIONLIGHT\n		LayaAirBlinnPhongDiectionLight(u_MaterialSpecular,u_Shininess,normal,gloss,viewDir,u_DirectionLight,dif,spe);\n		diffuse+=dif;\n		specular+=spe;\n	#endif\n \n	#ifdef POINTLIGHT\n		LayaAirBlinnPhongPointLight(v_PositionWorld,u_MaterialSpecular,u_Shininess,normal,gloss,viewDir,u_PointLight,dif,spe);\n		diffuse+=dif;\n		specular+=spe;\n	#endif\n\n	#ifdef SPOTLIGHT\n		LayaAirBlinnPhongSpotLight(v_PositionWorld,u_MaterialSpecular,u_Shininess,normal,gloss,viewDir,u_SpotLight,dif,spe);\n		diffuse+=dif;\n		specular+=spe;\n	#endif\n\n	\n	vec3 finalDiffuse;\n	#ifdef LIGHTMAP\n		finalDiffuse=texture2D(u_LightMap, v_LightMapUV).rgb*2.0;\n		//float exponent = texture2D(u_LightMap, v_LightMapUV).a;\n		//finalDiffuse = texture2D(u_LightMap, v_LightMapUV).rgb;\n		//float ratio = pow(2.0, exponent * 255.0 - (128.0 + 8.0));\n		//finalDiffuse = finalDiffuse * 255.0 * ratio;	\n		//finalDiffuse = sqrt(finalDiffuse);\n	#else\n		finalDiffuse=vec3(0.0);\n	#endif\n\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n		finalDiffuse+=diffuse;\n	#endif\n\n	#ifdef RECEIVESHADOW\n		float shadowValue = 1.0;\n		#ifdef SHADOWMAP_PSSM3\n			shadowValue = getShadowPSSM3( u_shadowMap1,u_shadowMap2,u_shadowMap3,u_lightShadowVP,u_shadowPSSMDistance,u_shadowPCFoffset,v_PositionWorld,v_posViewZ,0.001);\n		#endif\n		#ifdef SHADOWMAP_PSSM2\n			shadowValue = getShadowPSSM2( u_shadowMap1,u_shadowMap2,u_lightShadowVP,u_shadowPSSMDistance,u_shadowPCFoffset,v_PositionWorld,v_posViewZ,0.001);\n		#endif \n		#ifdef SHADOWMAP_PSSM1\n			shadowValue = getShadowPSSM1( u_shadowMap1,v_lightMVPPos,u_shadowPSSMDistance,u_shadowPCFoffset,v_posViewZ,0.001);\n		#endif\n		gl_FragColor =vec4(mainColor.rgb*(u_AmbientColor + finalDiffuse)*shadowValue,mainColor.a);\n	#else\n		gl_FragColor =vec4(mainColor.rgb*(u_AmbientColor + finalDiffuse),mainColor.a);\n	#endif\n	\n\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n		#ifdef RECEIVESHADOW\n			gl_FragColor.rgb+=specular*shadowValue;\n		#else\n			gl_FragColor.rgb+=specular;\n		#endif\n	#endif\n\n\n	#ifdef REFLECTMAP\n		vec3 incident = -viewDir;\n		vec3 reflectionVector = reflect(incident,normal);\n		vec3 reflectionColor  = textureCube(u_ReflectTexture,reflectionVector).rgb;\n		gl_FragColor.rgb += u_MaterialReflect*reflectionColor;\n	#endif\n	  \n	#ifdef FOG\n		float lerpFact=clamp((1.0/gl_FragCoord.w-u_FogStart)/u_FogRange,0.0,1.0);\n		#ifdef ADDTIVEFOG\n			gl_FragColor.rgb=mix(gl_FragColor.rgb,vec3(0.0,0.0,0.0),lerpFact);\n		#else\n			gl_FragColor.rgb=mix(gl_FragColor.rgb,u_FogColor,lerpFact);\n		#endif\n	#endif\n}\n\nvoid main()\n{\n	#ifdef CASTSHADOW		\n		main_castShadow();\n	#else\n	  main_normal();\n	#endif  \n}\n\n";
 		var shaderCompile=ShaderCompile3D.add(BLINNPHONG,vs,ps,attributeMap,uniformMap);
 		BlinnPhongMaterial.SHADERDEFINE_DIFFUSEMAP=shaderCompile.registerMaterialDefine("DIFFUSEMAP");
@@ -20063,12 +19522,12 @@ var ShaderInit3D=(function(){
 		ps="#ifdef HIGHPRECISION\n	precision highp float;\n#else\n	precision mediump float;\n#endif\n\n#include \"LightHelper.glsl\";\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(FOG)\n	uniform vec3 u_MaterialDiffuse;\n	uniform vec4 u_MaterialSpecular;\n	uniform vec3 u_CameraPos;\n	varying vec3 v_Normal;\n	varying vec3 v_PositionWorld;\n#endif\n\n#ifdef FOG\n	uniform float u_FogStart;\n	uniform float u_FogRange;\n	uniform vec3 u_FogColor;\n#endif\n\n\n#ifdef DIRECTIONLIGHT\n	uniform DirectionLight u_DirectionLight;\n#endif\n\n#ifdef POINTLIGHT\n	uniform PointLight u_PointLight;\n#endif\n\n#ifdef SPOTLIGHT\n	uniform SpotLight u_SpotLight;\n#endif\n\nuniform vec3 u_AmbientColor;\n\n#include \"ShadowHelper.glsl\"\n#ifdef RECEIVESHADOW\n	#if defined(SHADOWMAP_PSSM2)||defined(SHADOWMAP_PSSM3)\n	uniform mat4 u_lightShadowVP[4];\n	#endif\n	#ifdef SHADOWMAP_PSSM1 \n	varying vec4 v_lightMVPPos;\n	#endif\n#endif\nvarying float v_posViewZ;\n\n\nuniform sampler2D u_SplatAlphaTexture;\n\nuniform sampler2D u_DiffuseTexture1;\nuniform sampler2D u_DiffuseTexture2;\nuniform sampler2D u_DiffuseTexture3;\nuniform sampler2D u_DiffuseTexture4;\nuniform sampler2D u_DiffuseTexture5;\n\nuniform vec4 u_DiffuseScaleOffset1;\nuniform vec4 u_DiffuseScaleOffset2;\nuniform vec4 u_DiffuseScaleOffset3;\nuniform vec4 u_DiffuseScaleOffset4;\nuniform vec4 u_DiffuseScaleOffset5;\n\nvarying vec2 v_Texcoord0;\n\nuniform vec3 u_MaterialAmbient;\nuniform vec4 u_MaterialAlbedo;\n\n#ifdef LIGHTMAP\n	uniform sampler2D u_LightMap;\n	varying vec2 v_LightMapUV;\n#endif\n\nvoid main()\n{\n	#ifdef ExtendTerrain_DETAIL_NUM1\n		vec4 splatAlpha = texture2D(u_SplatAlphaTexture, v_Texcoord0);\n		vec4 color1 = texture2D(u_DiffuseTexture1, v_Texcoord0 * u_DiffuseScaleOffset1.xy);\n		gl_FragColor.xyz = color1.xyz * splatAlpha.r;\n	#endif\n	#ifdef ExtendTerrain_DETAIL_NUM2\n		vec4 splatAlpha = texture2D(u_SplatAlphaTexture, v_Texcoord0);\n		vec4 color1 = texture2D(u_DiffuseTexture1, v_Texcoord0 * u_DiffuseScaleOffset1.xy);\n		vec4 color2 = texture2D(u_DiffuseTexture2, v_Texcoord0 * u_DiffuseScaleOffset2.xy);\n		gl_FragColor.xyz = color1.xyz * splatAlpha.r + color2.xyz * (1.0 - splatAlpha.r);\n	#endif\n	#ifdef ExtendTerrain_DETAIL_NUM3\n		vec4 splatAlpha = texture2D(u_SplatAlphaTexture, v_Texcoord0);\n		vec4 color1 = texture2D(u_DiffuseTexture1, v_Texcoord0 * u_DiffuseScaleOffset1.xy);\n		vec4 color2 = texture2D(u_DiffuseTexture2, v_Texcoord0 * u_DiffuseScaleOffset2.xy);\n		vec4 color3 = texture2D(u_DiffuseTexture3, v_Texcoord0 * u_DiffuseScaleOffset3.xy);\n		gl_FragColor.xyz = color1.xyz * splatAlpha.r  + color2.xyz * splatAlpha.g + color3.xyz * (1.0 - splatAlpha.r - splatAlpha.g);\n	#endif\n	#ifdef ExtendTerrain_DETAIL_NUM4\n		vec4 splatAlpha = texture2D(u_SplatAlphaTexture, v_Texcoord0);\n		vec4 color1 = texture2D(u_DiffuseTexture1, v_Texcoord0 * u_DiffuseScaleOffset1.xy);\n		vec4 color2 = texture2D(u_DiffuseTexture2, v_Texcoord0 * u_DiffuseScaleOffset2.xy);\n		vec4 color3 = texture2D(u_DiffuseTexture3, v_Texcoord0 * u_DiffuseScaleOffset3.xy);\n		vec4 color4 = texture2D(u_DiffuseTexture4, v_Texcoord0 * u_DiffuseScaleOffset4.xy);\n		gl_FragColor.xyz = color1.xyz * splatAlpha.r  + color2.xyz * splatAlpha.g + color3.xyz * splatAlpha.b + color4.xyz * (1.0 - splatAlpha.r - splatAlpha.g - splatAlpha.b);\n	#endif\n	#ifdef ExtendTerrain_DETAIL_NUM5\n		vec4 splatAlpha = texture2D(u_SplatAlphaTexture, v_Texcoord0);\n		vec4 color1 = texture2D(u_DiffuseTexture1, v_Texcoord0 * u_DiffuseScaleOffset1.xy);\n		vec4 color2 = texture2D(u_DiffuseTexture2, v_Texcoord0 * u_DiffuseScaleOffset2.xy);\n		vec4 color3 = texture2D(u_DiffuseTexture3, v_Texcoord0 * u_DiffuseScaleOffset3.xy);\n		vec4 color4 = texture2D(u_DiffuseTexture4, v_Texcoord0 * u_DiffuseScaleOffset4.xy);\n		vec4 color5 = texture2D(u_DiffuseTexture5, v_Texcoord0 * u_DiffuseScaleOffset5.xy);\n		gl_FragColor.xyz = color1.xyz * splatAlpha.r  + color2.xyz * splatAlpha.g + color3.xyz * splatAlpha.b + color4.xyz * splatAlpha.a + color5.xyz * (1.0 - splatAlpha.r - splatAlpha.g - splatAlpha.b - splatAlpha.a);\n	#endif\n		gl_FragColor.w = splatAlpha.a;\n		\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n    vec3 normal = v_Normal;\n	vec3 diffuse = vec3(0.0);\n	vec3 ambient = vec3(0.0);\n	vec3 specular= vec3(0.0);\n	vec3 dif, amb, spe;\n#endif\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)||defined(FOG)\n	vec3 toEye;\n	#ifdef FOG\n		toEye=u_CameraPos-v_PositionWorld;\n		float toEyeLength=length(toEye);\n		toEye/=toEyeLength;\n	#else\n		toEye=normalize(u_CameraPos-v_PositionWorld);\n	#endif\n#endif\n\n#ifdef DIRECTIONLIGHT\n	computeDirectionLight(u_MaterialDiffuse,u_MaterialAmbient,u_MaterialSpecular,u_DirectionLight,u_AmbientColor,normal,toEye, dif, amb, spe);\n	diffuse+=dif;\n	ambient+=amb;\n	specular+=spe;\n#endif\n \n#ifdef POINTLIGHT\n	computePointLight(u_MaterialDiffuse,u_MaterialAmbient,u_MaterialSpecular,u_PointLight,u_AmbientColor,v_PositionWorld,normal,toEye, dif, amb, spe);\n	diffuse+=dif;\n	ambient+=amb;\n	specular+=spe;\n#endif\n\n#ifdef SPOTLIGHT\n	ComputeSpotLight(u_MaterialDiffuse,u_MaterialAmbient,u_MaterialSpecular,u_SpotLight,u_AmbientColor,v_PositionWorld,normal,toEye, dif, amb, spe);\n	diffuse+=dif;\n	ambient+=amb;\n	specular+=spe;\n#endif\n\n#ifdef RECEIVESHADOW\n	float shadowValue = 1.0;\n	#ifdef SHADOWMAP_PSSM3\n		shadowValue = getShadowPSSM3( u_shadowMap1,u_shadowMap2,u_shadowMap3,u_lightShadowVP,u_shadowPSSMDistance,u_shadowPCFoffset,v_PositionWorld,v_posViewZ,0.001);\n	#endif\n	#ifdef SHADOWMAP_PSSM2\n		shadowValue = getShadowPSSM2( u_shadowMap1,u_shadowMap2,u_lightShadowVP,u_shadowPSSMDistance,u_shadowPCFoffset,v_PositionWorld,v_posViewZ,0.001);\n	#endif \n	#ifdef SHADOWMAP_PSSM1\n		shadowValue = getShadowPSSM1( u_shadowMap1,v_lightMVPPos,u_shadowPSSMDistance,u_shadowPCFoffset,v_posViewZ,0.001);\n	#endif\n#endif\n\n#ifdef LIGHTMAP\n	#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n		gl_FragColor.rgb=gl_FragColor.rgb*(u_MaterialAmbient + texture2D(u_LightMap, v_LightMapUV).rgb);\n	#else\n		#if defined(RECEIVESHADOW)		\n			gl_FragColor.rgb=gl_FragColor.rgb*(u_MaterialAmbient+texture2D(u_LightMap, v_LightMapUV).rgb * shadowValue);\n			//vec3 tColor= u_MaterialAmbient + texture2D(u_LightMap, v_LightMapUV).rgb * shadowValue + mix(vec3(0.15,0.15,0.15),vec3(0.0),shadowValue);\n			//gl_FragColor.rgb*=tColor;\n		#else\n			gl_FragColor.rgb=gl_FragColor.rgb*(u_MaterialAmbient + texture2D(u_LightMap, v_LightMapUV).rgb);\n		#endif\n	#endif\n#endif\n\ngl_FragColor=gl_FragColor*u_MaterialAlbedo;\n\n#if defined(DIRECTIONLIGHT)||defined(POINTLIGHT)||defined(SPOTLIGHT)\n	#ifdef RECEIVESHADOW\n		gl_FragColor = vec4( gl_FragColor.rgb*(ambient + diffuse*shadowValue) + specular * shadowValue,gl_FragColor.a);\n	#else\n		gl_FragColor =vec4( gl_FragColor.rgb*(ambient + diffuse) + specular, gl_FragColor.a);\n	#endif\n#endif\n\n#ifdef FOG\n	float lerpFact=clamp((toEyeLength-u_FogStart)/u_FogRange,0.0,1.0);\n	gl_FragColor.rgb=mix(gl_FragColor.rgb,u_FogColor,lerpFact);\n#endif\n}\n\n\n\n\n\n";
 		var extendTerrainCompile3D=ShaderCompile3D.add(extendTerrainShader,vs,ps,attributeMap,uniformMap);
 		extendTerrainCompile3D.addSpriteDefines(RenderableSprite3D.shaderDefines);
-		extendTerrainCompile3D.addMaterialDefines(ExtendTerrainMaterial.shaderDefines);
+		extendTerrainCompile3D.addSpriteDefines(ExtendTerrainMaterial.shaderDefines);
 		attributeMap={
 			'a_Position' :0,
-			'a_OffsetVector':41,
+			'a_OffsetVector':40,
 			'a_Texcoord0X' :38,
-			'a_Texcoord0Y' :40,
+			'a_Texcoord0Y' :39,
 			'a_BirthTime' :33
 		};
 		uniformMap={
@@ -20086,7 +19545,7 @@ var ShaderInit3D=(function(){
 			'u_GradientAlphakey' :[8,2]
 		};
 		var trailShader=Shader3D.nameKey.add("Trail");
-		vs="attribute vec3 a_Position;\nattribute vec3 a_OffsetVector;\nattribute vec4 a_Color;\nattribute float a_Texcoord0X;\nattribute float a_Texcoord0Y;\nattribute float a_BirthTime;\n\nuniform mat4 u_VMatrix;\nuniform mat4 u_PMatrix;\n\nuniform vec4 u_TilingOffset;\n\nuniform float u_CurTime;\nuniform float u_LifeTime;\nuniform vec4 u_WidthCurve[10];\nuniform int u_WidthCurveKeyLength;\n\nuniform vec4 u_GradientColorkey[10];\nuniform vec2 u_GradientAlphakey[10];\n\nvarying vec2 v_Texcoord0;\nvarying vec4 v_Color;\n\nfloat hermiteInterpolate(float t, float outTangent, float inTangent, float duration, float value1, float value2)\n{\n	float t2 = t * t;\n	float t3 = t2 * t;\n	float a = 2.0 * t3 - 3.0 * t2 + 1.0;\n	float b = t3 - 2.0 * t2 + t;\n	float c = t3 - t2;\n	float d = -2.0 * t3 + 3.0 * t2;\n	return a * value1 + b * outTangent * duration + c * inTangent * duration + d * value2;\n}\n\nfloat getCurWidth(in float normalizeTime)\n{\n	if(normalizeTime == 0.0){\n		return u_WidthCurve[0].w;\n	}\n	else if(normalizeTime >= 1.0){\n		return u_WidthCurve[u_WidthCurveKeyLength - 1].w;\n	}\n	else{\n		for(int i = 0; i < 10; i ++ )\n		{\n			if(normalizeTime == u_WidthCurve[i].x)\n			{\n				return u_WidthCurve[i].w;\n			}\n			\n			vec4 lastFrame = u_WidthCurve[i];\n			vec4 nextFrame = u_WidthCurve[i + 1];\n			if(normalizeTime > lastFrame.x && normalizeTime < nextFrame.x)\n			{\n				float duration = nextFrame.x - lastFrame.x;\n				float t = (normalizeTime - lastFrame.x) / duration;\n				float outTangent = lastFrame.z;\n				float inTangent = nextFrame.y;\n				float value1 = lastFrame.w;\n				float value2 = nextFrame.w;\n				return hermiteInterpolate(t, outTangent, inTangent, duration, value1, value2);\n			}\n		}	\n	}\n}	\n\nvec4 getColorFromGradientByBlend(in vec4 gradientColors[10], in vec2 gradientAlphas[10], in float normalizeTime)\n{\n	vec4 color;\n	for(int i = 1; i < 10; i++)\n	{\n		vec4 gradientColor = gradientColors[i];\n		float colorKey = gradientColor.w;\n		if(colorKey >= normalizeTime)\n		{\n			vec4 lastGradientColor = gradientColors[i-1];\n			float lastColorKey = lastGradientColor.w;\n			float age = (normalizeTime - lastColorKey) / (colorKey - lastColorKey);\n			color.rgb = mix(gradientColors[i-1].xyz, gradientColor.xyz, age);\n			break;\n		}\n	}\n	for(int i = 1; i < 10; i++)\n	{\n		vec2 gradientAlpha = gradientAlphas[i];\n		float alphaKey = gradientAlpha.y;\n		if(alphaKey >= normalizeTime)\n		{\n			vec2 lastGradientAlpha = gradientAlphas[i-1];\n			float lastAlphaKey = lastGradientAlpha.y;\n			float age = (normalizeTime - lastAlphaKey) / (alphaKey - lastAlphaKey);\n			color.a = mix(lastGradientAlpha.x, gradientAlpha.x, age);\n			break;\n		}\n	}\n	return color;\n}\n\nvec4 getColorFromGradientByFixed(in vec4 gradientColors[10], in vec2 gradientAlphas[10], in float normalizeTime)\n{\n	vec4 color;\n	for(int i = 1; i < 10; i++)\n	{\n		vec4 gradientColor = gradientColors[i];\n		if(gradientColor.w >= normalizeTime)\n		{\n			color.rgb = gradientColor.xyz;\n			break;\n		}\n	}\n	for(int i = 1; i < 10; i++)\n	{\n		vec2 gradientAlpha = gradientAlphas[i];\n		if(gradientAlpha.y >= normalizeTime)\n		{\n			color.a = gradientAlpha.x;\n			break;\n		}\n	}\n	return color;\n}\n\nvoid main()\n{\n	float normalizeTime = (u_CurTime - a_BirthTime) / u_LifeTime;\n	\n	gl_Position = u_PMatrix * u_VMatrix * vec4(a_Position + a_OffsetVector * getCurWidth(normalizeTime),1.0);\n	\n	#ifdef TILINGOFFSET\n		v_Texcoord0 = (vec2(a_Texcoord0X, a_Texcoord0Y) * u_TilingOffset.xy) + u_TilingOffset.zw;\n	#else\n		v_Texcoord0 = vec2(a_Texcoord0X, a_Texcoord0Y);\n	#endif\n	\n	#ifdef GRADIENTMODE_BLEND\n		v_Color = getColorFromGradientByBlend(u_GradientColorkey, u_GradientAlphakey, normalizeTime);\n	#else\n		v_Color = getColorFromGradientByFixed(u_GradientColorkey, u_GradientAlphakey, normalizeTime);\n	#endif\n}\n\n\n\n";
+		vs="attribute vec3 a_Position;\nattribute vec3 a_OffsetVector;\nattribute vec4 a_Color;\nattribute float a_Texcoord0X;\nattribute float a_Texcoord0Y;\nattribute float a_BirthTime;\n\nuniform mat4 u_VMatrix;\nuniform mat4 u_PMatrix;\n\nuniform vec4 u_TilingOffset;\n\nuniform float u_CurTime;\nuniform float u_LifeTime;\nuniform vec4 u_WidthCurve[10];\nuniform int u_WidthCurveKeyLength;\n\nuniform vec4 u_GradientColorkey[10];\nuniform vec2 u_GradientAlphakey[10];\n\nvarying vec2 v_Texcoord0;\nvarying vec4 v_Color;\n\nfloat hermiteInterpolate(float t, float outTangent, float inTangent, float duration, float value1, float value2)\n{\n	float t2 = t * t;\n	float t3 = t2 * t;\n	float a = 2.0 * t3 - 3.0 * t2 + 1.0;\n	float b = t3 - 2.0 * t2 + t;\n	float c = t3 - t2;\n	float d = -2.0 * t3 + 3.0 * t2;\n	return a * value1 + b * outTangent * duration + c * inTangent * duration + d * value2;\n}\n\nfloat getCurWidth(in float normalizeTime)\n{\n	if(normalizeTime == 0.0){\n		return u_WidthCurve[0].w;\n	}\n	else if(normalizeTime >= 1.0){\n		return u_WidthCurve[u_WidthCurveKeyLength - 1].w;\n	}\n	else{\n		for(int i = 0; i < 10; i ++ )\n		{\n			if(normalizeTime == u_WidthCurve[i].x)\n			{\n				return u_WidthCurve[i].w;\n			}\n			\n			vec4 lastFrame = u_WidthCurve[i];\n			vec4 nextFrame = u_WidthCurve[i + 1];\n			if(normalizeTime > lastFrame.x && normalizeTime < nextFrame.x)\n			{\n				float duration = nextFrame.x - lastFrame.x;\n				float t = (normalizeTime - lastFrame.x) / duration;\n				float outTangent = lastFrame.z;\n				float inTangent = nextFrame.y;\n				float value1 = lastFrame.w;\n				float value2 = nextFrame.w;\n				return hermiteInterpolate(t, outTangent, inTangent, duration, value1, value2);\n			}\n		}	\n	}\n}	\n\nvec4 getColorFromGradientByBlend(in vec4 gradientColors[10], in vec2 gradientAlphas[10], in float normalizeTime)\n{\n	vec4 color;\n	for(int i = 1; i < 10; i++)\n	{\n		vec4 gradientColor = gradientColors[i];\n		float colorKey = gradientColor.w;\n		if(colorKey >= normalizeTime)\n		{\n			vec4 lastGradientColor = gradientColors[i-1];\n			float lastColorKey = lastGradientColor.w;\n			float age = (normalizeTime - lastColorKey) / (colorKey - lastColorKey);\n			color.rgb = mix(gradientColors[i-1].xyz, gradientColor.xyz, age);\n			break;\n		}\n	}\n	for(int i = 1; i < 10; i++)\n	{\n		vec2 gradientAlpha = gradientAlphas[i];\n		float alphaKey = gradientAlpha.y;\n		if(alphaKey >= normalizeTime)\n		{\n			vec2 lastGradientAlpha = gradientAlphas[i-1];\n			float lastAlphaKey = lastGradientAlpha.y;\n			float age = (normalizeTime - lastAlphaKey) / (alphaKey - lastAlphaKey);\n			color.a = mix(lastGradientAlpha.x, gradientAlpha.x, age);\n			break;\n		}\n	}\n	return color;\n}\n\nvec4 getColorFromGradientByFixed(in vec4 gradientColors[10], in vec2 gradientAlphas[10], in float normalizeTime)\n{\n	vec4 color;\n	for(int i = 1; i < 10; i++)\n	{\n		vec4 gradientColor = gradientColors[i];\n		if(gradientColor.w >= normalizeTime)\n		{\n			color.rgb = gradientColor.xyz;\n			break;\n		}\n	}\n	for(int i = 1; i < 10; i++)\n	{\n		vec2 gradientAlpha = gradientAlphas[i];\n		if(gradientAlpha.y >= normalizeTime)\n		{\n			color.a = gradientAlpha.x;\n			break;\n		}\n	}\n	return color;\n}\n\nvoid main()\n{\n	float normalizeTime = (u_CurTime - a_BirthTime) / u_LifeTime;\n	\n	gl_Position = u_PMatrix * u_VMatrix * vec4(a_Position + a_OffsetVector * getCurWidth(normalizeTime),1.0);\n	\n	v_Texcoord0 = vec2(a_Texcoord0X, a_Texcoord0Y);\n	\n	#ifdef TILINGOFFSET\n		v_Texcoord0 = (vec2(v_Texcoord0.x, v_Texcoord0.y) * u_TilingOffset.xy) + u_TilingOffset.zw;\n	#endif\n		v_Texcoord0 = vec2(v_Texcoord0.x, v_Texcoord0.y);\n		\n	v_Texcoord0 = (vec2(v_Texcoord0.x, v_Texcoord0.y) * u_TilingOffset.xy) + u_TilingOffset.zw;\n	\n	#ifdef GRADIENTMODE_BLEND\n		v_Color = getColorFromGradientByBlend(u_GradientColorkey, u_GradientAlphakey, normalizeTime);\n	#else\n		v_Color = getColorFromGradientByFixed(u_GradientColorkey, u_GradientAlphakey, normalizeTime);\n	#endif\n}\n\n\n\n";
 		ps="#ifdef HIGHPRECISION\n	precision highp float;\n#else\n	precision mediump float;\n#endif\n\nuniform sampler2D u_MainTexture;\nuniform vec4 u_MainColor;\n\nvarying vec2 v_Texcoord0;\nvarying vec4 v_Color;\n\nvoid main()\n{	\n	vec4 color = 2.0 * u_MainColor * v_Color;\n	#ifdef DIFFUSETEXTURE\n		vec4 mainTextureColor = texture2D(u_MainTexture, v_Texcoord0);\n		color *= mainTextureColor;\n	#endif\n	gl_FragColor = color;\n}\n\n";
 		var trailCompile3D=ShaderCompile3D.add(trailShader,vs,ps,attributeMap,uniformMap);
 		TrailMaterial.SHADERDEFINE_DIFFUSETEXTURE=trailCompile3D.registerMaterialDefine("DIFFUSETEXTURE");
@@ -21702,7 +21161,6 @@ var Utils3D=(function(){
 				case "TrailSprite3D":
 					node=new TrailSprite3D();
 					break ;
-					break ;
 				case "Terrain":
 					node=new Terrain();
 					break ;
@@ -22181,7 +21639,7 @@ var ClassTool=(function(){
 
 	ClassTool.getClassByName=function(className){
 		var rst;
-		rst=Laya._runScript(className);
+		rst=eval(className);
 		return rst;
 	}
 
@@ -23822,7 +23280,7 @@ var Font=(function(){
 	*规定添加到文本的修饰。
 	*/
 	__getset(0,__proto,'decoration',function(){
-		return this._decoration ? this._decoration.value :null;
+		return this._decoration ? this._decoration.value :"none";
 		},function(value){
 		var strs=value.split(' ');
 		this._decoration || (this._decoration={});
@@ -23852,10 +23310,12 @@ var Font=(function(){
 	Font.defaultSize=12;
 	Font.defaultFamily="Arial";
 	Font.defaultFont="12px Arial";
-	Font._STROKE=[0,"#000000"];
 	Font._ITALIC=0x200;
 	Font._PASSWORD=0x400;
 	Font._BOLD=0x800;
+	__static(Font,
+	['_STROKE',function(){return this._STROKE=[0,"#000000"];}
+	]);
 	return Font;
 })()
 
@@ -24311,7 +23771,6 @@ var Event=(function(){
 		return Laya.stage.mouseX;
 	});
 
-	Event.EMPTY=new Event();
 	Event.MOUSE_DOWN="mousedown";
 	Event.MOUSE_UP="mouseup";
 	Event.CLICK="click";
@@ -24378,8 +23837,10 @@ var Event=(function(){
 	Event.TRIGGER_ENTER="triggerenter";
 	Event.TRIGGER_STAY="triggerstay";
 	Event.TRIGGER_EXIT="triggerexit";
-	Event.TRAIL_FILTER_CHANGE="trailfilterchange";
-	Event.DOMINO_FILTER_CHANGE="dominofilterchange";
+	Event.TRAIL_Filter_CHANGE="trailfilterchange";
+	__static(Event,
+	['EMPTY',function(){return this.EMPTY=new Event();}
+	]);
 	return Event;
 })()
 
@@ -26062,9 +25523,10 @@ var Matrix=(function(){
 		return mat;
 	}
 
-	Matrix.EMPTY=new Matrix();
-	Matrix.TEMP=new Matrix();
 	Matrix._cache=[];
+	__static(Matrix,
+	['EMPTY',function(){return this.EMPTY=new Matrix();},'TEMP',function(){return this.TEMP=new Matrix();}
+	]);
 	return Matrix;
 })()
 
@@ -26126,8 +25588,9 @@ var Point=(function(){
 		}
 	}
 
-	Point.TEMP=new Point();
-	Point.EMPTY=new Point();
+	__static(Point,
+	['TEMP',function(){return this.TEMP=new Point();},'EMPTY',function(){return this.EMPTY=new Point();}
+	]);
 	return Point;
 })()
 
@@ -26348,10 +25811,11 @@ var Rectangle=(function(){
 		return rst.setTo(minX,minY,maxX-minX,maxY-minY);
 	}
 
-	Rectangle.EMPTY=new Rectangle();
-	Rectangle.TEMP=new Rectangle();
 	Rectangle._temB=[];
 	Rectangle._temA=[];
+	__static(Rectangle,
+	['EMPTY',function(){return this.EMPTY=new Rectangle();},'TEMP',function(){return this.TEMP=new Rectangle();}
+	]);
 	return Rectangle;
 })()
 
@@ -26372,11 +25836,7 @@ var SoundManager=(function(){
 		return SoundManager._useAudioMusic;
 		},function(value){
 		SoundManager._useAudioMusic=value;
-		if (value){
-			SoundManager._musicClass=AudioSound;
-			}else{
-			SoundManager._musicClass=null;
-		}
+		if (value)SoundManager._musicClass=AudioSound;
 	});
 
 	/**
@@ -26489,27 +25949,24 @@ var SoundManager=(function(){
 		if (SoundManager._musicChannel){
 			if (!SoundManager._musicChannel.isStopped){
 				SoundManager._blurPaused=true;
-				SoundManager._musicChannel.pause();
+				SoundManager._musicLoops=SoundManager._musicChannel.loops;
+				SoundManager._musicCompleteHandler=SoundManager._musicChannel.completeHandler;
+				SoundManager._musicPosition=SoundManager._musicChannel.position;
+				SoundManager._musicChannel.stop();
+				Laya.stage.once("mousedown",null,SoundManager._stageOnFocus);
 			}
 		}
 		SoundManager.stopAllSound();
-		Laya.stage.once("mousedown",null,SoundManager._stageOnFocus);
-	}
-
-	SoundManager._recoverWebAudio=function(){
-		if(WebAudioSound.ctx&&WebAudioSound.ctx.state!="running"&&WebAudioSound.ctx.resume)
-			WebAudioSound.ctx.resume();
 	}
 
 	SoundManager._stageOnFocus=function(){
 		SoundManager._isActive=true;
-		SoundManager._recoverWebAudio();
 		Laya.stage.off("mousedown",null,SoundManager._stageOnFocus);
 		if (SoundManager._blurPaused){
-			if (SoundManager._musicChannel && SoundManager._musicChannel.isStopped){
-				SoundManager._blurPaused=false;
-				SoundManager._musicChannel.resume();
+			if (SoundManager._tMusic){
+				SoundManager.playMusic(SoundManager._tMusic,SoundManager._musicLoops,SoundManager._musicCompleteHandler,SoundManager._musicPosition);
 			}
+			SoundManager._blurPaused=false;
 		}
 	}
 
@@ -26518,7 +25975,6 @@ var SoundManager=(function(){
 		(startTime===void 0)&& (startTime=0);
 		if (!SoundManager._isActive || !url)return null;
 		if (SoundManager._muted)return null;
-		SoundManager._recoverWebAudio();
 		url=URL.formatURL(url);
 		if (url==SoundManager._tMusic){
 			if (SoundManager._musicMuted)return null;
@@ -26540,9 +25996,7 @@ var SoundManager=(function(){
 		if (!tSound){
 			tSound=new soundClass();
 			tSound.load(url);
-			if (!Browser.onMiniGame){
-				Loader.cacheRes(url,tSound);
-			}
+			Loader.cacheRes(url,tSound);
 		};
 		var channel;
 		channel=tSound.play(startTime,loops);
@@ -26655,6 +26109,9 @@ var SoundManager=(function(){
 	SoundManager._autoStopMusic=false;
 	SoundManager._blurPaused=false;
 	SoundManager._isActive=true;
+	SoundManager._musicLoops=0;
+	SoundManager._musicPosition=0;
+	SoundManager._musicCompleteHandler=null;
 	SoundManager._soundClass=null;
 	SoundManager._musicClass=null;
 	SoundManager.autoReleaseSound=true;
@@ -26712,7 +26169,7 @@ var LocalStorage=(function(){
 			function Storage(){}
 			__class(Storage,'');
 			Storage.init=function(){
-				try{Storage.support=true;Storage.items=window.localStorage;Storage.setItem('laya','1');Storage.removeItem('laya');}catch(e){Storage.support=false;}if(!Storage.support)console.log('LocalStorage is not supprot or browser is private mode.');
+				try{Storage.items=window.localStorage;Storage.setItem('laya','1');Storage.removeItem('laya');Storage.support=true;}catch(e){}if(!Storage.support)console.log('LocalStorage is not supprot or browser is private mode.');
 			}
 			Storage.setItem=function(key,value){
 				try {
@@ -27023,7 +26480,7 @@ var Render=(function(){
 		Render._context=new RenderContext(width,height,isWebGl ? null :Render._mainCanvas);
 		Render._context.ctx.setIsMainContext();
 		Browser.window.requestAnimationFrame(loop);
-		function loop (stamp){
+		function loop (){
 			Laya.stage._loop();
 			Browser.window.requestAnimationFrame(loop);
 		}
@@ -27446,29 +26903,6 @@ var RenderContext=(function(){
 		ctx.stroke();
 	}
 
-	/**
-	*绘制三角形
-	*@param x
-	*@param y
-	*@param tex
-	*@param args [x,y,texture,vertices,indices,uvs,matrix]
-	*/
-	__proto.drawTriangles=function(x,y,args){
-		if (Render.isWebGL){
-			this.ctx.drawTriangles(args[0],x+args[1],y+args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9]);
-			}else {
-			var indices=args[5];
-			var i=0,len=indices.length;
-			var ctx=this.ctx;
-			for (i=0;i < len;i+=3){
-				var index0=indices[i] *2;
-				var index1=indices[i+1] *2;
-				var index2=indices[i+2] *2;
-				ctx.drawTriangle(args[0],args[3],args[4],index0,index1,index2,args[6],true);
-			}
-		}
-	}
-
 	__proto.fillCircle=function(x,y,radius,color){
 		Stat.drawCall++;
 		var ctx=this.ctx;
@@ -27583,7 +27017,9 @@ var RenderContext=(function(){
 		this.ctx.fillTrangles(args[0],args[1],args[2],args[3],args.length > 4 ? args[4] :null);
 	}
 
-	RenderContext.PI2=2 *Math.PI;
+	__static(RenderContext,
+	['PI2',function(){return this.PI2=2 *Math.PI;}
+	]);
 	return RenderContext;
 })()
 
@@ -27756,7 +27192,7 @@ var RenderSprite=(function(){
 					if (tStyle.stroke){
 						context.fillBorderWords(words,x,y,tStyle.font,tStyle.color,tStyle.strokeColor,tStyle.stroke);
 						}else{
-						context.fillWords(words,x,y,tStyle.font,tStyle.color,(tStyle.textDecoration!="none"&&tStyle.underLine)?1:0);
+						context.fillWords(words,x,y,tStyle.font,tStyle.color,tStyle.underLine);
 					}
 				}
 			}
@@ -27965,7 +27401,9 @@ var RenderSprite=(function(){
 	RenderSprite.CHILDS=0x800;
 	RenderSprite.INIT=0x11111;
 	RenderSprite.renders=[];
-	RenderSprite.NORENDER=new RenderSprite(0,null);
+	__static(RenderSprite,
+	['NORENDER',function(){return this.NORENDER=new RenderSprite(0,null);}
+	]);
 	return RenderSprite;
 })()
 
@@ -28102,6 +27540,7 @@ var Context=(function(){
 
 	/***@private */
 	__proto.drawTexture2=function(x,y,pivotX,pivotY,m,alpha,blendMode,args2){
+		'use strict';
 		var tex=args2[0];
 		if (!(tex.loaded && tex.bitmap && tex.source)){
 			return;
@@ -28146,68 +27585,6 @@ var Context=(function(){
 		this.translate(oX,oY);
 		this.fillRect(sX,sY,width,height,other.pat);
 		this.translate(-oX,-oY);
-	}
-
-	__proto.drawTriangle=function(texture,vertices,uvs,index0,index1,index2,matrix,canvasPadding){
-		var source=texture.bitmap;
-		var textureSource=source.source;
-		var textureWidth=texture.width;
-		var textureHeight=texture.height;
-		var sourceWidth=source.width;
-		var sourceHeight=source.height;
-		var u0=uvs[index0] *sourceWidth;
-		var u1=uvs[index1] *sourceWidth;
-		var u2=uvs[index2] *sourceWidth;
-		var v0=uvs[index0+1] *sourceHeight;
-		var v1=uvs[index1+1] *sourceHeight;
-		var v2=uvs[index2+1] *sourceHeight;
-		var x0=vertices[index0];
-		var x1=vertices[index1];
-		var x2=vertices[index2];
-		var y0=vertices[index0+1];
-		var y1=vertices[index1+1];
-		var y2=vertices[index2+1];
-		if (canvasPadding){
-			var paddingX=1;
-			var paddingY=1;
-			var centerX=(x0+x1+x2)/ 3;
-			var centerY=(y0+y1+y2)/ 3;
-			var normX=x0-centerX;
-			var normY=y0-centerY;
-			var dist=Math.sqrt((normX *normX)+(normY *normY));
-			x0=centerX+((normX / dist)*(dist+paddingX));
-			y0=centerY+((normY / dist)*(dist+paddingY));
-			normX=x1-centerX;
-			normY=y1-centerY;
-			dist=Math.sqrt((normX *normX)+(normY *normY));
-			x1=centerX+((normX / dist)*(dist+paddingX));
-			y1=centerY+((normY / dist)*(dist+paddingY));
-			normX=x2-centerX;
-			normY=y2-centerY;
-			dist=Math.sqrt((normX *normX)+(normY *normY));
-			x2=centerX+((normX / dist)*(dist+paddingX));
-			y2=centerY+((normY / dist)*(dist+paddingY));
-		}
-		this.save();
-		if (matrix)
-			this.transform(matrix.a,matrix.b,matrix.c,matrix.d,matrix.tx,matrix.ty);
-		this.beginPath();
-		this.moveTo(x0,y0);
-		this.lineTo(x1,y1);
-		this.lineTo(x2,y2);
-		this.closePath();
-		this.clip();
-		var delta=(u0 *v1)+(v0 *u2)+(u1 *v2)-(v1 *u2)-(v0 *u1)-(u0 *v2);
-		var dDelta=1 / delta;
-		var deltaA=(x0 *v1)+(v0 *x2)+(x1 *v2)-(v1 *x2)-(v0 *x1)-(x0 *v2);
-		var deltaB=(u0 *x1)+(x0 *u2)+(u1 *x2)-(x1 *u2)-(x0 *u1)-(u0 *x2);
-		var deltaC=(u0 *v1 *x2)+(v0 *x1 *u2)+(x0 *u1 *v2)-(x0 *v1 *u2)-(v0 *u1 *x2)-(u0 *x1 *v2);
-		var deltaD=(y0 *v1)+(v0 *y2)+(y1 *v2)-(v1 *y2)-(v0 *y1)-(y0 *v2);
-		var deltaE=(u0 *y1)+(y0 *u2)+(u1 *y2)-(y1 *u2)-(y0 *u1)-(u0 *y2);
-		var deltaF=(u0 *v1 *y2)+(v0 *y1 *u2)+(y0 *u1 *v2)-(y0 *v1 *u2)-(v0 *u1 *y2)-(u0 *y1 *v2);
-		this.transform(deltaA *dDelta,deltaD *dDelta,deltaB *dDelta,deltaE *dDelta,deltaC *dDelta,deltaF *dDelta);
-		this.drawImage(textureSource,texture.uv[0] *sourceWidth,texture.uv[1] *sourceHeight,textureWidth,textureHeight,texture.uv[0] *sourceWidth,texture.uv[1] *sourceHeight,textureWidth,textureHeight);
-		this.restore();
 	}
 
 	/***@private */
@@ -28280,14 +27657,14 @@ var Context=(function(){
 	}
 
 	Context.__init__=function(to){
+		if (Context._inited)return;
+		Context._inited=true;
 		var from=laya.resource.Context.prototype;
 		to=to || CanvasRenderingContext2D.prototype;
-		if (to.inited)return;
-		to.inited=true;
 		to.__fillText=to.fillText;
 		to.__fillRect=to.fillRect;
 		to.__strokeText=to.strokeText;
-		var funs=['drawTextures',"drawTriangle",'fillWords','fillBorderWords','setIsMainContext','fillRect','strokeText','fillTexture','fillText','transformByMatrix','setTransformByMatrix','clipRect','drawTexture','drawTexture2','drawTextureWithTransform','flush','clear','destroy','drawCanvas','fillBorderText','drawCurves'];
+		var funs=['drawTextures','fillWords','fillBorderWords','setIsMainContext','fillRect','strokeText','fillTexture','fillText','transformByMatrix','setTransformByMatrix','clipRect','drawTexture','drawTexture2','drawTextureWithTransform','flush','clear','destroy','drawCanvas','fillBorderText','drawCurves'];
 		funs.forEach(function(i){
 			to[i]=from[i];
 		});
@@ -28340,10 +27717,10 @@ var Context=(function(){
 		return true;
 	}
 
-	Context._default=new Context();
 	Context.newKeys=[];
+	Context._inited=false;
 	__static(Context,
-	['replaceKeys',function(){return this.replaceKeys=["font","fillStyle","textBaseline"];}
+	['_default',function(){return this._default=new Context();},'replaceKeys',function(){return this.replaceKeys=["font","fillStyle","textBaseline"];}
 	]);
 	return Context;
 })()
@@ -28603,7 +27980,7 @@ var System=(function(){
 	System.changeDefinition=function(name,classObj){
 		Laya[name]=classObj;
 		var str=name+"=classObj";
-		Laya._runScript(str);
+		eval(str);
 	}
 
 	System.__init__=function(){
@@ -28725,7 +28102,7 @@ var UIUtils=(function(){
 			var temp="\""+value+"\"";
 			temp=temp.replace(/^"\${|}"$/g,"").replace(/\${/g,"\"+").replace(/}/g,"+\"");
 			var str="(function(data){if(data==null)return;with(data){try{\nreturn "+temp+"\n}catch(e){}}})";
-			fun=Laya._runScript(str);
+			fun=Browser.window.eval(str);
 			UIUtils._funMap.set(value,fun);
 		}
 		return fun;
@@ -28818,39 +28195,36 @@ var Browser=(function(){
 		},false);
 		Browser.document.__createElement=Browser.document.createElement;
 		window.requestAnimationFrame=window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (c){return window.setTimeout(c,1000 / 60);};;
-		var $BS=window.document.body.style;$BS['-webkit-user-select']='none';$BS['-webkit-tap-highlight-color']='rgba(200,200,200,0)';;
-		Browser.userAgent=/*[SAFE]*/ Browser.window.navigator.userAgent;
-		Browser.u=/*[SAFE]*/ Browser.userAgent;
-		Browser.onIOS=/*[SAFE]*/ !!Browser.u.match(/\(i[^;]+;(U;)? CPU.+Mac OS X/);
-		Browser.onMobile=/*[SAFE]*/ Browser.u.indexOf("Mobile")>-1;
-		Browser.onIPhone=/*[SAFE]*/ Browser.u.indexOf("iPhone")>-1;
-		Browser.onMac=/*[SAFE]*/ Browser.u.indexOf("Mac OS X")>-1;
-		Browser.onIPad=/*[SAFE]*/ Browser.u.indexOf("iPad")>-1;
-		Browser.onAndroid=/*[SAFE]*/ Browser.u.indexOf('Android')>-1 || Browser.u.indexOf('Adr')>-1;
-		Browser.onWP=/*[SAFE]*/ Browser.u.indexOf("Windows Phone")>-1;
-		Browser.onQQBrowser=/*[SAFE]*/ Browser.u.indexOf("QQBrowser")>-1;
-		Browser.onMQQBrowser=/*[SAFE]*/ Browser.u.indexOf("MQQBrowser")>-1 || (Browser.u.indexOf("Mobile")>-1 && Browser.u.indexOf("QQ")>-1);
-		Browser.onIE=/*[SAFE]*/ !!Browser.window.ActiveXObject || "ActiveXObject" in Browser.window;
-		Browser.onWeiXin=/*[SAFE]*/ Browser.u.indexOf('MicroMessenger')>-1;
-		Browser.onPC=/*[SAFE]*/ !Browser.onMobile;
-		Browser.onSafari=/*[SAFE]*/ Browser.u.indexOf("Safari")>-1;
-		Browser.onFirefox=/*[SAFE]*/ Browser.u.indexOf('Firefox')>-1;
-		Browser.onEdge=/*[SAFE]*/ Browser.u.indexOf('Edge')>-1;
-		Browser.onMiniGame=/*[SAFE]*/ Browser.u.indexOf('MiniGame')>-1;
-		Browser.onLimixiu=/*[SAFE]*/ Browser.u.indexOf('limixiu')>-1;
-		Browser.httpProtocol=/*[SAFE]*/ Browser.window.location.protocol=="http:";
+		Browser.userAgent=Browser.window.navigator.userAgent;
+		Browser.u=Browser.userAgent;
+		Browser.onIOS=!!Browser.u.match(/\(i[^;]+;(U;)? CPU.+Mac OS X/);
+		Browser.onMobile=Browser.u.indexOf("Mobile")>-1;
+		Browser.onIPhone=Browser.u.indexOf("iPhone")>-1;
+		Browser.onMac=Browser.u.indexOf("Mac OS X")>-1;
+		Browser.onIPad=Browser.u.indexOf("iPad")>-1;
+		Browser.onAndriod=Browser.u.indexOf('Android')>-1 || Browser.u.indexOf('Adr')>-1;
+		Browser.onWP=Browser.u.indexOf("Windows Phone")>-1;
+		Browser.onQQBrowser=Browser.u.indexOf("QQBrowser")>-1;
+		Browser.onMQQBrowser=Browser.u.indexOf("MQQBrowser")>-1 || (Browser.u.indexOf("Mobile")>-1 && Browser.u.indexOf("QQ")>-1);
+		Browser.onIE=!!Browser.window.ActiveXObject || "ActiveXObject" in Browser.window;
+		Browser.onWeiXin=Browser.u.indexOf('MicroMessenger')>-1;
+		Browser.onPC=!Browser.onMobile;
+		Browser.onSafari=!!Browser.u.match(/Version\/\d+\.\d\x20Mobile\/\S+\x20Safari/);
+		Browser.onFirefox=Browser.u.indexOf('Firefox')>-1;
+		Browser.onEdge=Browser.u.indexOf('Edge')>-1;
+		Browser.onMiniGame=Browser.u.indexOf('MiniGame')>-1;
+		Browser.httpProtocol=Browser.window.location.protocol=="http:";
 		if (Browser.onMiniGame && Browser.window.focus==null){
 			console.error("请先初始化小游戏适配库，详细教程https://ldc.layabox.com/doc/?nav=zh-ts-5-0-0");
 		}
-		Browser.webAudioEnabled=/*[SAFE]*/ Browser.window["AudioContext"] || Browser.window["webkitAudioContext"] || Browser.window["mozAudioContext"] ? true :false;
-		Browser.soundType=/*[SAFE]*/ Browser.webAudioEnabled ? "WEBAUDIOSOUND" :"AUDIOSOUND";
+		Browser.webAudioEnabled=Browser.window["AudioContext"] || Browser.window["webkitAudioContext"] || Browser.window["mozAudioContext"] ? true :false;
+		Browser.soundType=Browser.webAudioEnabled ? "WEBAUDIOSOUND" :"AUDIOSOUND";
 		Sound=Browser.webAudioEnabled?WebAudioSound:AudioSound;;
 		if (Browser.webAudioEnabled)WebAudioSound.initWebAudio();;
 		AudioSound._initMusicAudio();
 		Browser.enableTouch=(('ontouchstart' in window)|| window.DocumentTouch && document instanceof DocumentTouch);
 		window.focus();
 		SoundManager._soundClass=Sound;;
-		SoundManager._musicClass=AudioSound;
 		Render._mainCanvas=Render._mainCanvas || HTMLCanvas.create('2D');
 		if (Browser.canvas)return;
 		Browser.canvas=HTMLCanvas.create('2D');
@@ -28902,6 +28276,7 @@ var Browser=(function(){
 	Browser.onMobile=false;
 	Browser.onIPhone=false;
 	Browser.onIPad=false;
+	Browser.onAndriod=false;
 	Browser.onAndroid=false;
 	Browser.onWP=false;
 	Browser.onQQBrowser=false;
@@ -28912,7 +28287,6 @@ var Browser=(function(){
 	Browser.onIE=false;
 	Browser.onWeiXin=false;
 	Browser.onMiniGame=false;
-	Browser.onLimixiu=false;
 	Browser.onPC=false;
 	Browser.httpProtocol=false;
 	Browser.webAudioEnabled=false;
@@ -29816,7 +29190,6 @@ var ClassUtils=(function(){
 	}
 
 	ClassUtils._temParam=[];
-	ClassUtils._classMap={'Sprite':'laya.display.Sprite','Text':'laya.display.Text','Animation':'laya.display.Animation','Skeleton':'laya.ani.bone.Skeleton','Particle2D':'laya.particle.Particle2D','div':'laya.html.dom.HTMLDivElement','p':'laya.html.dom.HTMLElement','img':'laya.html.dom.HTMLImageElement','span':'laya.html.dom.HTMLElement','br':'laya.html.dom.HTMLBrElement','style':'laya.html.dom.HTMLStyleElement','font':'laya.html.dom.HTMLElement','a':'laya.html.dom.HTMLElement','#text':'laya.html.dom.HTMLElement'};
 	ClassUtils.getClass=function(className){
 		var classObject=ClassUtils._classMap[className] || className;
 		if ((typeof classObject=='string'))
@@ -29827,7 +29200,7 @@ var ClassUtils=(function(){
 	ClassUtils._tM=null;
 	ClassUtils._alpha=NaN;
 	__static(ClassUtils,
-	['DrawTypeDic',function(){return this.DrawTypeDic={"Rect":["drawRect",[["x",0],["y",0],["width",0],["height",0],["fillColor",null],["lineColor",null],["lineWidth",1]]],"Circle":["drawCircle",[["x",0],["y",0],["radius",0],["fillColor",null],["lineColor",null],["lineWidth",1]]],"Pie":["drawPie",[["x",0],["y",0],["radius",0],["startAngle",0],["endAngle",0],["fillColor",null],["lineColor",null],["lineWidth",1]]],"Image":["drawTexture",[["x",0],["y",0],["width",0],["height",0]]],"Texture":["drawTexture",[["skin",null],["x",0],["y",0],["width",0],["height",0]],1,"_adptTextureData"],"FillTexture":["fillTexture",[["skin",null],["x",0],["y",0],["width",0],["height",0],["repeat",null]],1,"_adptTextureData"],"FillText":["fillText",[["text",""],["x",0],["y",0],["font",null],["color",null],["textAlign",null]],1],"Line":["drawLine",[["x",0],["y",0],["toX",0],["toY",0],["lineColor",null],["lineWidth",0]],0,"_adptLineData"],"Lines":["drawLines",[["x",0],["y",0],["points",""],["lineColor",null],["lineWidth",0]],0,"_adptLinesData"],"Curves":["drawCurves",[["x",0],["y",0],["points",""],["lineColor",null],["lineWidth",0]],0,"_adptLinesData"],"Poly":["drawPoly",[["x",0],["y",0],["points",""],["fillColor",null],["lineColor",null],["lineWidth",1]],0,"_adptLinesData"]};}
+	['DrawTypeDic',function(){return this.DrawTypeDic={"Rect":["drawRect",[["x",0],["y",0],["width",0],["height",0],["fillColor",null],["lineColor",null],["lineWidth",1]]],"Circle":["drawCircle",[["x",0],["y",0],["radius",0],["fillColor",null],["lineColor",null],["lineWidth",1]]],"Pie":["drawPie",[["x",0],["y",0],["radius",0],["startAngle",0],["endAngle",0],["fillColor",null],["lineColor",null],["lineWidth",1]]],"Image":["drawTexture",[["x",0],["y",0],["width",0],["height",0]]],"Texture":["drawTexture",[["skin",null],["x",0],["y",0],["width",0],["height",0]],1,"_adptTextureData"],"FillTexture":["fillTexture",[["skin",null],["x",0],["y",0],["width",0],["height",0],["repeat",null]],1,"_adptTextureData"],"FillText":["fillText",[["text",""],["x",0],["y",0],["font",null],["color",null],["textAlign",null]],1],"Line":["drawLine",[["x",0],["y",0],["toX",0],["toY",0],["lineColor",null],["lineWidth",0]],0,"_adptLineData"],"Lines":["drawLines",[["x",0],["y",0],["points",""],["lineColor",null],["lineWidth",0]],0,"_adptLinesData"],"Curves":["drawCurves",[["x",0],["y",0],["points",""],["lineColor",null],["lineWidth",0]],0,"_adptLinesData"],"Poly":["drawPoly",[["x",0],["y",0],["points",""],["fillColor",null],["lineColor",null],["lineWidth",1]],0,"_adptLinesData"]};},'_classMap',function(){return this._classMap={'Sprite':'laya.display.Sprite','Text':'laya.display.Text','Animation':'laya.display.Animation','Skeleton':'laya.ani.bone.Skeleton','Particle2D':'laya.particle.Particle2D','div':'laya.html.dom.HTMLDivElement','p':'laya.html.dom.HTMLElement','img':'laya.html.dom.HTMLImageElement','span':'laya.html.dom.HTMLElement','br':'laya.html.dom.HTMLBrElement','style':'laya.html.dom.HTMLStyleElement','font':'laya.html.dom.HTMLElement','a':'laya.html.dom.HTMLElement','#text':'laya.html.dom.HTMLElement'};}
 	]);
 	return ClassUtils;
 })()
@@ -29895,9 +29268,10 @@ var Color$1=(function(){
 
 	Color._SAVE={};
 	Color._SAVE_SIZE=0;
-	Color._COLOR_MAP={"white":'#FFFFFF',"red":'#FF0000',"green":'#00FF00',"blue":'#0000FF',"black":'#000000',"yellow":'#FFFF00','gray':'#AAAAAA'};
-	Color._DEFAULT=Color._initDefault();
 	Color._COLODID=1;
+	__static(Color,
+	['_COLOR_MAP',function(){return this._COLOR_MAP={"white":'#FFFFFF',"red":'#FF0000',"green":'#00FF00',"blue":'#0000FF',"black":'#000000',"yellow":'#FFFF00','gray':'#AAAAAA'};},'_DEFAULT',function(){return this._DEFAULT=Color._initDefault();}
+	]);
 	return Color;
 })()
 
@@ -30449,8 +29823,9 @@ var Ease=(function(){
 		return c *Math.sqrt(1-(t=t / d-1)*t)+b;
 	}
 
-	Ease.HALF_PI=Math.PI *0.5;
-	Ease.PI2=Math.PI *2;
+	__static(Ease,
+	['HALF_PI',function(){return this.HALF_PI=Math.PI *0.5;},'PI2',function(){return this.PI2=Math.PI *2;}
+	]);
 	return Ease;
 })()
 
@@ -30707,7 +30082,9 @@ var HTMLChar=(function(){
 		this._h=value;
 	});
 
-	HTMLChar._isWordRegExp=new RegExp("[\\w\.]","");
+	__static(HTMLChar,
+	['_isWordRegExp',function(){return this._isWordRegExp=new RegExp("[\\w\.]","");}
+	]);
 	return HTMLChar;
 })()
 
@@ -30741,9 +30118,9 @@ var Pool=(function(){
 		return rst;
 	}
 
-	Pool.getItemByCreateFun=function(sign,createFun,caller){
+	Pool.getItemByCreateFun=function(sign,createFun){
 		var pool=Pool.getPoolBySign(sign);
-		var rst=pool.length ? pool.pop():createFun.call(caller);
+		var rst=pool.length ? pool.pop():createFun();
 		rst["__InPool"]=false;
 		return rst;
 	}
@@ -30847,11 +30224,11 @@ var Stat=(function(){
 	Stat.show=function(x,y){
 		(x===void 0)&& (x=0);
 		(y===void 0)&& (y=0);
-		if (Render.isConchApp && !Render.isConchWebGL){
+		if (Render.isConchApp){
 			Browser.window.conch.showFPS && Browser.window.conch.showFPS(x,y);
 			return;
 		}
-		if (!Render.isConchWebGL && !Browser.onMiniGame &&! Browser.onLimixiu)Stat._useCanvas=true;
+		if (!Browser.onMiniGame)Stat._useCanvas=true;
 		Stat._show=true;
 		Stat._fpsData.length=60;
 		Stat._view[0]={title:"FPS(Canvas)",value:"_fpsStr",color:"yellow",units:"int"};
@@ -31988,9 +31365,6 @@ var Utils=(function(){
 	}
 
 	Utils._gid=1;
-	Utils._pi=180 / Math.PI;
-	Utils._pi2=Math.PI / 180;
-	Utils._extReg=/\.(\w+)\??/g;
 	Utils.parseXMLFromString=function(value){
 		var rst;
 		value=value.replace(/>\s+</g,'><');
@@ -32001,6 +31375,9 @@ var Utils=(function(){
 		return rst;
 	}
 
+	__static(Utils,
+	['_pi',function(){return this._pi=180 / Math.PI;},'_pi2',function(){return this._pi2=Math.PI / 180;},'_extReg',function(){return this._extReg=/\.(\w+)\??/g;}
+	]);
 	return Utils;
 })()
 
@@ -32776,8 +32153,6 @@ var BlendMode=(function(){
 	}
 
 	BlendMode.activeBlendFunction=null;
-	BlendMode.NAMES=["normal","add","multiply","screen","overlay","light","mask","destination-out"];
-	BlendMode.TOINT={"normal":0,"add":1,"multiply":2,"screen":3 ,"lighter":1,"overlay":4,"light":5,"mask":6,"destination-out":7};
 	BlendMode.NORMAL="normal";
 	BlendMode.ADD="add";
 	BlendMode.MULTIPLY="multiply";
@@ -32787,6 +32162,9 @@ var BlendMode=(function(){
 	BlendMode.DESTINATIONOUT="destination-out";
 	BlendMode.fns=[];
 	BlendMode.targetFns=[];
+	__static(BlendMode,
+	['NAMES',function(){return this.NAMES=["normal","add","multiply","screen","overlay","light","mask","destination-out"];},'TOINT',function(){return this.TOINT={"normal":0,"add":1,"multiply":2,"screen":3 ,"lighter":1,"overlay":4,"light":5,"mask":6,"destination-out":7};}
+	]);
 	return BlendMode;
 })()
 
@@ -32990,8 +32368,9 @@ var SaveBase=(function(){
 		}
 	}
 
-	SaveBase._cache=laya.webgl.canvas.save.SaveBase._createArray();
-	SaveBase._namemap=SaveBase._init();
+	__static(SaveBase,
+	['_cache',function(){return this._cache=laya.webgl.canvas.save.SaveBase._createArray();},'_namemap',function(){return this._namemap=SaveBase._init();}
+	]);
 	return SaveBase;
 })()
 
@@ -34495,7 +33874,9 @@ var Submit=(function(){
 	Submit.TYPE_TEXTURE=10016;
 	Submit.TYPE_FILLTEXTURE=10017;
 	Submit.RENDERBASE=null;
-	Submit._cache=(Submit._cache=[],Submit._cache._length=0,Submit._cache);
+	__static(Submit,
+	['_cache',function(){return this._cache=(Submit._cache=[],Submit._cache._length=0,Submit._cache);}
+	]);
 	return Submit;
 })()
 
@@ -34531,7 +33912,9 @@ var SubmitCMD=(function(){
 		return o;
 	}
 
-	SubmitCMD._cache=(SubmitCMD._cache=[],SubmitCMD._cache._length=0,SubmitCMD._cache);
+	__static(SubmitCMD,
+	['_cache',function(){return this._cache=(SubmitCMD._cache=[],SubmitCMD._cache._length=0,SubmitCMD._cache);}
+	]);
 	return SubmitCMD;
 })()
 
@@ -34670,8 +34053,9 @@ var SubmitOtherIBVB=(function(){
 		return o;
 	}
 
-	SubmitOtherIBVB._cache=(SubmitOtherIBVB._cache=[],SubmitOtherIBVB._cache._length=0,SubmitOtherIBVB._cache);
-	SubmitOtherIBVB.tempMatrix4=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,];
+	__static(SubmitOtherIBVB,
+	['_cache',function(){return this._cache=(SubmitOtherIBVB._cache=[],SubmitOtherIBVB._cache._length=0,SubmitOtherIBVB._cache);},'tempMatrix4',function(){return this.tempMatrix4=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,];}
+	]);
 	return SubmitOtherIBVB;
 })()
 
@@ -34801,7 +34185,9 @@ var SubmitScissor=(function(){
 		return o;
 	}
 
-	SubmitScissor._cache=(SubmitScissor._cache=[],SubmitScissor._cache._length=0,SubmitScissor._cache);
+	__static(SubmitScissor,
+	['_cache',function(){return this._cache=(SubmitScissor._cache=[],SubmitScissor._cache._length=0,SubmitScissor._cache);}
+	]);
 	return SubmitScissor;
 })()
 
@@ -34978,8 +34364,10 @@ var SubmitStencil=(function(){
 		return o;
 	}
 
-	SubmitStencil._cache=(SubmitStencil._cache=[],SubmitStencil._cache._length=0,SubmitStencil._cache);
 	SubmitStencil._mask=0;
+	__static(SubmitStencil,
+	['_cache',function(){return this._cache=(SubmitStencil._cache=[],SubmitStencil._cache._length=0,SubmitStencil._cache);}
+	]);
 	return SubmitStencil;
 })()
 
@@ -35049,7 +34437,9 @@ var SubmitTarget=(function(){
 		return o;
 	}
 
-	SubmitTarget._cache=(SubmitTarget._cache=[],SubmitTarget._cache._length=0,SubmitTarget._cache);
+	__static(SubmitTarget,
+	['_cache',function(){return this._cache=(SubmitTarget._cache=[],SubmitTarget._cache._length=0,SubmitTarget._cache);}
+	]);
 	return SubmitTarget;
 })()
 
@@ -35379,9 +34769,11 @@ var FontInContext=(function(){
 		return r;
 	}
 
-	FontInContext.EMPTY=new FontInContext();
 	FontInContext._cache={};
 	FontInContext._cache2=null;
+	__static(FontInContext,
+	['EMPTY',function(){return this.EMPTY=new FontInContext();}
+	]);
 	return FontInContext;
 })()
 
@@ -35390,14 +34782,11 @@ var FontInContext=(function(){
 var CONST3D2D=(function(){
 	function CONST3D2D(){}
 	__class(CONST3D2D,'laya.webgl.utils.CONST3D2D');
-	CONST3D2D.defaultMatrix4=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
-	CONST3D2D.defaultMinusYMatrix4=[1,0,0,0,0,-1,0,0,0,0,1,0,0,0,0,1];
-	CONST3D2D.uniformMatrix3=[1,0,0,0,0,1,0,0,0,0,1,0];
 	CONST3D2D._TMPARRAY=[];
 	CONST3D2D._OFFSETX=0;
 	CONST3D2D._OFFSETY=0;
 	__static(CONST3D2D,
-	['BYTES_PE',function(){return this.BYTES_PE=Float32Array.BYTES_PER_ELEMENT;},'BYTES_PIDX',function(){return this.BYTES_PIDX=Uint16Array.BYTES_PER_ELEMENT;}
+	['BYTES_PE',function(){return this.BYTES_PE=Float32Array.BYTES_PER_ELEMENT;},'BYTES_PIDX',function(){return this.BYTES_PIDX=Uint16Array.BYTES_PER_ELEMENT;},'defaultMatrix4',function(){return this.defaultMatrix4=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];},'defaultMinusYMatrix4',function(){return this.defaultMinusYMatrix4=[1,0,0,0,0,-1,0,0,0,0,1,0,0,0,0,1];},'uniformMatrix3',function(){return this.uniformMatrix3=[1,0,0,0,0,1,0,0,0,0,1,0];}
 	]);
 	return CONST3D2D;
 })()
@@ -35449,6 +34838,7 @@ var GlUtils=(function(){
 	}
 
 	GlUtils.fillQuadrangleImgVb=function(vb,x,y,point4,uv,m,_x,_y){
+		'use strict';
 		var vpos=(vb._byteLength >> 2)+16;
 		vb.byteLength=(vpos << 2);
 		var vbdata=vb.getFloat32Array();
@@ -35648,6 +35038,7 @@ var GlUtils=(function(){
 	}
 
 	GlUtils.fillLineVb=function(vb,clip,fx,fy,tx,ty,width,mat){
+		'use strict';
 		var linew=width *.5;
 		var data=GlUtils._fillLineArray;
 		var perpx=-(fy-ty),perpy=fx-tx;
@@ -35661,7 +35052,9 @@ var GlUtils=(function(){
 		return true;
 	}
 
-	GlUtils._fillLineArray=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+	__static(GlUtils,
+	['_fillLineArray',function(){return this._fillLineArray=[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];}
+	]);
 	return GlUtils;
 })()
 
@@ -35701,150 +35094,6 @@ var MatirxArray=(function(){
 	}
 
 	return MatirxArray;
-})()
-
-
-/**
-*Mesh2d只是保存数据。描述attribute用的。本身不具有渲染功能。
-*/
-//class laya.webgl.utils.Mesh2D
-var Mesh2D=(function(){
-	function Mesh2D(stride,vballoc,iballoc){
-		this._stride=0;
-		//顶点结构大小。每个mesh的顶点结构是固定的。
-		this.vertNum=0;
-		//当前的顶点的个数
-		this.indexNum=0;
-		//实际index 个数。例如一个三角形是3个。由于ib本身可能超过实际使用的数量，所以需要一个indexNum
-		this._applied=false;
-		//是否已经设置给webgl了
-		this._vb=null;
-		//vb和ib都可能需要在外部修改，所以public
-		this._ib=null;
-		this._vao=null;
-		this._attribInfo=null;
-		//保存起来的属性定义数组。
-		this._quadNum=0;
-		//public static var meshlist:Array=[];//活着的mesh对象列表。
-		this.canReuse=false;
-		this._stride=stride;
-		this._vb=new VertexBuffer2D(stride,0x88E8);
-		if (vballoc){
-			this._vb._resizeBuffer(vballoc,false);
-		}else{}
-		this._ib=new IndexBuffer2D();
-		if (iballoc){
-			this._ib._resizeBuffer(iballoc,false);
-		}
-	}
-
-	__class(Mesh2D,'laya.webgl.utils.Mesh2D');
-	var __proto=Mesh2D.prototype;
-	/**
-	*重新创建一个mesh。复用这个对象的vertex结构，ib对象和attribinfo对象
-	*/
-	__proto.cloneWithNewVB=function(){
-		var mesh=new Mesh2D(this._stride,0,0);
-		mesh._ib=this._ib;
-		mesh._quadNum=this._quadNum;
-		mesh._attribInfo=this._attribInfo;
-		return mesh;
-	}
-
-	/**
-	*创建一个mesh，使用当前对象的vertex结构。vb和ib自己提供。
-	*@return
-	*/
-	__proto.cloneWithNewVBIB=function(){
-		var mesh=new Mesh2D(this._stride,0,0);
-		mesh._attribInfo=this._attribInfo;
-		return mesh;
-	}
-
-	/**
-	*获得一个可以写的vb对象
-	*/
-	__proto.getVBW=function(){
-		this._vb.setNeedUpload();
-		return this._vb;
-	}
-
-	/**
-	*获得一个只读vb
-	*/
-	__proto.getVBR=function(){
-		return this._vb;
-	}
-
-	__proto.getIBR=function(){
-		return this._ib;
-	}
-
-	/**
-	*获得一个可写的ib
-	*/
-	__proto.getIBW=function(){
-		this._ib.setNeedUpload();
-		return this._ib;
-	}
-
-	/**
-	*直接创建一个固定的ib。按照固定四边形的索引。
-	*@param var QuadNum
-	*/
-	__proto.createQuadIB=function(QuadNum){
-		this._quadNum=QuadNum;
-		this._ib._resizeBuffer(QuadNum *6 *2,false);
-		this._ib.byteLength=this._ib.bufferLength;
-		var bd=this._ib.getUint16Array();
-		var idx=0;
-		var curvert=0;
-		for (var i=0;i < QuadNum;i++){
-			bd[idx++]=curvert;
-			bd[idx++]=curvert+2;
-			bd[idx++]=curvert+1;
-			bd[idx++]=curvert;
-			bd[idx++]=curvert+3;
-			bd[idx++]=curvert+2;
-			curvert+=4;
-		}
-		this._ib.setNeedUpload();
-	}
-
-	/**
-	*设置mesh的属性。每3个一组，对应的location分别是0,1,2...
-	*含义是：type,size,offset
-	*不允许多流。因此stride是固定的，offset只是在一个vertex之内。
-	*@param attribs
-	*/
-	__proto.setAttributes=function(attribs){
-		this._attribInfo=attribs;
-		if (this._attribInfo.length % 3 !=0){
-			throw 'Mesh2D setAttributes error!';
-		}
-	}
-
-	__proto.getEleNum=function(){
-		return this._ib.getBuffer().byteLength / 2;
-	}
-
-	/**
-	*子类实现。用来把自己放到对应的回收池中，以便复用。
-	*/
-	__proto.releaseMesh=function(){}
-	/**
-	*释放资源。
-	*/
-	__proto.destroy=function(){}
-	/**
-	*清理vb数据
-	*/
-	__proto.clearVB=function(){
-		this._vb.clear();
-	}
-
-	Mesh2D._gvaoid=0;
-	return Mesh2D;
 })()
 
 
@@ -35899,9 +35148,6 @@ var RenderState2D=(function(){
 	}
 
 	RenderState2D._MAXSIZE=99999999;
-	RenderState2D.EMPTYMAT4_ARRAY=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
-	RenderState2D.TEMPMAT4_ARRAY=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
-	RenderState2D.worldMatrix4=RenderState2D.TEMPMAT4_ARRAY;
 	RenderState2D.worldAlpha=1.0;
 	RenderState2D.worldScissorTest=false;
 	RenderState2D.worldFilters=null;
@@ -35910,7 +35156,7 @@ var RenderState2D=(function(){
 	RenderState2D.width=0;
 	RenderState2D.height=0;
 	__static(RenderState2D,
-	['worldMatrix',function(){return this.worldMatrix=new Matrix();},'worldClipRect',function(){return this.worldClipRect=new Rectangle(0,0,99999999,99999999);}
+	['EMPTYMAT4_ARRAY',function(){return this.EMPTYMAT4_ARRAY=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];},'TEMPMAT4_ARRAY',function(){return this.TEMPMAT4_ARRAY=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];},'worldMatrix4',function(){return this.worldMatrix4=RenderState2D.TEMPMAT4_ARRAY;},'worldMatrix',function(){return this.worldMatrix=new Matrix();},'worldClipRect',function(){return this.worldClipRect=new Rectangle(0,0,99999999,99999999);}
 	]);
 	return RenderState2D;
 })()
@@ -36086,7 +35332,8 @@ var WebGL=(function(){
 			if (canvasWidth <=0 || canvasHeight <=0){
 				console.log("[error] canvasWidth and canvasHeight should greater than zero");
 			}
-			canvasWidth |=0;canvasHeight |=0;offsetX |=0;offsetY |=0;
+			offsetX-=sprite.x;
+			offsetY-=sprite.y;
 			var renderTarget=RenderTarget2D.create(canvasWidth,canvasHeight,0x1908,0x1401,0,false);
 			renderTarget.start();
 			renderTarget.clear(0,0,0,0);
@@ -36094,12 +35341,8 @@ var WebGL=(function(){
 			RenderSprite.renders[_renderType]._fun(sprite,Render.context,offsetX,RenderState2D.height-canvasHeight+offsetY);
 			Render.context.flush();
 			renderTarget.end();
-			var pixels=renderTarget.getData(0,0,canvasWidth,canvasHeight);
+			var pixels=renderTarget.getData(0,0,renderTarget.width,renderTarget.height);
 			renderTarget.recycle();
-			if (pixels.byteLength !=canvasWidth *canvasHeight *4){
-				console.log('drawToCanvas error: w:'+canvasWidth+',h:'+canvasHeight+',datalen:'+pixels.byteLength);
-				return;
-			};
 			var htmlCanvas=new WebGLCanvas();
 			htmlCanvas._canvas=Browser.createElement("canvas");
 			htmlCanvas.size(canvasWidth,canvasHeight);
@@ -36427,7 +35670,9 @@ var WebGL=(function(){
 	WebGL.mainContext=null;
 	WebGL.antialias=true;
 	WebGL.shaderHighPrecision=false;
-	WebGL._bg_null=[0,0,0,0];
+	__static(WebGL,
+	['_bg_null',function(){return this._bg_null=[0,0,0,0];}
+	]);
 	return WebGL;
 })()
 
@@ -36806,10 +36051,6 @@ var MiniAdpter=(function(){
 		MiniAdpter.isZiYu=isSon;
 		MiniAdpter.isPosMsgYu=isPosMsg;
 		MiniAdpter.EnvConfig={};
-		try{
-			laya.webgl.resource.WebGLCanvas.premulAlpha=true;
-			}catch(e){
-		}
 		if(!MiniAdpter.isZiYu){
 			MiniFileMgr.setNativeFileDir("/layaairGame");
 			MiniFileMgr.existDir(MiniFileMgr.fileNativeDir,Handler.create(MiniAdpter,MiniAdpter.onMkdirCallBack));
@@ -36817,7 +36058,7 @@ var MiniAdpter=(function(){
 		MiniAdpter.systemInfo=wx.getSystemInfoSync();
 		MiniAdpter.window.focus=function (){
 		};
-		Laya['_getUrlPath']=function (){
+		Laya['getUrlPath']=function (){
 		};
 		MiniAdpter.window.logtime=function (str){
 		};
@@ -36835,56 +36076,43 @@ var MiniAdpter=(function(){
 		MiniAdpter._preCreateElement=Browser.createElement;
 		Browser["createElement"]=MiniAdpter.createElement;
 		RunDriver.createShaderCondition=MiniAdpter.createShaderCondition;
-		Utils['parseXMLFromString']=MiniAdpter.parseXMLFromString;
+		Utils.parseXMLFromString=MiniAdpter.parseXMLFromString;
 		Input['_createInputElement']=MiniInput['_createInputElement'];
 		MiniAdpter.EnvConfig.load=Loader.prototype.load;
 		Loader.prototype.load=MiniLoader.prototype.load;
+		Loader['clearRes']=MiniAdpter.clearRes;
 		Loader.prototype._loadImage=MiniImage.prototype._loadImage;
-		MiniLocalStorage.__init__();
-		LocalStorage._baseClass=MiniLocalStorage;
-	}
-
-	MiniAdpter.getUrlEncode=function(url,type){
-		if(url.indexOf(".fnt")!=-1)
-			return "utf8";
-		else if(type=="arraybuffer")
-		return "";
-		return "ascii";
-	}
-
-	MiniAdpter.downLoadFile=function(fileUrl,fileType,callBack,encoding){
-		(fileType===void 0)&& (fileType="");
-		(encoding===void 0)&& (encoding="ascii");
-		var fileObj=MiniFileMgr.getFileInfo(fileUrl);
-		if(!fileObj)
-			MiniFileMgr.downLoadFile(fileUrl,fileType,callBack,encoding);
-		else{
-			callBack !=null && callBack.runWith([0]);
+		if(MiniAdpter.isZiYu && isPosMsg){
+			wx.onMessage(function(message){
+				if(message['isLoad']){
+					MiniFileMgr.ziyuFileData[message.url]=message.data;
+				}
+			});
 		}
 	}
 
-	MiniAdpter.remove=function(fileUrl,callBack){
-		MiniFileMgr.deleteFile("",fileUrl,callBack,"",0);
-	}
-
-	MiniAdpter.removeAll=function(){
-		MiniFileMgr.deleteAll();
-	}
-
-	MiniAdpter.hasNativeFile=function(fileUrl){
-		return MiniFileMgr.isLocalNativeFile(fileUrl);
-	}
-
-	MiniAdpter.getFileInfo=function(fileUrl){
-		return MiniFileMgr.getFileInfo(fileUrl);
-	}
-
-	MiniAdpter.getFileList=function(){
-		return MiniFileMgr.filesListObj;
-	}
-
-	MiniAdpter.exitMiniProgram=function(){
-		MiniAdpter.window["wx"].exitMiniProgram();
+	MiniAdpter.clearRes=function(url,forceDispose){
+		(forceDispose===void 0)&& (forceDispose=false);
+		url=URL.formatURL(url);
+		var arr=Loader.getAtlas(url);
+		if (arr){
+			for (var i=0,n=arr.length;i < n;i++){
+				var resUrl=arr[i];
+				var tex=Loader.getRes(resUrl);
+				delete Loader.loadedMap[resUrl];
+				if (tex)tex.destroy(forceDispose);
+			}
+			arr.length=0;
+			delete Loader['atlasMap'][url];
+			delete Loader.loadedMap[url];
+			MiniFileMgr.remove("",url);
+			}else {
+			var res=Loader.loadedMap[url];
+			if (res){
+				delete Loader.loadedMap[url];
+				if ((res instanceof laya.resource.Texture )&& res.bitmap)(res).destroy(forceDispose);
+			}
+		}
 	}
 
 	MiniAdpter.onMkdirCallBack=function(errorCode,data){
@@ -36895,6 +36123,7 @@ var MiniAdpter=(function(){
 	MiniAdpter.pixelRatio=function(){
 		if (!MiniAdpter.EnvConfig.pixelRatioInt){
 			try {
+				console.log(MiniAdpter.systemInfo);
 				MiniAdpter.EnvConfig.pixelRatioInt=MiniAdpter.systemInfo.pixelRatio;
 				return MiniAdpter.systemInfo.pixelRatio;
 			}catch (error){}
@@ -36970,11 +36199,11 @@ var MiniAdpter=(function(){
 	MiniAdpter.window=null;
 	MiniAdpter._preCreateElement=null;
 	MiniAdpter._inited=false;
+	MiniAdpter.wxRequest=null;
 	MiniAdpter.systemInfo=null;
+	MiniAdpter.version="0.0.1";
 	MiniAdpter.isZiYu=false;
 	MiniAdpter.isPosMsgYu=false;
-	MiniAdpter.autoCacheFile=true;
-	MiniAdpter.minClearSize=(5 *1024 *1024);
 	MiniAdpter.parseXMLFromString=function(value){
 		var rst;
 		var Parser;
@@ -36988,351 +36217,25 @@ var MiniAdpter=(function(){
 	}
 
 	MiniAdpter.idx=1;
-	__static(MiniAdpter,
-	['nativefiles',function(){return this.nativefiles=["layaNativeDir","wxlocal"];}
-	]);
 	return MiniAdpter;
 })()
 
 
-/**@private **/
-//class laya.wx.mini.MiniFileMgr
-var MiniFileMgr=(function(){
-	function MiniFileMgr(){}
-	__class(MiniFileMgr,'laya.wx.mini.MiniFileMgr');
-	MiniFileMgr.isLocalNativeFile=function(url){
-		for(var i=0,sz=MiniAdpter.nativefiles.length;i<sz;i++){
-			if(url.indexOf(MiniAdpter.nativefiles[i])!=-1)
-				return true;
-		}
-		return false;
-	}
-
-	MiniFileMgr.getFileInfo=function(fileUrl){
-		var fileNativePath=fileUrl;
-		var fileObj=MiniFileMgr.filesListObj[fileNativePath];
-		if (fileObj==null)
-			return null;
-		else
-		return fileObj;
-		return null;
-	}
-
-	MiniFileMgr.read=function(filePath,encoding,callBack,readyUrl,isSaveFile,fileType){
-		(encoding===void 0)&& (encoding="ascill");
-		(readyUrl===void 0)&& (readyUrl="");
-		(isSaveFile===void 0)&& (isSaveFile=false);
-		(fileType===void 0)&& (fileType="");
-		var fileUrl;
-		if(readyUrl!="" && (readyUrl.indexOf("http://")!=-1 || readyUrl.indexOf("https://")!=-1)){
-			fileUrl=MiniFileMgr.getFileNativePath(filePath)
-			}else{
-			fileUrl=filePath;
-		}
-		MiniFileMgr.fs.readFile({filePath:fileUrl,encoding:encoding,success:function (data){
-				callBack !=null && callBack.runWith([0,data]);
-				},fail:function (data){
-				if (data && readyUrl !="")
-					MiniFileMgr.downFiles(readyUrl,encoding,callBack,readyUrl,isSaveFile,fileType);
-				else
-				callBack !=null && callBack.runWith([1]);
-		}});
-	}
-
-	MiniFileMgr.downFiles=function(fileUrl,encoding,callBack,readyUrl,isSaveFile,fileType,isAutoClear){
-		(encoding===void 0)&& (encoding="ascii");
-		(readyUrl===void 0)&& (readyUrl="");
-		(isSaveFile===void 0)&& (isSaveFile=false);
-		(fileType===void 0)&& (fileType="");
-		(isAutoClear===void 0)&& (isAutoClear=true);
-		var downloadTask=MiniFileMgr.wxdown({url:fileUrl,success:function (data){
-				if (data.statusCode===200)
-					MiniFileMgr.readFile(data.tempFilePath,encoding,callBack,readyUrl,isSaveFile,fileType,isAutoClear);
-				},fail:function (data){
-				callBack !=null && callBack.runWith([1,data]);
-		}});
-		downloadTask.onProgressUpdate(function(data){
-			callBack !=null && callBack.runWith([2,data.progress]);
-		});
-	}
-
-	MiniFileMgr.readFile=function(filePath,encoding,callBack,readyUrl,isSaveFile,fileType,isAutoClear){
-		(encoding===void 0)&& (encoding="ascill");
-		(readyUrl===void 0)&& (readyUrl="");
-		(isSaveFile===void 0)&& (isSaveFile=false);
-		(fileType===void 0)&& (fileType="");
-		(isAutoClear===void 0)&& (isAutoClear=true);
-		MiniFileMgr.fs.readFile({filePath:filePath,encoding:encoding,success:function (data){
-				if (filePath.indexOf("http://")!=-1 || filePath.indexOf("https://")!=-1){
-					if(MiniAdpter.autoCacheFile || isSaveFile){
-						MiniFileMgr.copyFile(filePath,readyUrl,callBack,encoding,isAutoClear);
-					}
-				}
-				else
-				callBack !=null && callBack.runWith([0,data]);
-				},fail:function (data){
-				if (data)
-					callBack !=null && callBack.runWith([1,data]);
-		}});
-	}
-
-	MiniFileMgr.downOtherFiles=function(fileUrl,callBack,readyUrl,isSaveFile,isAutoClear){
-		(readyUrl===void 0)&& (readyUrl="");
-		(isSaveFile===void 0)&& (isSaveFile=false);
-		(isAutoClear===void 0)&& (isAutoClear=true);
-		MiniFileMgr.wxdown({url:fileUrl,success:function (data){
-				if (data.statusCode===200){
-					if((MiniAdpter.autoCacheFile || isSaveFile)&& readyUrl.indexOf("wx.qlogo.cn")==-1 && readyUrl.indexOf(".php")==-1)
-						MiniFileMgr.copyFile(data.tempFilePath,readyUrl,callBack,"",isAutoClear);
-					else
-					callBack !=null && callBack.runWith([0,data.tempFilePath]);
-				}
-				},fail:function (data){
-				callBack !=null && callBack.runWith([1,data]);
-		}});
-	}
-
-	MiniFileMgr.downLoadFile=function(fileUrl,fileType,callBack,encoding){
-		(fileType===void 0)&& (fileType="");
-		(encoding===void 0)&& (encoding="ascii");
-		if(fileType=="image" || fileType=="sound")
-			MiniFileMgr.downOtherFiles(fileUrl,callBack,fileUrl,true,false);
-		else
-		MiniFileMgr.downFiles(fileUrl,encoding,callBack,fileUrl,true,fileType,false);
-	}
-
-	MiniFileMgr.copyFile=function(tempFilePath,readyUrl,callBack,encoding,isAutoClear){
-		(encoding===void 0)&& (encoding="");
-		(isAutoClear===void 0)&& (isAutoClear=true);
-		var temp=tempFilePath.split("/");
-		var tempFileName=temp[temp.length-1];
-		var fileurlkey=readyUrl;
-		var fileObj=MiniFileMgr.getFileInfo(readyUrl);
-		var saveFilePath=MiniFileMgr.getFileNativePath(tempFileName);
-		var totalSize=50 *1024 *1024;
-		var chaSize=4 *1024 *1024;
-		var fileUseSize=MiniFileMgr.getCacheUseSize();
-		if (fileObj){
-			if (fileObj.readyUrl !=readyUrl){
-				MiniFileMgr.fs.getFileInfo({
-					filePath:tempFilePath,
-					success:function (data){
-						if((isAutoClear && (fileUseSize+chaSize+data.size)>=totalSize)){
-							if(data.size > MiniAdpter.minClearSize)
-								MiniAdpter.minClearSize=data.size;
-							MiniFileMgr.onClearCacheRes();
-						}
-						MiniFileMgr.deleteFile(tempFileName,readyUrl,callBack,encoding,data.size);
-					},
-					fail:function (data){
-						callBack !=null && callBack.runWith([1,data]);
-					}
-				});
-			}
-			else
-			callBack !=null && callBack.runWith([0]);
-			}else{
-			MiniFileMgr.fs.getFileInfo({
-				filePath:tempFilePath,
-				success:function (data){
-					if((isAutoClear && (fileUseSize+chaSize+data.size)>=totalSize)){
-						if(data.size > MiniAdpter.minClearSize)
-							MiniAdpter.minClearSize=data.size;
-						MiniFileMgr.onClearCacheRes();
-					}
-					MiniFileMgr.fs.copyFile({srcPath:tempFilePath,destPath:saveFilePath,success:function (data2){
-							MiniFileMgr.onSaveFile(readyUrl,tempFileName,true,encoding,callBack,data.size);
-							},fail:function (data){
-							callBack !=null && callBack.runWith([1,data]);
-					}});
-				},
-				fail:function (data){
-					callBack !=null && callBack.runWith([1,data]);
-				}
-			});
-		}
-	}
-
-	MiniFileMgr.onClearCacheRes=function(){
-		var memSize=MiniAdpter.minClearSize;
-		var tempFileListArr=[];
-		for(var key in MiniFileMgr.filesListObj){
-			tempFileListArr.push(MiniFileMgr.filesListObj[key]);
-		}
-		MiniFileMgr.sortOn(tempFileListArr,"time",16);
-		var clearSize=0;
-		for(var i=1,sz=tempFileListArr.length;i<sz;i++){
-			var fileObj=tempFileListArr[i];
-			if(clearSize >=memSize)
-				break ;
-			clearSize+=fileObj.size;
-			MiniFileMgr.deleteFile("",fileObj.readyUrl);
-		}
-	}
-
-	MiniFileMgr.sortOn=function(array,name,options){
-		(options===void 0)&& (options=0);
-		if (options==16)return array.sort(function(a,b){return a[name]-b[name];});
-		if (options==(16 | 2))return array.sort(function(a,b){return b[name]-a[name];});
-		return array.sort(function(a,b){return a[name]-b[name] });
-	}
-
-	MiniFileMgr.getFileNativePath=function(fileName){
-		return laya.wx.mini.MiniFileMgr.fileNativeDir+"/"+fileName;
-	}
-
-	MiniFileMgr.deleteFile=function(tempFileName,readyUrl,callBack,encoding,fileSize){
-		(readyUrl===void 0)&& (readyUrl="");
-		(encoding===void 0)&& (encoding="");
-		(fileSize===void 0)&& (fileSize=0);
-		var fileObj=MiniFileMgr.getFileInfo(readyUrl);
-		var deleteFileUrl=MiniFileMgr.getFileNativePath(fileObj.md5);
-		MiniFileMgr.fs.unlink({filePath:deleteFileUrl,success:function (data){
-				var isAdd=tempFileName !="" ? true :false;
-				if(tempFileName !=""){
-					var saveFilePath=MiniFileMgr.getFileNativePath(tempFileName);
-					MiniFileMgr.fs.copyFile({srcPath:tempFileName,destPath:saveFilePath,success:function (data){
-							MiniFileMgr.onSaveFile(readyUrl,tempFileName,isAdd,encoding,callBack,data.size);
-							},fail:function (data){
-							callBack !=null && callBack.runWith([1,data]);
-					}});
-					}else{
-					MiniFileMgr.onSaveFile(readyUrl,tempFileName,isAdd,encoding,callBack,fileSize);
-				}
-				},fail:function (data){
-		}});
-	}
-
-	MiniFileMgr.deleteAll=function(){
-		var tempFileListArr=[];
-		for(var key in MiniFileMgr.filesListObj){
-			tempFileListArr.push(MiniFileMgr.filesListObj[key]);
-		}
-		for(var i=1,sz=tempFileListArr.length;i<sz;i++){
-			var fileObj=tempFileListArr[i];
-			MiniFileMgr.deleteFile("",fileObj.readyUrl);
-		}
-	}
-
-	MiniFileMgr.onSaveFile=function(readyUrl,md5Name,isAdd,encoding,callBack,fileSize){
-		(isAdd===void 0)&& (isAdd=true);
-		(encoding===void 0)&& (encoding="");
-		(fileSize===void 0)&& (fileSize=0);
-		var fileurlkey=readyUrl;
-		if(MiniFileMgr.filesListObj['fileUsedSize']==null)
-			MiniFileMgr.filesListObj['fileUsedSize']=0;
-		if(isAdd){
-			var fileNativeName=MiniFileMgr.getFileNativePath(md5Name);
-			MiniFileMgr.filesListObj[fileurlkey]={md5:md5Name,readyUrl:readyUrl,size:fileSize,times:Browser.now(),encoding:encoding};
-			MiniFileMgr.filesListObj['fileUsedSize']=parseInt(MiniFileMgr.filesListObj['fileUsedSize'])+fileSize;
-			MiniFileMgr.writeFilesList(fileurlkey,JSON.stringify(MiniFileMgr.filesListObj),true);
-			callBack !=null && callBack.runWith([0]);
-			}else{
-			if(MiniFileMgr.filesListObj[fileurlkey]){
-				var deletefileSize=parseInt(MiniFileMgr.filesListObj[fileurlkey].size);
-				MiniFileMgr.filesListObj['fileUsedSize']=parseInt(MiniFileMgr.filesListObj['fileUsedSize'])-deletefileSize;
-				delete MiniFileMgr.filesListObj[fileurlkey];
-				MiniFileMgr.writeFilesList(fileurlkey,JSON.stringify(MiniFileMgr.filesListObj),false);
-				callBack !=null && callBack.runWith([0]);
-			}
-		}
-	}
-
-	MiniFileMgr.writeFilesList=function(fileurlkey,filesListStr,isAdd){
-		var listFilesPath=MiniFileMgr.fileNativeDir+"/"+MiniFileMgr.fileListName;
-		MiniFileMgr.fs.writeFile({filePath:listFilesPath,encoding:'utf8',data:filesListStr,success:function (data){
-				},fail:function (data){
-		}});
-		if(!MiniAdpter.isZiYu &&MiniAdpter.isPosMsgYu){
-			wx.postMessage({url:fileurlkey,data:MiniFileMgr.filesListObj[fileurlkey],isLoad:"filenative",isAdd:isAdd});
-		}
-	}
-
-	MiniFileMgr.getCacheUseSize=function(){
-		if(MiniFileMgr.filesListObj && MiniFileMgr.filesListObj['fileUsedSize'])
-			return MiniFileMgr.filesListObj['fileUsedSize'];
-		return 0;
-	}
-
-	MiniFileMgr.existDir=function(dirPath,callBack){
-		MiniFileMgr.fs.mkdir({dirPath:dirPath,success:function (data){
-				callBack !=null && callBack.runWith([0,{data:JSON.stringify({})}]);
-				},fail:function (data){
-				if (data.errMsg.indexOf("file already exists")!=-1)
-					MiniFileMgr.readSync(MiniFileMgr.fileListName,"utf8",callBack);
-				else
-				callBack !=null && callBack.runWith([1,data]);
-		}});
-	}
-
-	MiniFileMgr.readSync=function(filePath,encoding,callBack,readyUrl){
-		(encoding===void 0)&& (encoding="ascill");
-		(readyUrl===void 0)&& (readyUrl="");
-		var fileUrl=MiniFileMgr.getFileNativePath(filePath);
-		var filesListStr
-		try{
-			filesListStr=MiniFileMgr.fs.readFileSync(fileUrl,encoding);
-			callBack !=null && callBack.runWith([0,{data:filesListStr}]);
-		}
-		catch(error){
-			callBack !=null && callBack.runWith([1]);
-		}
-	}
-
-	MiniFileMgr.setNativeFileDir=function(value){
-		MiniFileMgr.fileNativeDir=wx.env.USER_DATA_PATH+value;
-	}
-
-	MiniFileMgr.filesListObj={};
-	MiniFileMgr.fileNativeDir=null;
-	MiniFileMgr.fileListName="layaairfiles.txt";
-	MiniFileMgr.ziyuFileData={};
-	MiniFileMgr.loadPath="";
-	MiniFileMgr.DESCENDING=2;
-	MiniFileMgr.NUMERIC=16;
-	__static(MiniFileMgr,
-	['fs',function(){return this.fs=wx.getFileSystemManager();},'wxdown',function(){return this.wxdown=wx.downloadFile;}
-	]);
-	return MiniFileMgr;
-})()
-
-
-/**@private **/
 //class laya.wx.mini.MiniImage
 var MiniImage=(function(){
 	function MiniImage(){}
 	__class(MiniImage,'laya.wx.mini.MiniImage');
 	var __proto=MiniImage.prototype;
-	/**@private **/
 	__proto._loadImage=function(url){
 		var thisLoader=this;
-		if (MiniAdpter.isZiYu){
-			MiniImage.onCreateImage(url,thisLoader,true);
-			return;
-		};
 		var isTransformUrl=false;
-		if (!MiniFileMgr.isLocalNativeFile(url)){
+		if (url.indexOf("layaNativeDir/")==-1){
 			isTransformUrl=true;
 			url=URL.formatURL(url);
-			}else{
-			if (url.indexOf("http://")!=-1 || url.indexOf("https://")!=-1){
-				if(MiniFileMgr.loadPath !=""){
-					url=url.split(MiniFileMgr.loadPath)[1];
-					}else{
-					var tempStr=URL.rootPath !="" ? URL.rootPath :URL.basePath;
-					if(tempStr !="")
-						url=url.split(tempStr)[1];
-				}
-			}
 		}
 		if (!MiniFileMgr.getFileInfo(url)){
-			if (url.indexOf("http://")!=-1 || url.indexOf("https://")!=-1){
-				if(MiniAdpter.isZiYu){
-					MiniImage.onCreateImage(url,thisLoader,true);
-					}else{
-					MiniFileMgr.downOtherFiles(url,new Handler(MiniImage,MiniImage.onDownImgCallBack,[url,thisLoader]),url);
-				}
-			}
+			if (url.indexOf("http://")!=-1 || url.indexOf("https://")!=-1)
+				MiniFileMgr.downImg(url,new Handler(MiniImage,MiniImage.onDownImgCallBack,[url,thisLoader]),url);
 			else
 			MiniImage.onCreateImage(url,thisLoader,true);
 			}else {
@@ -37340,34 +36243,22 @@ var MiniImage=(function(){
 		}
 	}
 
-	MiniImage.onDownImgCallBack=function(sourceUrl,thisLoader,errorCode,tempFilePath){
-		(tempFilePath===void 0)&& (tempFilePath="");
+	MiniImage.onDownImgCallBack=function(sourceUrl,thisLoader,errorCode){
 		if (!errorCode)
-			MiniImage.onCreateImage(sourceUrl,thisLoader,false,tempFilePath);
+			MiniImage.onCreateImage(sourceUrl,thisLoader);
 		else {
 			thisLoader.onError(null);
 		}
 	}
 
-	MiniImage.onCreateImage=function(sourceUrl,thisLoader,isLocal,tempFilePath){
+	MiniImage.onCreateImage=function(sourceUrl,thisLoader,isLocal){
 		(isLocal===void 0)&& (isLocal=false);
-		(tempFilePath===void 0)&& (tempFilePath="");
 		var fileNativeUrl;
-		if(MiniAdpter.autoCacheFile){
-			if (!isLocal){
-				if(tempFilePath !=""){
-					fileNativeUrl=tempFilePath;
-					}else{
-					var fileObj=MiniFileMgr.getFileInfo(sourceUrl);
-					var fileMd5Name=fileObj.md5;
-					fileNativeUrl=MiniFileMgr.getFileNativePath(fileMd5Name);
-				}
-			}else
-			fileNativeUrl=sourceUrl;
-			}else{
-			if(!isLocal)
-				fileNativeUrl=tempFilePath;
-			else
+		if (!isLocal){
+			var fileObj=MiniFileMgr.getFileInfo(sourceUrl);
+			var fileMd5Name=fileObj.md5;
+			fileNativeUrl=MiniFileMgr.getFileNativePath(fileMd5Name);
+			}else {
 			fileNativeUrl=sourceUrl;
 		}
 		if (thisLoader.imgCache==null)
@@ -37380,7 +36271,6 @@ var MiniImage=(function(){
 		};
 		var onload=function (){
 			clear();
-			thisLoader._url=URL.formatURL(thisLoader._url);
 			thisLoader.onLoaded(image);
 		};
 		var onerror=function (){
@@ -37406,7 +36296,6 @@ var MiniImage=(function(){
 })()
 
 
-/**@private **/
 //class laya.wx.mini.MiniInput
 var MiniInput=(function(){
 	function MiniInput(){}
@@ -37429,15 +36318,9 @@ var MiniInput=(function(){
 		var system=MiniAdpter.systemInfo.system;
 		if(model.indexOf("iPhone")!=-1){
 			Browser.onIPhone=true;
-			Browser.onIOS=true;
-			Browser.onIPad=true;
-			Browser.onAndroid=false;
 		}
 		if(system.indexOf("Android")!=-1 || system.indexOf("Adr")!=-1){
-			Browser.onAndroid=true;
-			Browser.onIPhone=false;
-			Browser.onIOS=false;
-			Browser.onIPad=false;
+			Browser.onAndriod=true;
 		}
 	}
 
@@ -37497,53 +36380,89 @@ var MiniInput=(function(){
 })()
 
 
-/**@private **/
-//class laya.wx.mini.MiniLocalStorage
-var MiniLocalStorage=(function(){
-	function MiniLocalStorage(){}
-	__class(MiniLocalStorage,'laya.wx.mini.MiniLocalStorage');
-	MiniLocalStorage.__init__=function(){
-		MiniLocalStorage.items=MiniLocalStorage;
+//class laya.wx.mini.MiniLoader
+var MiniLoader=(function(){
+	function MiniLoader(){}
+	__class(MiniLoader,'laya.wx.mini.MiniLoader');
+	var __proto=MiniLoader.prototype;
+	/**
+	*
+	*@param url
+	*@param type
+	*@param cache
+	*@param group
+	*@param ignoreCache
+	*/
+	__proto.load=function(url,type,cache,group,ignoreCache){
+		(cache===void 0)&& (cache=true);
+		(ignoreCache===void 0)&& (ignoreCache=false);
+		var thisLoader=this;
+		thisLoader._url=url;
+		if (url.indexOf("data:image")===0)thisLoader._type=type="image";
+		else {
+			thisLoader._type=type || (type=thisLoader.getTypeFromUrl(url));
+		}
+		thisLoader._cache=cache;
+		thisLoader._data=null;
+		var encoding="ascii";
+		if (url.indexOf(".fnt")!=-1){
+			encoding="utf8";
+			}else if (type=="arraybuffer"){
+			encoding="";
+		};
+		var urlType=Utils.getFileExtension(url);
+		if ((MiniLoader._fileTypeArr.indexOf(urlType)!=-1)){
+			MiniAdpter.EnvConfig.load.call(this,url,type,cache,group,ignoreCache);
+			}else {
+			if (!MiniFileMgr.getFileInfo(url)){
+				if (url.indexOf("layaNativeDir/")!=-1){
+					if(MiniAdpter.isZiYu){
+						var fileData=MiniFileMgr.ziyuFileData[url];
+						thisLoader.onLoaded(fileData);
+						return;
+						}else{
+						MiniFileMgr.read(url,encoding,new Handler(MiniLoader,MiniLoader.onReadNativeCallBack,[encoding,url,type,cache,group,ignoreCache,thisLoader]));
+						return;
+					}
+				}
+				url=URL.formatURL(url);
+				if (url.indexOf("http://")!=-1 || url.indexOf("https://")!=-1){
+					MiniAdpter.EnvConfig.load.call(thisLoader,url,type,cache,group,ignoreCache);
+					}else {
+					MiniFileMgr.readFile(url,encoding,new Handler(MiniLoader,MiniLoader.onReadNativeCallBack,[encoding,url,type,cache,group,ignoreCache,thisLoader]),url);
+				}
+				}else {
+				MiniAdpter.EnvConfig.load.call(this,url,type,cache,group,ignoreCache);
+			}
+		}
 	}
 
-	MiniLocalStorage.setItem=function(key,value){
-		wx.setStorageSync(key,value);
+	MiniLoader.onReadNativeCallBack=function(encoding,url,type,cache,group,ignoreCache,thisLoader,errorCode,data){
+		(cache===void 0)&& (cache=true);
+		(ignoreCache===void 0)&& (ignoreCache=false);
+		(errorCode===void 0)&& (errorCode=0);
+		if (!errorCode){
+			var tempData;
+			if (type=="json" || type=="atlas"){
+				tempData=MiniAdpter.getJson(data.data);
+				}else if (type=="xml"){
+				tempData=Utils.parseXMLFromString(data.data);
+				}else {
+				tempData=data.data;
+			}
+			thisLoader.onLoaded(tempData);
+			if(!MiniAdpter.isZiYu &&MiniAdpter.isPosMsgYu && type !="arraybuffer"){
+				wx.postMessage({url:url,data:tempData,isLoad:true});
+			}
+			}else if (errorCode==1){
+			MiniAdpter.EnvConfig.load.call(thisLoader,url,type,cache,group,ignoreCache);
+		}
 	}
 
-	MiniLocalStorage.getItem=function(key){
-		return wx.getStorageSync(key);
-	}
-
-	MiniLocalStorage.setJSON=function(key,value){
-		MiniLocalStorage.setItem(key,value);
-	}
-
-	MiniLocalStorage.getJSON=function(key){
-		return MiniLocalStorage.getItem(key);
-	}
-
-	MiniLocalStorage.removeItem=function(key){
-		wx.removeStorageSync(key);
-	}
-
-	MiniLocalStorage.clear=function(){
-		wx.clearStorageSync();
-	}
-
-	MiniLocalStorage.getStorageInfoSync=function(){
-		try {
-			var res=wx.getStorageInfoSync()
-			console.log(res.keys)
-			console.log(res.currentSize)
-			console.log(res.limitSize)
-			return res;
-		}catch (e){}
-		return null;
-	}
-
-	MiniLocalStorage.support=true;
-	MiniLocalStorage.items=null;
-	return MiniLocalStorage;
+	__static(MiniLoader,
+	['_fileTypeArr',function(){return this._fileTypeArr=['png','jpg','bmp','jpeg','gif'];}
+	]);
+	return MiniLoader;
 })()
 
 
@@ -37557,14 +36476,6 @@ var Laya3D=(function(){
 	*/
 	function Laya3D(){}
 	__class(Laya3D,'Laya3D');
-	Laya3D._cancelLoadByUrl=function(url){
-		Laya.loader.cancelLoadByUrl(url);
-		Laya3D._innerFirstLevelLoaderManager.cancelLoadByUrl(url);
-		Laya3D._innerSecondLevelLoaderManager.cancelLoadByUrl(url);
-		Laya3D._innerThirdLevelLoaderManager.cancelLoadByUrl(url);
-		Laya3D._innerFourthLevelLoaderManager.cancelLoadByUrl(url);
-	}
-
 	Laya3D._changeWebGLSize=function(width,height){
 		WebGL.onStageResize(width,height);
 		RenderState.clientWidth=width;
@@ -37629,34 +36540,12 @@ var Laya3D=(function(){
 		return materialUrls;
 	}
 
-	Laya3D.formatRelativePath=function(base,value){
-		var path;
-		var char1=value.charAt(0);
-		if (char1==="."){
-			var parts=(base+value).split("/");
-			for (var i=0,len=parts.length;i < len;i++){
-				if (parts[i]=='..'){
-					var index=i-1;
-					if (index > 0 && parts[index]!=='..'){
-						parts.splice(index,2);
-						i-=2;
-					}
-				}
-			}
-			path=parts.join('/');
-			}else {
-			path=base+value;
-		}
-		(URL.customFormat !=null)&&(path=URL.customFormat(path,null));
-		return path;
-	}
-
 	Laya3D._eventLoadManagerError=function(msg){
 		Laya.loader.event("error",msg);
 	}
 
 	Laya3D._addHierarchyInnerUrls=function(urls,urlMap,urlVersion,hierarchyBasePath,path,clas){
-		var formatSubUrl=Laya3D.formatRelativePath(hierarchyBasePath,path);
+		var formatSubUrl=URL.formatURL(path,hierarchyBasePath);
 		(urlVersion)&& (formatSubUrl=formatSubUrl+urlVersion);
 		urls.push({url:formatSubUrl,clas:clas});
 		urlMap[path]=formatSubUrl;
@@ -37669,13 +36558,12 @@ var Laya3D=(function(){
 			case "Scene":;
 				var lightmaps=node.customProps.lightmaps;
 				for (i=0,n=lightmaps.length;i < n;i++){
-					var lightMap=lightmaps[i].replace(".exr",".png");
+					var lightMap=lightmaps[i].replace("exr","png");
 					Laya3D._addHierarchyInnerUrls(fourthLelUrls,urlMap,urlVersion,hierarchyBasePath,lightMap,Texture2D);
 				}
 				break ;
 			case "MeshSprite3D":
 			case "TrailSprite3D":
-			case "LineSprite3D":
 			case "SkinnedMeshSprite3D":;
 				var meshPath;
 				if (node.instanceParams){
@@ -37707,12 +36595,7 @@ var Laya3D=(function(){
 				(parMeshPath)&& (Laya3D._addHierarchyInnerUrls(firstLevelUrls,urlMap,urlVersion,hierarchyBasePath,parMeshPath,Mesh));
 				var materialData=customProps.material;
 				if (materialData){
-					clasPaths=materialData.type.split('.');
-					clas=Browser.window;
-					clasPaths.forEach(function(cls){
-						clas=clas[cls];
-					});
-					Laya3D._addHierarchyInnerUrls(secondLevelUrls,urlMap,urlVersion,hierarchyBasePath,materialData.path,clas);
+					Laya3D._addHierarchyInnerUrls(secondLevelUrls,urlMap,urlVersion,hierarchyBasePath,materialData.path,ShurikenParticleMaterial);
 					}else {
 					var materialPath=customProps.materialPath;
 					if (materialPath){
@@ -37762,7 +36645,7 @@ var Laya3D=(function(){
 			}else {
 			var url=loader.url;
 			var urlVersion=Utils3D.getURLVerion(url);
-			var hierarchyBasePath=URL.getPath(url);
+			var hierarchyBasePath=URL.getPath(URL.formatURL(url));
 			var firstLevUrls=[];
 			var secondLevUrls=[];
 			var forthLevUrls=[];
@@ -37826,14 +36709,14 @@ var Laya3D=(function(){
 			}else {
 			var url=loader.url;
 			var urlVersion=Utils3D.getURLVerion(url);
-			var terrainBasePath=URL.getPath(url);
+			var terrainBasePath=URL.getPath(URL.formatURL(url));
 			var heightMapURL,textureURLs=[];
 			var urlMap={};
 			var formatUrl;
 			var i=0,n=0,count=0;
 			var heightData=ltData.heightData;
 			heightMapURL=heightData.url;
-			formatUrl=Laya3D.formatRelativePath(terrainBasePath,heightMapURL);
+			formatUrl=URL.formatURL(heightMapURL,terrainBasePath);
 			(urlVersion)&& (formatUrl=formatUrl+urlVersion);
 			urlMap[heightMapURL]=formatUrl;
 			heightMapURL=formatUrl;
@@ -37848,7 +36731,7 @@ var Laya3D=(function(){
 			textureURLs.push({url:alphaMaps[i],params:[false,false,0x1908,true]});
 			for (i=0,n=textureURLs.length;i < n;i++){
 				var subUrl=textureURLs[i].url;
-				formatUrl=Laya3D.formatRelativePath(terrainBasePath,subUrl);
+				formatUrl=URL.formatURL(subUrl,terrainBasePath);
 				(urlVersion)&& (formatUrl=formatUrl+urlVersion);
 				textureURLs[i].url=formatUrl;
 				urlMap[subUrl]=formatUrl;
@@ -37892,7 +36775,7 @@ var Laya3D=(function(){
 			}else {
 			var url=loader.url;
 			var urlVersion=Utils3D.getURLVerion(url);
-			var meshBasePath=URL.getPath(url);
+			var meshBasePath=URL.getPath(URL.formatURL(url));
 			var urls;
 			var urlMap={};
 			var formatSubUrl;
@@ -37933,7 +36816,7 @@ var Laya3D=(function(){
 				}
 			for (i=0,n=urls.length;i < n;i++){
 				var subUrl=urls[i];
-				formatSubUrl=Laya3D.formatRelativePath(meshBasePath,subUrl);
+				formatSubUrl=URL.formatURL(subUrl,meshBasePath);
 				(urlVersion)&& (formatSubUrl=formatSubUrl+urlVersion);
 				urls[i]=formatSubUrl;
 				urlMap[subUrl]=formatSubUrl;
@@ -37960,7 +36843,7 @@ var Laya3D=(function(){
 		var extenIndex=path.length-4;
 		if (path.indexOf(".dds")==extenIndex || path.indexOf(".tga")==extenIndex || path.indexOf(".exr")==extenIndex || path.indexOf(".DDS")==extenIndex || path.indexOf(".TGA")==extenIndex || path.indexOf(".EXR")==extenIndex)
 			path=path.substr(0,extenIndex)+".png";
-		path=Laya3D.formatRelativePath(materialBath,path);
+		path=URL.formatURL(path,materialBath);
 		(urlVersion)&& (path=path+urlVersion);
 		return path;
 	}
@@ -37976,7 +36859,7 @@ var Laya3D=(function(){
 			}else {
 			var url=loader.url;
 			var urlVersion=Utils3D.getURLVerion(url);
-			var materialBasePath=URL.getPath(url);
+			var materialBasePath=URL.getPath(URL.formatURL(url));
 			var urls=[];
 			var urlMap={};
 			var customProps=lmatData.customProps;
@@ -37984,8 +36867,7 @@ var Laya3D=(function(){
 			var version=lmatData.version;
 			if (version){
 				switch (version){
-					case "LAYAMATERIAL:01":
-					case "LAYAMATERIAL:02":;
+					case "LAYAMATERIAL:01":;
 						var textures=lmatData.props.textures;
 						for (var i=0,n=textures.length;i < n;i++){
 							var tex=textures[i];
@@ -37994,7 +36876,7 @@ var Laya3D=(function(){
 								var extenIndex=path.length-4;
 								if (path.indexOf(".exr")==extenIndex || path.indexOf(".EXR")==extenIndex)
 									path=path.substr(0,extenIndex)+".png";
-								formatSubUrl=Laya3D.formatRelativePath(materialBasePath,path);
+								formatSubUrl=URL.formatURL(path,materialBasePath);
 								(urlVersion)&& (formatSubUrl=formatSubUrl+urlVersion);
 								urls.push({url:formatSubUrl,params:tex.params});
 								urlMap[path]=formatSubUrl;
@@ -38079,8 +36961,8 @@ var Laya3D=(function(){
 		if (loader._class.destroyed){
 			loader.endLoad();
 			}else {
-			var ltcBasePath=URL.getPath(loader.url);
-			var urls=[Laya3D.formatRelativePath(ltcBasePath,ltcData.px),Laya3D.formatRelativePath(ltcBasePath,ltcData.nx),Laya3D.formatRelativePath(ltcBasePath,ltcData.py),Laya3D.formatRelativePath(ltcBasePath,ltcData.ny),Laya3D.formatRelativePath(ltcBasePath,ltcData.pz),Laya3D.formatRelativePath(ltcBasePath,ltcData.nz)];
+			var ltcBasePath=URL.getPath(URL.formatURL(loader.url));
+			var urls=[URL.formatURL(ltcData.px,ltcBasePath),URL.formatURL(ltcData.nx,ltcBasePath),URL.formatURL(ltcData.py,ltcBasePath),URL.formatURL(ltcData.ny,ltcBasePath),URL.formatURL(ltcData.pz,ltcBasePath),URL.formatURL(ltcData.nz,ltcBasePath)];
 			var ltcWeight=1.0 / 7.0;
 			Laya3D._onProcessChange(loader,0,ltcWeight,1.0);
 			var processHandler=Handler.create(null,Laya3D._onProcessChange,[loader,ltcWeight,6 / 7],false);
@@ -38113,14 +36995,11 @@ var Laya3D=(function(){
 		RunDriver.update3DLoop=function (){
 			CollisionManager._triggerCollision();
 		}
-		RunDriver.cancelLoadByUrl=function (url){
-			Laya3D._cancelLoadByUrl(url);
-		}
 		Config.isAntialias=antialias;
 		Config.isAlpha=alpha;
 		Config.premultipliedAlpha=premultipliedAlpha;
 		Config.isStencil=stencil;
-		if (!WebGL.enable()){
+		if (!Render.isConchNode && !WebGL.enable()){
 			alert("Laya3D init error,must support webGL!");
 			return;
 		}
@@ -38129,7 +37008,6 @@ var Laya3D=(function(){
 		Laya.init(width,height);
 		Layer.__init__();
 		Physics.__init__();
-		ExtendTerrainMaterial.__init__();
 		ShaderInit3D.__init__();
 		MeshSprite3D.__init__();
 		AnimationNode.__init__();
@@ -38939,42 +37817,6 @@ var CLifeCycle=(function(_super){
 })(EventDispatcher)
 
 
-/**
-*...
-*@author
-*/
-//class core.character.state.CCharacterState extends core.fsm.CFsmState
-var CCharacterState=(function(_super){
-	function CCharacterState(){
-		CCharacterState.__super.call(this);
-	}
-
-	__class(CCharacterState,'core.character.state.CCharacterState',_super);
-	var __proto=CCharacterState.prototype;
-	__proto.onInit=function(fsm){
-		_super.prototype.onInit.call(this,fsm);
-	}
-
-	__proto.onEnter=function(fsm){
-		_super.prototype.onEnter.call(this,fsm);
-	}
-
-	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm,deltaTime);
-	}
-
-	__proto.onLeave=function(fsm,isShutDown){
-		_super.prototype.onLeave.call(this,fsm,isShutDown);
-	}
-
-	__proto.onDestroy=function(fsm){
-		_super.prototype.onDestroy.call(this,fsm);
-	}
-
-	return CCharacterState;
-})(CFsmState)
-
-
 //class core.game.ecsLoop.CGameObject extends laya.events.EventDispatcher
 var CGameObject=(function(_super){
 	function CGameObject(){
@@ -39118,7 +37960,7 @@ var CGameObject=(function(_super){
 			if (comp==this.m_pTransform){
 				this.m_pTransform=null;
 			}
-			for (var keyClassID=0 in this.classToComponentMap){
+			for (var keyClassID in this.classToComponentMap){
 				if (this.classToComponentMap[keyClassID]==comp){
 					delete this.classToComponentMap[keyClassID];
 					break ;
@@ -39146,7 +37988,7 @@ var CGameObject=(function(_super){
 			}
 		}
 		reversed.slice(0,reversed.length);
-		for (var keyClassID=0 in this.classToComponentMap){
+		for (var keyClassID in this.classToComponentMap){
 			delete this.classToComponentMap[keyClassID];
 		}
 	}
@@ -39215,6 +38057,42 @@ var CGameObject=(function(_super){
 	CGameObject.s_component_class_IDS_count=0;
 	return CGameObject;
 })(EventDispatcher)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.state.CCharacterState extends core.fsm.CFsmState
+var CCharacterState=(function(_super){
+	function CCharacterState(){
+		CCharacterState.__super.call(this);
+	}
+
+	__class(CCharacterState,'core.character.state.CCharacterState',_super);
+	var __proto=CCharacterState.prototype;
+	__proto.onInit=function(fsm){
+		_super.prototype.onInit.call(this,fsm);
+	}
+
+	__proto.onEnter=function(fsm){
+		_super.prototype.onEnter.call(this,fsm);
+	}
+
+	__proto.onUpdate=function(fsm,deltaTime){
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
+	}
+
+	__proto.onLeave=function(fsm,isShutDown){
+		_super.prototype.onLeave.call(this,fsm,isShutDown);
+	}
+
+	__proto.onDestroy=function(fsm){
+		_super.prototype.onDestroy.call(this,fsm);
+	}
+
+	return CCharacterState;
+})(CFsmState)
 
 
 /**
@@ -39415,7 +38293,7 @@ var CProcedureBase=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 	}
 
 	__proto.onLeave=function(fsm,isShutDown){
@@ -39590,7 +38468,7 @@ var Resource=(function(_super){
 	__proto.activeResource=function(force){
 		(force===void 0)&& (force=false);
 		this._lastUseFrameCount=Stat.loopCount;
-		if (!this._destroyed && this.__loaded && (this._released || force))
+		if (!this._destroyed&&this.__loaded&& (this._released || force))
 			this.recreateResource();
 	}
 
@@ -39642,7 +38520,6 @@ var Resource=(function(_super){
 				(resList.length===0)&& (delete Resource._urlResourcesMap[this.url]);
 			}
 			Loader.clearRes(this._url);
-			(this.__loaded)||(RunDriver.cancelLoadByUrl(this._url));
 		}
 		if (this._group){
 			resList=Resource._groupResourcesMap[this._group];
@@ -39911,10 +38788,7 @@ var AnimationTransform3D=(function(_super){
 			}else {
 			var entityTransform=this._entity.owner._transform;
 			var entityPosition=this._entity.localPosition;
-			var entityPositionE=entityPosition.elements;
-			entityPositionE[0]=value[0];
-			entityPositionE[1]=value[1];
-			entityPositionE[2]=value[2];
+			value.cloneTo(entityPosition);
 			entityTransform.localPosition=entityPosition;
 		}
 	}
@@ -39947,11 +38821,7 @@ var AnimationTransform3D=(function(_super){
 			}else {
 			var entityTransform=this._entity.owner._transform;
 			var entityRotation=this._entity.localRotation;
-			var entityRotationE=entityRotation.elements;
-			entityRotationE[0]=value[0];
-			entityRotationE[1]=value[1];
-			entityRotationE[2]=value[2];
-			entityRotationE[3]=value[3];
+			value.cloneTo(entityRotation);
 			entityTransform.localRotation=entityRotation;
 		}
 	}
@@ -39976,10 +38846,7 @@ var AnimationTransform3D=(function(_super){
 			}else {
 			var entityTransform=this._entity.owner._transform;
 			var entityScale=this._entity.localScale;
-			var entityScaleE=entityScale.elements;
-			entityScaleE[0]=value[0];
-			entityScaleE[1]=value[1];
-			entityScaleE[2]=value[2];
+			value.cloneTo(entityScale);
 			entityTransform.localScale=entityScale;
 		}
 	}
@@ -41758,12 +40625,8 @@ var LoaderManager=(function(_super){
 			}
 			for (var i=0;i < itemCount;i++){
 				var item=items[i];
-				if ((typeof item=='string'))
-					item=items[i]={url:item};
+				if ((typeof item=='string'))item=items[i]={url:item};
 				item.progress=0;
-			}
-			for (i=0;i < itemCount;i++){
-				item=items[i];
 				var progressHandler=progress ? Handler.create(null,onProgress,[item],false):null;
 				var completeHandler=(progress || complete)? Handler.create(null,onComplete,[item]):null;
 				this._create(item.url,completeHandler,progressHandler,item.clas || clas,item.params || params,item.priority || priority,cache,item.group || group);
@@ -41792,8 +40655,8 @@ var LoaderManager=(function(_super){
 	__proto._create=function(url,complete,progress,clas,params,priority,cache,group){
 		(priority===void 0)&& (priority=1);
 		(cache===void 0)&& (cache=true);
-		var formarUrl=URL.formatURL(url);
-		var item=this.getRes(formarUrl);
+		url=URL.formatURL(url);
+		var item=this.getRes(url);
 		if (!item){
 			var extension=Utils.getFileExtension(url);
 			var creatItem=LoaderManager.createMap[extension];
@@ -41816,7 +40679,7 @@ var LoaderManager=(function(_super){
 					if (complete)complete.run();
 					Laya.loader.event(url);
 				}
-				(cache)&& (this.cacheRes(formarUrl,item));
+				(cache)&& (this.cacheRes(url,item));
 			}
 			}else {
 			if (!item.hasOwnProperty("loaded")|| item.loaded){
@@ -41944,7 +40807,6 @@ var LoaderManager=(function(_super){
 		function onLoaded (data){
 			loader.offAll();
 			loader._data=null;
-			loader._customParse=false;
 			_this._loaders.push(loader);
 			_this._endLoad(resInfo,(data instanceof Array)? [data] :data);
 			_this._loaderCount--;
@@ -43454,10 +42316,6 @@ var WebAudioSound=(function(_super){
 		*待播放的声音列表
 		*/
 		this.__toPlays=null;
-		/**
-		*@private
-		*/
-		this._disposed=false;
 		WebAudioSound.__super.call(this);
 	}
 
@@ -43487,10 +42345,6 @@ var WebAudioSound=(function(_super){
 		request.open("GET",url,true);
 		request.responseType="arraybuffer";
 		request.onload=function (){
-			if (me._disposed){
-				me._removeLoadEvents();
-				return;
-			}
 			me.data=request.response;
 			WebAudioSound.buffs.push({"buffer":me.data,"url":me.url});
 			WebAudioSound.decode();
@@ -43505,26 +42359,10 @@ var WebAudioSound=(function(_super){
 		this._removeLoadEvents();
 		WebAudioSound.__loadingSound[this.url]=false;
 		this.event("error");
-		if (!this.__toPlays)return;
-		var i=0,len=0;
-		var toPlays;
-		toPlays=this.__toPlays;
-		len=toPlays.length;
-		var tParams;
-		for (i=0;i < len;i++){
-			tParams=toPlays[i];
-			if (tParams[2] && !(tParams [2]).isStopped){
-				(tParams [2]).event("error");
-			}
-		}
-		this.__toPlays.length=0;
 	}
 
 	__proto._loaded=function(audioBuffer){
 		this._removeLoadEvents();
-		if (this._disposed){
-			return;
-		}
 		this.audioBuffer=audioBuffer;
 		WebAudioSound._dataCache[this.url]=this.audioBuffer;
 		this.loaded=true;
@@ -43581,12 +42419,8 @@ var WebAudioSound=(function(_super){
 	}
 
 	__proto.dispose=function(){
-		this._disposed=true;
 		delete WebAudioSound._dataCache[this.url];
 		delete WebAudioSound.__loadingSound[this.url];
-		this.audioBuffer=null;
-		this.data=null;
-		this.__toPlays=[];
 	}
 
 	__getset(0,__proto,'duration',function(){
@@ -43635,7 +42469,6 @@ var WebAudioSound=(function(_super){
 		if (WebAudioSound.ctx.state=="running"){
 			Browser.document.removeEventListener("mousedown",WebAudioSound._unlock,true);
 			Browser.document.removeEventListener("touchend",WebAudioSound._unlock,true);
-			Browser.document.removeEventListener("touchstart",WebAudioSound._unlock,true);
 			WebAudioSound._unlocked=true;
 		}
 	}
@@ -43645,7 +42478,6 @@ var WebAudioSound=(function(_super){
 			WebAudioSound._unlock();
 			Browser.document.addEventListener("mousedown",WebAudioSound._unlock,true);
 			Browser.document.addEventListener("touchend",WebAudioSound._unlock,true);
-			Browser.document.addEventListener("touchstart",WebAudioSound._unlock,true);
 		}
 	}
 
@@ -43883,10 +42715,22 @@ var Loader=(function(_super){
 		if (type==="image" || type==="htmlimage" || type==="nativeimage")return this._loadImage(url);
 		if (type==="sound")return this._loadSound(url);
 		if (type==="ttf")return this._loadTTF(url);
+		if (type=="atlas"){
+			if (Loader.preLoadedAtlasConfigMap[url]){
+				this.onLoaded(Loader.preLoadedAtlasConfigMap[url]);
+				delete Loader.preLoadedAtlasConfigMap[url];
+				return;
+			}
+		}
+		if (!this._http){
+			this._http=new HttpRequest();
+			this._http.on("progress",this,this.onProgress);
+			this._http.on("error",this,this.onError);
+			this._http.on("complete",this,this.onLoaded);
+		};
 		var contentType;
 		switch (type){
 			case "atlas":
-			case "plf":
 				contentType="json";
 				break ;
 			case "font":
@@ -43898,17 +42742,7 @@ var Loader=(function(_super){
 			default :
 				contentType=type;
 			}
-		if (Loader.preLoadedMap[url]){
-			this.onLoaded(Loader.preLoadedMap[url]);
-			}else{
-			if (!this._http){
-				this._http=new HttpRequest();
-				this._http.on("progress",this,this.onProgress);
-				this._http.on("error",this,this.onError);
-				this._http.on("complete",this,this.onLoaded);
-			}
-			this._http.send(url,null,"get",contentType);
-		}
+		this._http.send(url,null,"get",contentType);
 	}
 
 	/**
@@ -44014,10 +42848,6 @@ var Loader=(function(_super){
 	*/
 	__proto.onLoaded=function(data){
 		var type=this._type;
-		if (type=="plf"){
-			this.parsePLFData(data);
-			this.complete(data);
-		}else
 		if (type==="image"){
 			var tex=new Texture(data);
 			tex.url=this._url;
@@ -44066,10 +42896,8 @@ var Loader=(function(_super){
 						var tPic=pics[obj.frame.idx ? obj.frame.idx :0];
 						var url=URL.formatURL(directory+name);
 						tPic.scaleRate=scaleRate;
-						var tTexture;
-						tTexture=Texture.create(tPic,obj.frame.x,obj.frame.y,obj.frame.w,obj.frame.h,obj.spriteSourceSize.x,obj.spriteSourceSize.y,obj.sourceSize.w,obj.sourceSize.h);
-						Loader.cacheRes(url,tTexture);
-						tTexture.url=url;
+						Loader.cacheRes(url,Texture.create(tPic,obj.frame.x,obj.frame.y,obj.frame.w,obj.frame.h,obj.spriteSourceSize.x,obj.spriteSourceSize.y,obj.sourceSize.w,obj.sourceSize.h));
+						Loader.loadedMap[url].url=url;
 						map.push(url);
 					}
 					}else{
@@ -44109,27 +42937,6 @@ var Loader=(function(_super){
 		}
 	}
 
-	__proto.parsePLFData=function(plfData){
-		var type;
-		var filePath;
-		var fileDic;
-		for (type in plfData){
-			fileDic=plfData[type];
-			switch(type){
-				case "json":
-				case "text":
-					for (filePath in fileDic){
-						Loader.preLoadedMap[URL.formatURL(filePath)]=fileDic[filePath]
-					}
-					break ;
-				default :
-					for (filePath in fileDic){
-						Loader.preLoadedMap[URL.formatURL(filePath)]=fileDic[filePath]
-					}
-				}
-		}
-	}
-
 	/**
 	*加载完成。
 	*@param data 加载的数据。
@@ -44151,6 +42958,7 @@ var Loader=(function(_super){
 	__proto.endLoad=function(content){
 		content && (this._data=content);
 		if (this._cache)Loader.cacheRes(this._url,this._data);
+		this._customParse=false;
 		this.event("progress",1);
 		this.event("complete",(this.data instanceof Array)? [this.data] :this.data);
 	}
@@ -44222,7 +43030,7 @@ var Loader=(function(_super){
 		var arr=laya.net.Loader.getAtlas(url);
 		var res=(arr && arr.length>0)? laya.net.Loader.getRes(arr[0]):laya.net.Loader.getRes(url);
 		if (res && res.bitmap){
-			if (Render.isConchApp && !Render.isConchWebGL){
+			if (Render.isConchApp){
 				if (res.bitmap.source.releaseTexture){
 					res.bitmap.source.releaseTexture();
 				}
@@ -44230,6 +43038,10 @@ var Loader=(function(_super){
 				res.bitmap.releaseResource(true);
 			}
 		}
+	}
+
+	Loader.setAtlasConfigs=function(url,config){
+		Loader.preLoadedAtlasConfigMap[URL.formatURL(url)]=config;
 	}
 
 	Loader.getRes=function(url){
@@ -44272,19 +43084,20 @@ var Loader=(function(_super){
 	Loader.ATLAS="atlas";
 	Loader.FONT="font";
 	Loader.TTF="ttf";
-	Loader.PLF="plf";
 	Loader.PKM="pkm";
-	Loader.typeMap={"png":"image","jpg":"image","jpeg":"image","txt":"text","json":"json","xml":"xml","als":"atlas","atlas":"atlas","mp3":"sound","ogg":"sound","wav":"sound","part":"json","fnt":"font","pkm":"pkm","ttf":"ttf","plf":"plf"};
 	Loader.parserMap={};
 	Loader.groupMap={};
 	Loader.maxTimeOut=100;
 	Loader.loadedMap={};
-	Loader.preLoadedMap={};
+	Loader.preLoadedAtlasConfigMap={};
 	Loader.atlasMap={};
 	Loader._loaders=[];
 	Loader._isWorking=false;
 	Loader._startIndex=0;
 	Loader.imgCache={};
+	__static(Loader,
+	['typeMap',function(){return this.typeMap={"png":"image","jpg":"image","jpeg":"image","txt":"text","json":"json","xml":"xml","als":"atlas","atlas":"atlas","mp3":"sound","ogg":"sound","wav":"sound","part":"json","fnt":"font","pkm":"pkm","ttf":"ttf"};}
+	]);
 	return Loader;
 })(EventDispatcher)
 
@@ -44323,7 +43136,7 @@ var Texture=(function(_super){
 		/**@private */
 		this.scaleRate=1;
 		Texture.__super.call(this);
-		if (bitmap && bitmap._addReference!=null){
+		if (bitmap){
 			bitmap._addReference();
 		}
 		this.setTo(bitmap,uv);
@@ -44625,10 +43438,9 @@ var Texture=(function(_super){
 		return tex;
 	}
 
-	Texture.DEF_UV=[0,0,1.0,0,1.0,1.0,0,1.0];
-	Texture.INV_UV=[0,1,1.0,1,1.0,0.0,0,0.0];
-	Texture._rect1=new Rectangle();
-	Texture._rect2=new Rectangle();
+	__static(Texture,
+	['DEF_UV',function(){return this.DEF_UV=[0,0,1.0,0,1.0,1.0,0,1.0];},'INV_UV',function(){return this.INV_UV=[0,1,1.0,1,1.0,0.0,0,0.0];},'_rect1',function(){return this._rect1=new Rectangle();},'_rect2',function(){return this._rect2=new Rectangle();}
+	]);
 	return Texture;
 })(EventDispatcher)
 
@@ -44706,6 +43518,23 @@ var ShaderCompile3D=(function(_super){
 				default :
 					throw new Error("ShaderCompile3D: period is unkonw.");
 				}
+		}
+		if (Render.isConchNode){
+			this._conchShader=new ConchShader();
+			this._conchShader.setSrc(this._VS["sd"],this._PS["sd"]);
+			delete this._VS["sd"];
+			delete this._PS["sd"];
+			var conchAttrElements=[];
+			for (key in this._attributeMap){
+				conchAttrElements.push({name:key,elementUsage:this._attributeMap[key]});
+			}
+			this._conchShader.setAttrDeclare(conchAttrElements);
+			var conchUniformElements=[];
+			for (key in uniformMap){
+				var tempArray=uniformMap[key];
+				conchUniformElements.push({name:key,elementUsage:tempArray[0],periodType:tempArray[1]});
+			}
+			this._conchShader.setUniformDeclare(conchUniformElements);
 		}
 	}
 
@@ -44898,197 +43727,307 @@ var ShaderCompile3D=(function(_super){
 })(ShaderCompile)
 
 
-/**@private **/
-//class laya.wx.mini.MiniLoader extends laya.events.EventDispatcher
-var MiniLoader=(function(_super){
-	function MiniLoader(){
-		MiniLoader.__super.call(this);
+//class laya.wx.mini.MiniFileMgr extends laya.events.EventDispatcher
+var MiniFileMgr=(function(_super){
+	function MiniFileMgr(){
+		MiniFileMgr.__super.call(this);;
 	}
 
-	__class(MiniLoader,'laya.wx.mini.MiniLoader',_super);
-	var __proto=MiniLoader.prototype;
-	/**
-	*@private
-	*@param url
-	*@param type
-	*@param cache
-	*@param group
-	*@param ignoreCache
-	*/
-	__proto.load=function(url,type,cache,group,ignoreCache){
-		(cache===void 0)&& (cache=true);
-		(ignoreCache===void 0)&& (ignoreCache=false);
-		var thisLoader=this;
-		thisLoader._url=url;
-		if (url.indexOf("data:image")===0)thisLoader._type=type="image";
+	__class(MiniFileMgr,'laya.wx.mini.MiniFileMgr',_super);
+	MiniFileMgr.isLoadFile=function(type){
+		return MiniFileMgr._fileTypeArr.indexOf(type)!=-1 ? true :false;
+	}
+
+	MiniFileMgr.getFileInfo=function(fileUrl){
+		var fileNativePath=fileUrl.split("?")[0];
+		var fileObj=MiniFileMgr.filesListObj[fileNativePath];
+		if (fileObj==null)
+			return null;
+		else
+		return fileObj;
+		return null;
+	}
+
+	MiniFileMgr.onFileUpdate=function(tempFilePath,readyUrl){
+		var temp=tempFilePath.split("/");
+		var tempFileName=temp[temp.length-1];
+		var fileObj=MiniFileMgr.getFileInfo(readyUrl);
+		if (fileObj==null)
+			MiniFileMgr.onSaveFile(readyUrl,tempFileName);
 		else {
-			thisLoader._type=type || (type=thisLoader.getTypeFromUrl(url));
+			if (fileObj.readyUrl !=readyUrl)
+				MiniFileMgr.remove(tempFileName,readyUrl);
 		}
-		thisLoader._cache=cache;
-		thisLoader._data=null;
-		if (!ignoreCache && Loader.loadedMap[URL.formatURL(url)]){
-			thisLoader._data=Loader.loadedMap[URL.formatURL(url)];
-			this.event("progress",1);
-			this.event("complete",thisLoader._data);
-			return;
+	}
+
+	MiniFileMgr.exits=function(fileName,callBack){
+		var nativeFileName=MiniFileMgr.getFileNativePath(fileName);
+		MiniFileMgr.fs.getFileInfo({filePath:nativeFileName,success:function (data){
+				callBack !=null && callBack.runWith([0,data]);
+				},fail:function (data){
+				callBack !=null && callBack.runWith([1,data]);
+		}});
+	}
+
+	MiniFileMgr.read=function(filePath,encoding,callBack,readyUrl){
+		(encoding===void 0)&& (encoding="ascill");
+		(readyUrl===void 0)&& (readyUrl="");
+		var fileUrl;
+		if(readyUrl!=""){
+			fileUrl=MiniFileMgr.getFileNativePath(filePath)
+			}else{
+			fileUrl=filePath;
 		}
-		if (Loader.parserMap[type] !=null){
-			thisLoader._customParse=true;
-			if (((Loader.parserMap[type])instanceof laya.utils.Handler ))Loader.parserMap[type].runWith(this);
-			else Loader.parserMap[type].call(null,this);
-			return;
-		};
-		var encoding=MiniAdpter.getUrlEncode(url,type);
-		var urlType=Utils.getFileExtension(url);
-		if ((MiniLoader._fileTypeArr.indexOf(urlType)!=-1)){
-			MiniAdpter.EnvConfig.load.call(this,url,type,cache,group,ignoreCache);
-			}else {
-			if(MiniAdpter.isZiYu && MiniFileMgr.ziyuFileData[url]){
-				var tempData=MiniFileMgr.ziyuFileData[url];
-				thisLoader.onLoaded(tempData);
-				return;
-			}
-			if (!MiniFileMgr.getFileInfo(url)){
-				if (MiniFileMgr.isLocalNativeFile(url)){
-					MiniFileMgr.read(url,encoding,new Handler(MiniLoader,MiniLoader.onReadNativeCallBack,[encoding,url,type,cache,group,ignoreCache,thisLoader]));
-					return;
-				};
-				var tempUrl=url;
-				url=URL.formatURL(url);
-				if (url.indexOf("http://")!=-1 || url.indexOf("https://")!=-1){
-					MiniAdpter.EnvConfig.load.call(thisLoader,tempUrl,type,cache,group,ignoreCache);
-					}else {
-					MiniFileMgr.readFile(url,encoding,new Handler(MiniLoader,MiniLoader.onReadNativeCallBack,[encoding,url,type,cache,group,ignoreCache,thisLoader]),url);
+		MiniFileMgr.fs.readFile({filePath:fileUrl,encoding:encoding,success:function (data){
+				callBack !=null && callBack.runWith([0,data]);
+				},fail:function (data){
+				if (data && readyUrl !="")
+					MiniFileMgr.down(readyUrl,encoding,callBack,readyUrl);
+				else
+				callBack !=null && callBack.runWith([1]);
+		}});
+	}
+
+	MiniFileMgr.readNativeFile=function(filePath,callBack){
+		MiniFileMgr.fs.readFile({filePath:filePath,encoding:"",success:function (data){
+				callBack !=null && callBack.runWith([0]);
+				},fail:function (data){
+				callBack !=null && callBack.runWith([1]);
+		}});
+	}
+
+	MiniFileMgr.down=function(fileUrl,encoding,callBack,readyUrl){
+		(encoding===void 0)&& (encoding="ascill");
+		(readyUrl===void 0)&& (readyUrl="");
+		var savePath=MiniFileMgr.getFileNativePath(readyUrl);
+		var downloadTask=MiniFileMgr.wxdown({url:fileUrl,filePath:savePath,success:function (data){
+				if (data.statusCode===200)
+					MiniFileMgr.readFile(data.filePath,encoding,callBack,readyUrl);
+				},fail:function (data){
+				callBack !=null && callBack.runWith([1,data]);
+		}});
+		downloadTask.onProgressUpdate(function(data){
+			callBack !=null && callBack.runWith([2,data.progress]);
+		});
+	}
+
+	MiniFileMgr.readFile=function(filePath,encoding,callBack,readyUrl){
+		(encoding===void 0)&& (encoding="ascill");
+		(readyUrl===void 0)&& (readyUrl="");
+		MiniFileMgr.fs.readFile({filePath:filePath,encoding:encoding,success:function (data){
+				if (filePath.indexOf("http://")!=-1 || filePath.indexOf("https://")!=-1)
+					MiniFileMgr.onFileUpdate(filePath,readyUrl);
+				callBack !=null && callBack.runWith([0,data]);
+				},fail:function (data){
+				if (data)
+					callBack !=null && callBack.runWith([1,data]);
+		}});
+	}
+
+	MiniFileMgr.downImg=function(fileUrl,callBack,readyUrl){
+		(readyUrl===void 0)&& (readyUrl="");
+		var downloadTask=MiniFileMgr.wxdown({url:fileUrl,success:function (data){
+				if (data.statusCode===200){
+					MiniFileMgr.copyFile(data.tempFilePath,readyUrl,callBack);
 				}
-				}else {
-				var fileObj=MiniFileMgr.getFileInfo(url);
-				fileObj.encoding=fileObj.encoding==null ? "ascii" :fileObj.encoding;
-				MiniFileMgr.readFile(url,fileObj.encoding,new Handler(MiniLoader,MiniLoader.onReadNativeCallBack,[encoding,url,type,cache,group,ignoreCache,thisLoader]),url);
+				},fail:function (data){
+				callBack !=null && callBack.runWith([1,data]);
+		}});
+	}
+
+	MiniFileMgr.copyFile=function(tempFilePath,readyUrl,callBack){
+		var temp=tempFilePath.split("/");
+		var tempFileName=temp[temp.length-1];
+		var fileurlkey=readyUrl.split("?")[0];
+		var fileObj=MiniFileMgr.getFileInfo(readyUrl);
+		var saveFilePath=MiniFileMgr.getFileNativePath(tempFileName);
+		var totalSize=50 *1024 *1024;
+		var chaSize=5 *1024 *1024;
+		var fileUseSize=MiniFileMgr.getCacheUseSize();
+		if((fileUseSize+chaSize)>=totalSize)
+			MiniFileMgr.onClearCacheRes(5 *1024 *1024);
+		MiniFileMgr.fs.copyFile({srcPath:tempFilePath,destPath:saveFilePath,success:function (data){
+				if (!fileObj){
+					MiniFileMgr.onSaveFile(readyUrl,tempFileName);
+					callBack !=null && callBack.runWith([0]);
+					}else {
+					if (fileObj.readyUrl !=readyUrl)
+						MiniFileMgr.remove(tempFileName,readyUrl,callBack);
+					else
+					callBack !=null && callBack.runWith([0]);
+				}
+				},fail:function (data){
+				callBack !=null && callBack.runWith([1,data]);
+		}});
+	}
+
+	MiniFileMgr.onClearCacheRes=function(memSize){
+		var clearFileSize=0;
+		for(var key in MiniFileMgr.filesListObj){
+			var fileObj=MiniFileMgr.filesListObj[key];
+			if(key !="fileUsedSize"){
+				if(clearFileSize >=memSize)
+					break ;
+				var texture=Loader.getRes(fileObj.readyUrl);
+				if(texture && texture.bitmap.useNum==0){
+					clearFileSize+=fileObj.size;
+					MiniFileMgr.remove("",fileObj.readyUrl);
+					}else if(texture==null){
+					clearFileSize+=fileObj.size;
+					MiniFileMgr.remove("",fileObj.readyUrl);
+				}
 			}
 		}
 	}
 
-	MiniLoader.onReadNativeCallBack=function(encoding,url,type,cache,group,ignoreCache,thisLoader,errorCode,data){
-		(cache===void 0)&& (cache=true);
-		(ignoreCache===void 0)&& (ignoreCache=false);
-		(errorCode===void 0)&& (errorCode=0);
-		if (!errorCode){
-			var tempData;
-			if (type=="json" || type=="atlas"){
-				tempData=MiniAdpter.getJson(data.data);
-				}else if (type=="xml"){
-				tempData=Utils.parseXMLFromString(data.data);
-				}else {
-				tempData=data.data;
-			}
-			if(!MiniAdpter.isZiYu &&MiniAdpter.isPosMsgYu && type !="arraybuffer"){
-				wx.postMessage({url:url,data:tempData,isLoad:"filedata"});
-			}
-			thisLoader.onLoaded(tempData);
-			}else if (errorCode==1){
-			MiniAdpter.EnvConfig.load.call(thisLoader,url,type,cache,group,ignoreCache);
+	MiniFileMgr.getFileNativePath=function(fileName){
+		return laya.wx.mini.MiniFileMgr.fileNativeDir+"/"+fileName;
+	}
+
+	MiniFileMgr.remove=function(tempFileName,readyUrl,callBack){
+		(readyUrl===void 0)&& (readyUrl="");
+		var fileObj=MiniFileMgr.getFileInfo(readyUrl);
+		var deleteFileUrl=MiniFileMgr.getFileNativePath(fileObj.md5);
+		MiniFileMgr.fs.unlink({filePath:deleteFileUrl,success:function (data){
+				var isAdd=tempFileName !="" ? true :false;
+				MiniFileMgr.onSaveFile(readyUrl,tempFileName,isAdd);
+				callBack !=null && callBack.runWith([0]);
+				},fail:function (data){
+		}});
+	}
+
+	MiniFileMgr.onSaveFile=function(readyUrl,md5Name,isAdd){
+		(isAdd===void 0)&& (isAdd=true);
+		var fileurlkey=readyUrl.split("?")[0];
+		if(MiniFileMgr.filesListObj['fileUsedSize']==null)
+			MiniFileMgr.filesListObj['fileUsedSize']=0;
+		if(isAdd){
+			MiniFileMgr.filesListObj[fileurlkey]={md5:md5Name,readyUrl:readyUrl};
+			var fileNativeName=MiniFileMgr.getFileNativePath(md5Name);
+			MiniFileMgr.fs.getFileInfo({
+				filePath:fileNativeName,
+				success:function (data){
+					MiniFileMgr.filesListObj[fileurlkey]={md5:md5Name,readyUrl:readyUrl,size:data.size};
+					MiniFileMgr.filesListObj['fileUsedSize']=parseInt(MiniFileMgr.filesListObj['fileUsedSize'])+data.size;
+					MiniFileMgr.fs.writeFile({filePath:MiniFileMgr.fileNativeDir+"/"+MiniFileMgr.fileListName,encoding:'utf8',data:JSON.stringify(MiniFileMgr.filesListObj),success:function (data){
+							},fail:function (data){
+					}});
+				},
+				fail:function (data){
+					console.log("fail");
+					console.log(data);
+				},
+				complete:function (data){}
+			});
+			}else{
+			var fileSize=parseInt(MiniFileMgr.filesListObj[fileurlkey].size);
+			MiniFileMgr.filesListObj['fileUsedSize']=parseInt(MiniFileMgr.filesListObj['fileUsedSize'])-fileSize;
+			delete MiniFileMgr.filesListObj[fileurlkey];
+			MiniFileMgr.fs.writeFile({filePath:MiniFileMgr.fileNativeDir+"/"+MiniFileMgr.fileListName,encoding:'utf8',data:JSON.stringify(MiniFileMgr.filesListObj),success:function (data){
+					},fail:function (data){
+			}});
 		}
 	}
 
-	__static(MiniLoader,
-	['_fileTypeArr',function(){return this._fileTypeArr=['png','jpg','bmp','jpeg','gif'];}
+	MiniFileMgr.getCacheUseSize=function(){
+		if(MiniFileMgr.filesListObj && MiniFileMgr.filesListObj['fileUsedSize'])
+			return MiniFileMgr.filesListObj['fileUsedSize'];
+		return 0;
+	}
+
+	MiniFileMgr.existDir=function(dirPath,callBack){
+		MiniFileMgr.fs.mkdir({dirPath:dirPath,success:function (data){
+				callBack !=null && callBack.runWith([0,{data:JSON.stringify({})}]);
+				},fail:function (data){
+				if (data.errMsg.indexOf("file already exists")!=-1)
+					MiniFileMgr.readSync(MiniFileMgr.fileListName,"utf8",callBack);
+				else
+				callBack !=null && callBack.runWith([1,data]);
+		}});
+	}
+
+	MiniFileMgr.readSync=function(filePath,encoding,callBack,readyUrl){
+		(encoding===void 0)&& (encoding="ascill");
+		(readyUrl===void 0)&& (readyUrl="");
+		var fileUrl=MiniFileMgr.getFileNativePath(filePath);
+		var filesListStr
+		try{
+			filesListStr=MiniFileMgr.fs.readFileSync(fileUrl,encoding);
+			callBack !=null && callBack.runWith([0,{data:filesListStr}]);
+		}
+		catch(error){
+			callBack !=null && callBack.runWith([1]);
+		}
+	}
+
+	MiniFileMgr.setNativeFileDir=function(value){
+		MiniFileMgr.fileNativeDir=wx.env.USER_DATA_PATH+value;
+	}
+
+	MiniFileMgr.filesListObj={};
+	MiniFileMgr.fileNativeDir=null;
+	MiniFileMgr.fileListName="layaairfiles.txt";
+	MiniFileMgr.ziyuFileData={};
+	__static(MiniFileMgr,
+	['_fileTypeArr',function(){return this._fileTypeArr=['json','ani','xml','sk','txt','atlas','swf','part','fnt','proto','lh','lav','lani','lmat','lm','ltc'];},'fs',function(){return this.fs=wx.getFileSystemManager();},'wxdown',function(){return this.wxdown=wx.downloadFile;}
 	]);
-	return MiniLoader;
+	return MiniFileMgr;
 })(EventDispatcher)
 
 
-/**@private **/
 //class laya.wx.mini.MiniSound extends laya.events.EventDispatcher
 var MiniSound=(function(_super){
 	function MiniSound(){
-		/**@private **/
 		this._sound=null;
 		/**
-		*@private
 		*声音URL
 		*/
 		this.url=null;
 		/**
-		*@private
 		*是否已加载完成
 		*/
 		this.loaded=false;
-		/**@private **/
-		this.readyUrl=null;
 		MiniSound.__super.call(this);
+		this._sound=MiniSound._createSound();
 	}
 
 	__class(MiniSound,'laya.wx.mini.MiniSound',_super);
 	var __proto=MiniSound.prototype;
 	/**
-	*@private
 	*加载声音。
 	*@param url 地址。
 	*
 	*/
 	__proto.load=function(url){
+		var _$this=this;
 		url=URL.formatURL(url);
 		this.url=url;
-		this.readyUrl=url;
-		if (MiniSound._audioCache[this.readyUrl]){
+		if (MiniSound._audioCache[url]){
 			this.event("complete");
 			return;
 		}
-		if(MiniAdpter.autoCacheFile&&MiniFileMgr.getFileInfo(url)){
-			this.onDownLoadCallBack(url,0);
-			}else{
-			if(!MiniAdpter.autoCacheFile){
-				this.onDownLoadCallBack(url,0);
-				}else{
-				MiniFileMgr.downOtherFiles(url,Handler.create(this,this.onDownLoadCallBack,[url]),url);
-			}
+		this._sound.src=url;
+		this._sound.onCanplay(onCanPlay);
+		var me=this;
+		function onCanPlay (){
+			_clearSound();
+			me.loaded=true;
+			me.event("complete");
+			MiniSound._audioCache[me.url]=me;
+		}
+		this._sound.onError(onError);
+		function onError (){
+			_clearSound();
+			me.event("error");
+		}
+		function _clearSound (){
+			_$this._sound.onCanplay(MiniSound.bindToThis(_$this.onCanPlayCallBack,_$this));
+			_$this._sound.onError(MiniSound.bindToThis(_$this.onCanPlayCallBack,_$this));
 		}
 	}
 
-	/**@private **/
-	__proto.onDownLoadCallBack=function(sourceUrl,errorCode){
-		if (!errorCode){
-			var fileNativeUrl;
-			if(MiniAdpter.autoCacheFile){
-				var fileObj=MiniFileMgr.getFileInfo(sourceUrl);
-				var fileMd5Name=fileObj.md5;
-				fileNativeUrl=MiniFileMgr.getFileNativePath(fileMd5Name);
-				this._sound=MiniSound._createSound();
-				this._sound.src=this.url=fileNativeUrl;
-				}else{
-				this._sound=MiniSound._createSound();
-				this._sound.src=sourceUrl;
-			}
-			this._sound.onCanplay(MiniSound.bindToThis(this.onCanPlay,this));
-			this._sound.onError(MiniSound.bindToThis(this.onError,this));
-			}else{
-			this.event("error");
-		}
-	}
-
-	/**@private **/
-	__proto.onError=function(error){
-		try{
-			console.log("-----1---------------minisound-----id:"+MiniSound._id);
-			console.log(error);
-		}
-		catch(error){
-			console.log("-----2---------------minisound-----id:"+MiniSound._id);
-			console.log(error);
-		}
-		this.event("error");
-		this._sound.offError(null);
-	}
-
-	/**@private **/
-	__proto.onCanPlay=function(){
-		this.loaded=true;
-		this.event("complete");
-		this._sound.offCanplay(null);
-	}
-
+	__proto.onCanPlayCallBack=function(){}
 	/**
-	*@private
 	*播放声音。
 	*@param startTime 开始时间,单位秒
 	*@param loops 循环次数,0表示一直循环
@@ -45103,24 +44042,12 @@ var MiniSound=(function(_super){
 			if (!MiniSound._musicAudio)MiniSound._musicAudio=MiniSound._createSound();
 			tSound=MiniSound._musicAudio;
 			}else {
-			if(MiniSound._audioCache[this.readyUrl]){
-				tSound=MiniSound._audioCache[this.readyUrl]._sound;
-				}else{
-				tSound=MiniSound._createSound();
-			}
+			tSound=MiniSound._createSound();
 		}
-		if(MiniAdpter.autoCacheFile&&MiniFileMgr.getFileInfo(this.url)){
-			var fileNativeUrl;
-			var fileObj=MiniFileMgr.getFileInfo(this.url);
-			var fileMd5Name=fileObj.md5;
-			tSound.src=this.url=MiniFileMgr.getFileNativePath(fileMd5Name);
-			}else{
-			tSound.src=this.url;
-		};
-		var channel=new MiniSoundChannel(tSound,this);
+		tSound.src=this.url;
+		var channel=new MiniSoundChannel(tSound);
 		channel.url=this.url;
 		channel.loops=loops;
-		channel.loop=(loops===0 ? true :false);
 		channel.startTime=startTime;
 		channel.play();
 		SoundManager.addChannel(channel);
@@ -45128,25 +44055,18 @@ var MiniSound=(function(_super){
 	}
 
 	/**
-	*@private
 	*释放声音资源。
 	*
 	*/
 	__proto.dispose=function(){
-		var ad=MiniSound._audioCache[this.readyUrl];
+		var ad=MiniSound._audioCache[this.url];
 		if (ad){
 			ad.src="";
-			if(ad._sound){
-				ad._sound.destroy();
-				ad._sound=null;
-				ad=null;
-			}
-			delete MiniSound._audioCache[this.readyUrl];
+			delete MiniSound._audioCache[this.url];
 		}
 	}
 
 	/**
-	*@private
 	*获取总时间。
 	*/
 	__getset(0,__proto,'duration',function(){
@@ -46063,11 +44983,6 @@ var CSSStyle=(function(_super){
 		}
 	}
 
-	CSSStyle.EMPTY=new CSSStyle(null);
-	CSSStyle._CSSTOVALUE={'letter-spacing':'letterSpacing','line-spacing':'lineSpacing','white-space':'whiteSpace','line-height':'lineHeight','scale-x':'scaleX','scale-y':'scaleY','translate-x':'translateX','translate-y':'translateY','font-family':'fontFamily','font-weight':'fontWeight','vertical-align':'valign','text-decoration':'textDecoration','background-color':'backgroundColor','border-color':'borderColor','float':'cssFloat'};
-	CSSStyle._parseCSSRegExp=new RegExp("([\.\#]\\w+)\\s*{([\\s\\S]*?)}","g");
-	CSSStyle._aligndef={'left':0,'center':1,'right':2,0:'left',1:'center',2:'right'};
-	CSSStyle._valigndef={'top':0,'middle':1,'bottom':2,0:'top',1:'middle',2:'bottom'};
 	CSSStyle.styleSheets={};
 	CSSStyle.ALIGN_CENTER=1;
 	CSSStyle.ALIGN_RIGHT=2;
@@ -46077,10 +44992,6 @@ var CSSStyle=(function(_super){
 	CSSStyle._DISPLAY_NONE=0x2;
 	CSSStyle._ABSOLUTE=0x4;
 	CSSStyle._WIDTH_SET=0x8;
-	CSSStyle._PADDING=[0,0,0,0];
-	CSSStyle._RECT=[-1,-1,-1,-1];
-	CSSStyle._SPACING=[0,0];
-	CSSStyle._ALIGNS=[0,0,0];
 	CSSStyle.ADDLAYOUTED=0x200;
 	CSSStyle._NEWFONT=0x1000;
 	CSSStyle._HEIGHT_SET=0x2000;
@@ -46090,6 +45001,9 @@ var CSSStyle=(function(_super){
 	CSSStyle._NOWARP=0x20000;
 	CSSStyle._WIDTHAUTO=0x40000;
 	CSSStyle._LISTERRESZIE=0x80000;
+	__static(CSSStyle,
+	['EMPTY',function(){return this.EMPTY=new CSSStyle(null);},'_CSSTOVALUE',function(){return this._CSSTOVALUE={'letter-spacing':'letterSpacing','line-spacing':'lineSpacing','white-space':'whiteSpace','line-height':'lineHeight','scale-x':'scaleX','scale-y':'scaleY','translate-x':'translateX','translate-y':'translateY','font-family':'fontFamily','font-weight':'fontWeight','vertical-align':'valign','text-decoration':'textDecoration','background-color':'backgroundColor','border-color':'borderColor','float':'cssFloat'};},'_parseCSSRegExp',function(){return this._parseCSSRegExp=new RegExp("([\.\#]\\w+)\\s*{([\\s\\S]*?)}","g");},'_aligndef',function(){return this._aligndef={'left':0,'center':1,'right':2,0:'left',1:'center',2:'right'};},'_valigndef',function(){return this._valigndef={'top':0,'middle':1,'bottom':2,0:'top',1:'middle',2:'bottom'};},'_PADDING',function(){return this._PADDING=[0,0,0,0];},'_RECT',function(){return this._RECT=[-1,-1,-1,-1];},'_SPACING',function(){return this._SPACING=[0,0];},'_ALIGNS',function(){return this._ALIGNS=[0,0,0];}
+	]);
 	return CSSStyle;
 })(Style)
 
@@ -46359,7 +45273,9 @@ var Value2D=(function(_super){
 	Value2D._TEXCOORD=null;
 	Value2D._cache=[];
 	Value2D._typeClass=[];
-	Value2D.TEMPMAT4_ARRAY=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];
+	__static(Value2D,
+	['TEMPMAT4_ARRAY',function(){return this.TEMPMAT4_ARRAY=[1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1];}
+	]);
 	return Value2D;
 })(ShaderValue)
 
@@ -46390,9 +45306,6 @@ var WebGLContext2D=(function(_super){
 		//this._renderKey=NaN;
 		this._saveMark=null;
 		this._shader2D=null;
-		//this._triangleMesh=null;
-		//drawTriangles专用mesh。由于ib不固定，所以不能与_mesh通用
-		this.meshlist=[];
 		/**所cacheAs精灵*/
 		//this.sprite=null;
 		/*******************************************start矢量绘制***************************************************/
@@ -46476,7 +45389,6 @@ var WebGLContext2D=(function(_super){
 			this._save=[SaveMark.Create(this)];
 			this._save.length=10;
 			this._shader2D=new Shader2D();
-			this._triangleMesh=MeshTexture.getAMesh();
 		}
 		this._vb.clear();
 		this._targets && (this._targets.repaint=true);
@@ -46691,36 +45603,6 @@ var WebGLContext2D=(function(_super){
 							}
 						}
 						other.height=height;
-						break ;
-					case "no-repeat":
-						if (ox < 0){
-							if (texture.width+ox > width){
-								other.width=width;
-								}else {
-								other.width=texture.width+ox;
-							}
-							}else {
-							other.ox=ox;
-							if (texture.width+ox > width){
-								other.width=width-ox;
-								}else {
-								other.width=texture.width;
-							}
-						}
-						if (oy < 0){
-							if (texture.height+oy > height){
-								other.height=height;
-								}else {
-								other.height=texture.height+oy;
-							}
-							}else {
-							other.oy=oy;
-							if (texture.height+oy > height){
-								other.height=height-oy;
-								}else {
-								other.height=texture.height;
-							}
-						}
 						break ;
 					default :
 						other.width=width;
@@ -47061,53 +45943,6 @@ var WebGLContext2D=(function(_super){
 		}
 	}
 
-	/**
-	*把颜色跟当前设置的alpha混合
-	*@return
-	*/
-	__proto.mixRGBandAlpha=function(color){
-		return this._mixRGBandAlpha(color,this._shader2D.ALPHA);
-	}
-
-	__proto._mixRGBandAlpha=function(color,alpha){
-		var a=((color & 0xff000000)>>> 24);
-		if (a !=0){
-			a*=alpha;
-			}else {
-			a=alpha*255;
-		}
-		return (color & 0x00ffffff)| (a << 24);
-	}
-
-	__proto.drawTriangles=function(tex,x,y,vertices,uvs,indices,matrix,alpha,color,blendMode){
-		if (!(tex.loaded && tex.source)){
-			if (this.sprite){
-				Laya.timer.callLater(this,this._repaintSprite);
-			}
-			return false;
-		}
-		this._drawCount++;
-		var webGLImg=tex.bitmap;
-		var rgba=this._mixRGBandAlpha(0xffffffff,alpha);
-		var vertNum=vertices.length / 2;
-		var eleNum=indices.length;
-		this._renderKey=-1;
-		var submit=this._curSubmit=SubmitTexture.create(this,this._triangleMesh.getIBR(),this._triangleMesh.getVBR(),this._triangleMesh.indexNum,Value2D.create(0x01,0));
-		submit.shaderValue.textureHost=tex;
-		submit._renderType=10016;
-		this._submits[this._submits._length++]=submit;
-		if(matrix){
-			WebGLContext2D._tmpMatrix.a=matrix.a;WebGLContext2D._tmpMatrix.b=matrix.b;WebGLContext2D._tmpMatrix.c=matrix.c;WebGLContext2D._tmpMatrix.d=matrix.d;WebGLContext2D._tmpMatrix.tx=matrix.tx+x;WebGLContext2D._tmpMatrix.ty=matrix.ty+y;
-			Matrix.mul(WebGLContext2D._tmpMatrix,this._curMat,WebGLContext2D._tmpMatrix);
-			}else {
-			WebGLContext2D._tmpMatrix.a=this._curMat.a;WebGLContext2D._tmpMatrix.b=this._curMat.b;WebGLContext2D._tmpMatrix.c=this._curMat.c;WebGLContext2D._tmpMatrix.d=this._curMat.d;WebGLContext2D._tmpMatrix.tx=this._curMat.tx+x;WebGLContext2D._tmpMatrix.ty=this._curMat.ty+y;
-		}
-		this._triangleMesh.addData(vertices,uvs,indices,WebGLContext2D._tmpMatrix,rgba,this);
-		this._curSubmit._numEle+=eleNum;
-		this._maxNumEle=Math.max(this._maxNumEle,this._curSubmit._numEle);
-		return true;
-	}
-
 	__proto.transform=function(a,b,c,d,tx,ty){
 		SaveTransform.save(this);
 		Matrix.mul(Matrix.TEMP.setTo(a,b,c,d,tx,ty),this._curMat,this._curMat);
@@ -47269,16 +46104,8 @@ var WebGLContext2D=(function(_super){
 		this.submitElement(0,this._submits._length);
 		this._path && this._path.reset();
 		SkinMeshBuffer.instance && SkinMeshBuffer.getInstance().reset();
-		var sz=0;
-		for (i=0,sz=this.meshlist.length;i < sz;i++){
-			var curm=this.meshlist[i];
-			curm.canReuse?(curm.releaseMesh()):(curm.destroy());
-		}
-		this.meshlist.length=0;
 		this._curSubmit=Submit.RENDERBASE;
 		this._renderKey=0;
-		this._triangleMesh=MeshTexture.getAMesh();
-		this.meshlist.push(this._triangleMesh);
 		return this._submits._length;
 	}
 
@@ -47344,7 +46171,6 @@ var WebGLContext2D=(function(_super){
 			(tempSubmit.shaderValue).u_pos=tPosArray;
 			tempSubmit.shaderValue.u_mmat2=RenderState2D.TEMPMAT4_ARRAY;
 			this._submits[this._submits._length++]=tempSubmit;
-			this._renderKey=-1;
 		}
 	}
 
@@ -47735,17 +46561,14 @@ var WebGLContext2D=(function(_super){
 		ContextParams.DEFAULT=new ContextParams();
 	}
 
-	WebGLContext2D._tempPoint=new Point();
 	WebGLContext2D._SUBMITVBSIZE=32000;
 	WebGLContext2D._MAXSIZE=99999999;
 	WebGLContext2D._RECTVBSIZE=16;
-	WebGLContext2D.MAXCLIPRECT=new Rectangle(0,0,99999999,99999999);
 	WebGLContext2D._COUNT=0;
-	WebGLContext2D._tmpMatrix=new Matrix();
 	WebGLContext2D.SEGNUM=32;
 	WebGLContext2D._contextcount=0;
 	__static(WebGLContext2D,
-	['_fontTemp',function(){return this._fontTemp=new FontInContext();},'_drawStyleTemp',function(){return this._drawStyleTemp=new DrawStyle(null);}
+	['_tempPoint',function(){return this._tempPoint=new Point();},'MAXCLIPRECT',function(){return this.MAXCLIPRECT=new Rectangle(0,0,99999999,99999999);},'_tmpMatrix',function(){return this._tmpMatrix=new Matrix();},'_fontTemp',function(){return this._fontTemp=new FontInContext();},'_drawStyleTemp',function(){return this._drawStyleTemp=new DrawStyle(null);}
 	]);
 	WebGLContext2D.__init$=function(){
 		//class ContextParams
@@ -47877,6 +46700,7 @@ var RenderSprite3D=(function(_super){
 	}
 
 	__proto._transform=function(sprite,context,x,y){
+		'use strict';
 		var transform=sprite.transform,_next=this._next;
 		if (transform && _next !=RenderSprite.NORENDER){
 			var ctx=context.ctx;
@@ -48399,7 +47223,9 @@ var SubmitCanvas=(function(_super){
 		return o;
 	}
 
-	SubmitCanvas._cache=(SubmitCanvas._cache=[],SubmitCanvas._cache._length=0,SubmitCanvas._cache);
+	__static(SubmitCanvas,
+	['_cache',function(){return this._cache=(SubmitCanvas._cache=[],SubmitCanvas._cache._length=0,SubmitCanvas._cache);}
+	]);
 	return SubmitCanvas;
 })(Submit)
 
@@ -48534,88 +47360,12 @@ var SubmitTexture=(function(_super){
 		return o;
 	}
 
-	SubmitTexture._cache=(SubmitTexture._cache=[],SubmitTexture._cache._length=0,SubmitTexture._cache);
 	SubmitTexture._shaderSet=true;
+	__static(SubmitTexture,
+	['_cache',function(){return this._cache=(SubmitTexture._cache=[],SubmitTexture._cache._length=0,SubmitTexture._cache);}
+	]);
 	return SubmitTexture;
 })(Submit)
-
-
-/**
-*与MeshQuadTexture基本相同。不过index不是固定的
-*/
-//class laya.webgl.utils.MeshTexture extends laya.webgl.utils.Mesh2D
-var MeshTexture=(function(_super){
-	function MeshTexture(){
-		MeshTexture.__super.call(this,laya.webgl.utils.MeshTexture.const_stride,0,0);
-		this.canReuse=true;
-		this.setAttributes(laya.webgl.utils.MeshTexture._fixattriInfo);
-	}
-
-	__class(MeshTexture,'laya.webgl.utils.MeshTexture',_super);
-	var __proto=MeshTexture.prototype;
-	__proto.addData=function(vertices,uvs,idx,matrix,rgba,ctx){
-		var sz=vertices.length / 2;
-		var startpos=this._vb.needSize(sz *MeshTexture.const_stride);
-		var f32pos=startpos >> 2;
-		var vbdata=this._vb.getFloat32Array();
-		var ci=0;
-		for (var i=0;i < sz;i++){
-			var x=vertices[ci],y=vertices[ci+1];
-			var x1=x *matrix.a+y *matrix.c+matrix.tx;
-			var y1=x *matrix.b+y *matrix.d+matrix.ty;
-			vbdata[f32pos++]=x1;vbdata[f32pos++]=y1;
-			vbdata[f32pos++]=uvs[ci];vbdata[f32pos++]=uvs[ci+1];
-			ci+=2;
-		}
-		this._vb.setNeedUpload();
-		var vertN=this.vertNum;
-		if (vertN > 0){
-			sz=idx.length;
-			if (sz > MeshTexture.tmpIdx.length)MeshTexture.tmpIdx=new Uint16Array(sz);
-			for (var ii=0;ii < sz;ii++){
-				MeshTexture.tmpIdx[ii]=idx[ii]+vertN;
-			}
-			this._ib.appendU16Array(MeshTexture.tmpIdx,idx.length);
-			}else {
-			this._ib.append(idx);
-		}
-		this._ib.setNeedUpload();
-		this.vertNum+=sz;
-		this.indexNum+=idx.length;
-	}
-
-	/**
-	*把本对象放到回收池中，以便getMesh能用。
-	*/
-	__proto.releaseMesh=function(){
-		this._vb._byteLength=0;
-		this._ib._byteLength=0;
-		this.vertNum=0;
-		this.indexNum=0;
-		laya.webgl.utils.MeshTexture._POOL.push(this);
-	}
-
-	__proto.destroy=function(){
-		this._ib.destroy();
-		this._vb.destroy();
-	}
-
-	MeshTexture.getAMesh=function(){
-		if (laya.webgl.utils.MeshTexture._POOL.length){
-			return laya.webgl.utils.MeshTexture._POOL.pop();
-		}
-		return new MeshTexture();
-	}
-
-	MeshTexture.const_stride=16;
-	MeshTexture._POOL=[];
-	__static(MeshTexture,
-	['_fixattriInfo',function(){return this._fixattriInfo=[
-		0x1406,2,0,
-		0x1406,2,8];},'tmpIdx',function(){return this.tmpIdx=new Uint16Array(4);}
-	]);
-	return MeshTexture;
-})(Mesh2D)
 
 
 /**
@@ -48983,6 +47733,7 @@ var Sprite=(function(_super){
 
 	/**@private */
 	__proto._adjustTransform=function(){
+		'use strict';
 		this._tfChanged=false;
 		var style=this._style;
 		var tf=style._tf;
@@ -49621,8 +48372,6 @@ var Sprite=(function(_super){
 			if (value=="bitmap")this.conchModel && this.conchModel.cacheAs(1);
 			this._set$P("cacheForFilters",false);
 			}else {
-			if (this._$P["_mask"]){
-			}else
 			if (this._$P["hasFilter"]){
 				this._set$P("cacheForFilters",true);
 				}else {
@@ -50058,9 +48807,9 @@ var Sprite=(function(_super){
 			this._set$P("_mask",value);
 			value._set$P("maskParent",this);
 			}else {
+			this.cacheAs="none";
 			this.mask && this.mask._set$P("maskParent",null);
 			this._set$P("_mask",value);
-			this.cacheAs="none";
 		}
 		this.conchModel && this.conchModel.mask(value ? value.conchModel :null);
 		this._renderType |=0x40;
@@ -50566,7 +49315,7 @@ var CProcedureChangeScene=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 		if (fsm.getData("nextSceneID")==0){
 			this.changeProcedure(fsm,CProcedureLoginMenu);
 			}else {
@@ -50607,7 +49356,7 @@ var CProcedureCheckVersion=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 		this.changeProcedure(fsm,CProcedureLoadDataTable);
 	}
 
@@ -50644,7 +49393,7 @@ var CProcedureEntry=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 		this.changeProcedure(fsm,CProcedureLaunch);
 	}
 
@@ -50683,7 +49432,7 @@ var CProcedureGaming=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 	}
 
 	__proto.onLeave=function(fsm,isShutDown){
@@ -50719,7 +49468,7 @@ var CProcedureLaunch=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 		this.changeProcedure(fsm,CProcedureCheckVersion);
 	}
 
@@ -50756,7 +49505,7 @@ var CProcedureLoadDataTable=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 		this.changeProcedure(fsm,CProcedureStageStart);
 	}
 
@@ -50806,7 +49555,7 @@ var CProcedureLoginMenu=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 	}
 
 	__proto.onLeave=function(fsm,isShutDown){
@@ -50843,7 +49592,7 @@ var CProcedureStageStart=(function(_super){
 	}
 
 	__proto.onUpdate=function(fsm,deltaTime){
-		_super.prototype.onUpdate.call(this,fsm);
+		_super.prototype.onUpdate.call(this,fsm,deltaTime);
 		this.changeProcedure(fsm,CProcedureChangeScene);
 	}
 
@@ -51370,7 +50119,9 @@ var AnimationTemplet=(function(_super){
 		return Laya.loader.create(url,null,null,AnimationTemplet);
 	}
 
-	AnimationTemplet.interpolation=[AnimationTemplet._LinearInterpolation_0,AnimationTemplet._QuaternionInterpolation_1,AnimationTemplet._AngleInterpolation_2,AnimationTemplet._RadiansInterpolation_3,AnimationTemplet._Matrix4x4Interpolation_4,AnimationTemplet._NoInterpolation_5,AnimationTemplet._BezierInterpolation_6,AnimationTemplet._BezierInterpolation_7];
+	__static(AnimationTemplet,
+	['interpolation',function(){return this.interpolation=[AnimationTemplet._LinearInterpolation_0,AnimationTemplet._QuaternionInterpolation_1,AnimationTemplet._AngleInterpolation_2,AnimationTemplet._RadiansInterpolation_3,AnimationTemplet._Matrix4x4Interpolation_4,AnimationTemplet._NoInterpolation_5,AnimationTemplet._BezierInterpolation_6,AnimationTemplet._BezierInterpolation_7];}
+	]);
 	return AnimationTemplet;
 })(Resource)
 
@@ -51886,7 +50637,7 @@ var BaseMaterial=(function(_super){
 		this._disablePublicShaderDefine=0;
 		this._shaderValues=new ValusArray();
 		this._values=[];
-		this.renderQueue=2000;
+		this.renderQueue=1;
 		this._alphaTest=false;
 		this.cull=2;
 		this.blend=0;
@@ -52238,69 +50989,6 @@ var BaseMaterial=(function(_super){
 						this._addShaderDefine(define);
 					}
 					break ;
-					case "cull":
-					case "blend":
-					case "srcBlend":
-					case "dstBlend":
-					case "depthWrite":
-					this[key]=props[key];
-					break ;
-					case "renderQueue":;
-					var queue=props[key];
-					switch (queue){
-						case 1:
-							this.renderQueue=2000;
-							break ;
-						case 2:
-							this.renderQueue=3000;
-							break ;
-						default :
-						}
-					break ;
-					default :
-					this[key]=props[key];
-				}
-			}
-			break ;
-			case "LAYAMATERIAL:02":
-			props=jsonData.props;
-			for (key in props){
-				switch (key){
-					case "vectors":
-						vectors=props[key];
-						for (i=0,n=vectors.length;i < n;i++){
-							vector=vectors[i];
-							vectorValue=vector.value;
-						switch (vectorValue.length){
-							case 2:
-								this[vector.name]=new Vector2(vectorValue[0],vectorValue[1]);
-								break ;
-							case 3:
-								this[vector.name]=new Vector3(vectorValue[0],vectorValue[1],vectorValue[2]);
-								break ;
-							case 4:
-								this[vector.name]=new Vector4(vectorValue[0],vectorValue[1],vectorValue[2],vectorValue[3]);
-								break ;
-							default :
-								throw new Error("BaseMaterial:unkonwn color length.");
-							}
-					}
-					break ;
-					case "textures":
-					textures=props[key];
-					for (i=0,n=textures.length;i < n;i++){
-						texture=textures[i];
-						path=texture.path;
-						(path)&& (this[texture.name]=Loader.getRes(textureMap[path]));
-					}
-					break ;
-					case "defines":
-					defineNames=props[key];
-					for (i=0,n=defineNames.length;i < n;i++){
-						define=this._shaderCompile.getMaterialDefineByName(defineNames[i]);
-						this._addShaderDefine(define);
-					}
-					break ;
 					default :
 					this[key]=props[key];
 				}
@@ -52478,9 +51166,6 @@ var BaseMaterial=(function(_super){
 		BaseMaterial.SHADERDEFINE_ALPHATEST=BaseMaterial.shaderDefines.registerDefine("ALPHATEST");
 	}
 
-	BaseMaterial.RENDERQUEUE_OPAQUE=2000;
-	BaseMaterial.RENDERQUEUE_ALPHATEST=2450;
-	BaseMaterial.RENDERQUEUE_TRANSPARENT=3000;
 	BaseMaterial.CULL_NONE=0;
 	BaseMaterial.CULL_FRONT=1;
 	BaseMaterial.CULL_BACK=2;
@@ -52585,8 +51270,6 @@ var Animator=(function(_super){
 		//this._cacheSpriteToNodesMap=null;
 		/**@private */
 		//this._cacheFullFrames=null;
-		/**@private */
-		//this._linkSpritesData=null;
 		/**@private */
 		//this._avatarNodeMap=null;
 		/**@private */
@@ -52780,21 +51463,24 @@ var Animator=(function(_super){
 			var nodes=clip._nodes;
 			var nodeCount=nodes.length;
 			clipCacheFullFrames.length=nodeCount;
-			var frameCount=Math.ceil(clip._duration / cacheInterval-0.00001)+1;
+			var frameCount=Math.ceil(clip._duration / cacheInterval+0.00001)+1;
 			for (var i=0;i < nodeCount;i++){
 				var node=nodes[i];
 				var nodeFullFrames=new Int32Array(frameCount);
-				(nodeFullFrames).fill(-1);
+				var lastFrameIndex=-1;
 				var keyFrames=node.keyFrames;
 				for (var j=0,n=keyFrames.length;j < n;j++){
 					var keyFrame=keyFrames[j];
 					var startTime=keyFrame.startTime;
 					var endTime=startTime+keyFrame.duration;
-					while (startTime <=endTime){
+					do {
 						var frameIndex=Math.ceil(startTime / cacheInterval-0.00001);
+						for (var k=lastFrameIndex+1;k < frameIndex;k++)
+						nodeFullFrames[k]=-1;
 						nodeFullFrames[frameIndex]=j;
+						lastFrameIndex=frameIndex;
 						startTime+=cacheInterval;
-					}
+					}while (startTime < endTime);
 				}
 				clipCacheFullFrames[i]=nodeFullFrames;
 			}
@@ -52850,7 +51536,7 @@ var Animator=(function(_super){
 	__proto._setPlayParams=function(time,cacheFrameInterval){
 		var lastTime=this._currentTime;
 		this._currentTime=time;
-		this._currentFrameIndex=Math.max(Math.floor(this.currentPlayTime / cacheFrameInterval-0.00001),0);
+		this._currentFrameIndex=Math.floor(this.currentPlayTime / cacheFrameInterval+0.00001);
 		this._currentFrameTime=this._currentFrameIndex *cacheFrameInterval;
 		this._eventScript(lastTime,time);
 	}
@@ -52861,7 +51547,7 @@ var Animator=(function(_super){
 	__proto._setPlayParamsWhenStop=function(aniClipPlayDuration,cacheFrameInterval){
 		var lastTime=this._currentTime;
 		this._currentTime=aniClipPlayDuration;
-		this._currentFrameIndex=Math.max(Math.floor(aniClipPlayDuration / cacheFrameInterval-0.00001),0);
+		this._currentFrameIndex=Math.floor(aniClipPlayDuration / cacheFrameInterval+0.00001);
 		this._currentFrameTime=this._currentFrameIndex *cacheFrameInterval;
 		this._eventScript(lastTime,aniClipPlayDuration);
 		this._currentPlayClip=null;
@@ -52871,21 +51557,15 @@ var Animator=(function(_super){
 	*@private
 	*/
 	__proto._revertKeyframeNodes=function(clip,clipIndex){
-		var originalValues=this._cacheNodesDefaultlValues[clipIndex];
-		var frameNodes=clip._nodes;
 		if (this._avatar){
-			var avatarOwners=this._cacheNodesAvatarOwners[clipIndex];
-			for (var i=0,n=avatarOwners.length;i < n;i++){
-				var avatarOwner=avatarOwners[i];
-				(avatarOwner)&& (AnimationNode._propertySetFuncs[frameNodes[i].propertyNameID](avatarOwner,null,originalValues[i]));
+			var originalValues=this._cacheNodesDefaultlValues[clipIndex];
+			var frameNodes=clip._nodes;
+			var nodeOwners=this._cacheNodesAvatarOwners[clipIndex];
+			for (var i=0,n=nodeOwners.length;i < n;i++){
+				var owner=nodeOwners[i];
+				(owner)&& (AnimationNode._propertySetFuncs[frameNodes[i].propertyNameID](owner,null,originalValues[i]));
 			}
-			}else {
-			var spriteOwners=this._cacheNodesSpriteOwners[clipIndex];
-			for (i=0,n=spriteOwners.length;i < n;i++){
-				var spriteOwner=spriteOwners[i];
-				(spriteOwner)&& (AnimationNode._propertySetFuncs[frameNodes[i].propertyNameID](null,spriteOwner,originalValues[i]));
-			}
-		}
+		}else {}
 	}
 
 	/**
@@ -52990,8 +51670,7 @@ var Animator=(function(_super){
 				avatarNodeDatas[i]=nodeMatrix;
 				nodeTransform._setWorldMatrixAndUpdate(nodeMatrix);
 				}else {
-				var mat=nodeTransform.getWorldMatrix();
-				avatarNodeDatas[i]=mat ? mat :Animator.deafaultMatrix;
+				avatarNodeDatas[i]=Animator.nanData;
 			}
 		}
 	}
@@ -53007,7 +51686,7 @@ var Animator=(function(_super){
 			if (transform._worldUpdate)
 				transform._setWorldMatrixNoUpdate(avatarNodeDatas[i]);
 			else
-			avatarNodeDatas[i]=Animator.deafaultMatrix;
+			avatarNodeDatas[i]=Animator.nanData;
 		}
 	}
 
@@ -53018,7 +51697,7 @@ var Animator=(function(_super){
 		for (var i=0,n=this._cacheSpriteToNodesMap.length;i < n;i++){
 			var nodeIndex=this._cacheSpriteToNodesMap[i];
 			var nodeMatrix=avatarNodeDatas[nodeIndex];
-			if (nodeMatrix!==Animator.deafaultMatrix){
+			if (nodeMatrix!==Animator.nanData){
 				var spriteTransform=this._avatarNodes[nodeIndex].transform._entity;
 				var spriteWorldMatrix=spriteTransform.worldMatrix;
 				Utils3D.matrix4x4MultiplyMFM((this._owner)._transform.worldMatrix,nodeMatrix,spriteWorldMatrix);
@@ -53212,11 +51891,6 @@ var Animator=(function(_super){
 		if (this.clip){
 			animator.clip=this.clip;
 		}
-		if (this._linkSpritesData){
-			animator._linkSpritesData={};
-			for (var k in this._linkSpritesData)
-			animator._linkSpritesData[k]=this._linkSpritesData[k].slice();
-		}
 	}
 
 	/**
@@ -53361,8 +52035,9 @@ var Animator=(function(_super){
 		this._stoped=false;
 		this._currentFrameIndex=0;
 		this._startUpdateLoopCount=Stat.loopCount;
-		if (this._lastPlayAnimationClip)
+		if (this._lastPlayAnimationClip){
 			(this._lastPlayAnimationClip!==this._currentPlayClip)&& (this._revertKeyframeNodes(this._lastPlayAnimationClip,this._lastPlayAnimationClipIndex));
+		}
 		this._updatePlayer(0);
 		this._lastPlayAnimationClip=this._currentPlayClip;
 		this._lastPlayAnimationClipIndex=this._currentPlayClipIndex;
@@ -53379,41 +52054,21 @@ var Animator=(function(_super){
 	}
 
 	/**
-	*@private
-	*/
-	__proto._getLinkSpritePath=function(sprite3D,path){
-		path.unshift(sprite3D.name);
-		var parent=sprite3D._parent;
-		if (parent._hierarchyAnimator===this)
-			this._getLinkSpritePath(parent,path);
-		else
-		path.shift();
-	}
-
-	/**
 	*关联精灵节点到Avatar节点,此Animator必须有Avatar文件。
 	*@param nodeName 关联节点的名字。
 	*@param sprite3D 精灵节点。
 	*@return 是否关联成功。
 	*/
 	__proto.linkSprite3DToAvatarNode=function(nodeName,sprite3D){
-		if (sprite3D._hierarchyAnimator===this){
-			if (this._avatar){
-				var node=this._avatarNodeMap[nodeName];
-				if (node){this._linkSpritesData=this._linkSpritesData|| {};
-					var path=[];
-					this._getLinkSpritePath(sprite3D,path);
-					this._linkSpritesData[nodeName]=path;
-					sprite3D._isLinkSpriteToAnimationNode(this,node,true);
-					return true;
-					}else {
-					return false;
-				}
+		if (this._avatar){
+			var node=this._avatarNodeMap[nodeName];
+			if (node){
+				sprite3D._isLinkSpriteToAnimationNode(this,node,true);
+				return true;
 				}else {
 				return false;
 			}
 			}else {
-			throw("Animator:sprite3D must belong to this Animator");
 			return false;
 		}
 	}
@@ -53594,7 +52249,7 @@ var Animator=(function(_super){
 	});
 
 	__static(Animator,
-	['deafaultMatrix',function(){return this.deafaultMatrix=new Float32Array([1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1]);},'_tempMatrix4x40',function(){return this._tempMatrix4x40=new Float32Array(16);}
+	['nanData',function(){return this.nanData=new Float32Array();},'_tempMatrix4x40',function(){return this._tempMatrix4x40=new Float32Array(16);}
 	]);
 	return Animator;
 })(Component3D)
@@ -55432,6 +54087,7 @@ var ShurikenParticleSystem=(function(_super){
 		return null;
 	}
 
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){}
 	/**设置最大粒子数,注意:谨慎修改此属性，有性能损耗。*/
 	/**获取最大粒子数。*/
 	__getset(0,__proto,'maxParticles',function(){
@@ -56308,7 +54964,6 @@ var TrailFilter=(function(_super){
 		this._trailTotalLength=0;
 		this._trailSupplementLength=0;
 		this._trailDeadLength=0;
-		this._isStart=false;
 		this._trailRenderElementIndex=0;
 		TrailFilter.__super.call(this);
 		this._curSubTrailFinishPosition=new Vector3();
@@ -56348,19 +55003,6 @@ var TrailFilter=(function(_super){
 			this._trailRenderElementIndex=this.addRenderElement();
 			this.event("trailfilterchange",[this._trailRenderElementIndex,this._trailRenderElements[this._trailRenderElementIndex]]);
 		}
-	}
-
-	__proto.reset=function(){
-		for (var i=0;i < this._trailRenderElements.length;i++){
-			this._trailRenderElements[i].reActivate();
-		}
-		this._isStart=false;
-		this._hasLifeSubTrail=false;
-		this._curSubTrailFinished=false;
-		this._curSubTrailFinishCurTime=0;
-		this._trailTotalLength=0;
-		this._trailSupplementLength=0;
-		this._trailDeadLength=0;
 	}
 
 	/**
@@ -56550,13 +55192,11 @@ var BaseTexture=(function(_super){
 		this._format=0;
 		/**@private */
 		this._source=null;
-		/**@private */
-		this._conchTexture=null;
-		/**@private */
-		this._wrapModeU=0;
-		/**@private */
-		this._wrapModeV=0;
 		BaseTexture.__super.call(this);
+		this._conchTexture
+		if (Render.isConchNode){
+			this._conchTexture=new ConchTexture();
+		}
 		this._repeat=true;
 		this.mipmap=true;
 		this.minFifter=-1;
@@ -56570,6 +55210,13 @@ var BaseTexture=(function(_super){
 	*/
 	__getset(0,__proto,'width',function(){
 		return this._width;
+	});
+
+	/**
+	*纹理格式
+	*/
+	__getset(0,__proto,'format',function(){
+		return this._format;
 	});
 
 	/**
@@ -56621,24 +55268,10 @@ var BaseTexture=(function(_super){
 	});
 
 	/**
-	*获取纹理纵向循环模式。
-	*/
-	__getset(0,__proto,'wrapModeV',function(){
-		return this._wrapModeV;
-	});
-
-	/**
 	*获取尺寸。
 	*/
 	__getset(0,__proto,'size',function(){
 		return this._size;
-	});
-
-	/**
-	*获取纹理横向循环模式。
-	*/
-	__getset(0,__proto,'wrapModeU',function(){
-		return this._wrapModeU;
 	});
 
 	/**
@@ -56672,13 +55305,6 @@ var BaseTexture=(function(_super){
 	});
 
 	/**
-	*纹理格式
-	*/
-	__getset(0,__proto,'format',function(){
-		return this._format;
-	});
-
-	/**
 	*获取纹理资源。
 	*/
 	__getset(0,__proto,'source',function(){
@@ -56693,8 +55319,6 @@ var BaseTexture=(function(_super){
 		return SolidColorTexture2D.grayTexture;
 	});
 
-	BaseTexture.WARPMODE_REPEAT=0;
-	BaseTexture.WARPMODE_CLAMP=1;
 	return BaseTexture;
 })(Resource)
 
@@ -57389,6 +56013,7 @@ var GlitterTemplet=(function(_super){
 		return null;
 	}
 
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){}
 	/**设置最大分段数,注意:谨慎修改此属性，有性能损耗。*/
 	/**获取最大分段数。*/
 	__getset(0,__proto,'maxSegments',function(){
@@ -57677,6 +56302,7 @@ var TerrainFilter=(function(_super){
 		Stat.drawCall++;
 	}
 
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){}
 	/**
 	*@inheritDoc
 	*/
@@ -58039,16 +56665,10 @@ var WebAudioSoundChannel=(function(_super){
 		bufferSource.onended=this._onPlayEnd;
 		if (this.startTime >=this.duration)this.startTime=0;
 		this._startTime=Browser.now();
-		if (this.gain.gain.setTargetAtTime){
-			this.gain.gain.setTargetAtTime(this._volume,this.context.currentTime,0.1);
-		}else
 		this.gain.gain.value=this._volume;
 		if (this.loops==0){
 			bufferSource.loop=true;
 		}
-		if (bufferSource.playbackRate.setTargetAtTime){
-			bufferSource.playbackRate.setTargetAtTime(SoundManager.playbackRate,this.context.currentTime,0.1)
-		}else
 		bufferSource.playbackRate.value=SoundManager.playbackRate;
 		bufferSource.start(0,this.startTime);
 		this._currentTime=0;
@@ -58088,11 +56708,7 @@ var WebAudioSoundChannel=(function(_super){
 
 	__proto._tryClearBuffer=function(sourceNode){
 		if (!Browser.onMac){
-			try{
-				sourceNode.buffer=null;
-				}catch (e){
-				WebAudioSoundChannel._tryCleanFailed=true;
-			}
+			WebAudioSoundChannel._tryCleanFailed=true;
 			return;
 		}
 		try {sourceNode.buffer=WebAudioSound._miniBuffer;}catch (e){WebAudioSoundChannel._tryCleanFailed=true;}
@@ -58161,9 +56777,6 @@ var WebAudioSoundChannel=(function(_super){
 			return;
 		}
 		this._volume=v;
-		if (this.gain.gain.setTargetAtTime){
-			this.gain.gain.setTargetAtTime(v,this.context.currentTime,0.1);
-		}else
 		this.gain.gain.value=v;
 	});
 
@@ -58203,9 +56816,6 @@ var RenderTarget2D=(function(_super){
 		this._surfaceFormat=surfaceFormat;
 		this._surfaceType=surfaceType;
 		this._depthStencilFormat=depthStencilFormat;
-		if (Render.isConchWebGL && this._depthStencilFormat===0x84F9){
-			this._depthStencilFormat=0x81A5;
-		}
 		this._mipMap=mipMap;
 		this._repeat=repeat;
 		this._minFifter=minFifter;
@@ -58388,9 +56998,6 @@ var RenderTarget2D=(function(_super){
 			t._surfaceFormat=surfaceFormat;
 			t._surfaceType=surfaceType;
 			t._depthStencilFormat=depthStencilFormat;
-			if (Render.isConchWebGL && t._depthStencilFormat===0x84F9){
-				t._depthStencilFormat=0x81A5;
-			}
 			t._mipMap=mipMap;
 			t._repeat=repeat;
 			t._minFifter=minFifter;
@@ -58408,26 +57015,23 @@ var RenderTarget2D=(function(_super){
 })(Texture)
 
 
-/**@private **/
+/**
+*@private
+*wxaudio 方式播放声音的音轨控制
+*/
 //class laya.wx.mini.MiniSoundChannel extends laya.media.SoundChannel
 var MiniSoundChannel=(function(_super){
-	function MiniSoundChannel(audio,miniSound){
-		/**@private **/
+	function MiniSoundChannel(audio){
 		this._audio=null;
-		/**@private **/
 		this._onEnd=null;
-		/**@private **/
-		this._miniSound=null;
 		MiniSoundChannel.__super.call(this);
 		this._audio=audio;
-		this._miniSound=miniSound;
 		this._onEnd=MiniSoundChannel.bindToThis(this.__onEnd,this);
 		audio.onEnded(this._onEnd);
 	}
 
 	__class(MiniSoundChannel,'laya.wx.mini.MiniSoundChannel',_super);
 	var __proto=MiniSoundChannel.prototype;
-	/**@private **/
 	__proto.__onEnd=function(){
 		if (this.loops==1){
 			if (this.completeHandler){
@@ -58446,7 +57050,6 @@ var MiniSoundChannel=(function(_super){
 	}
 
 	/**
-	*@private
 	*播放
 	*/
 	__proto.play=function(){
@@ -58456,7 +57059,6 @@ var MiniSoundChannel=(function(_super){
 	}
 
 	/**
-	*@private
 	*停止播放
 	*
 	*/
@@ -58467,19 +57069,18 @@ var MiniSoundChannel=(function(_super){
 		if (!this._audio)
 			return;
 		this._audio.pause();
-		this._audio.offEnded(null);
+		this._audio.onStop(MiniSoundChannel.bindToThis(this.onStopEndEd,this));
+		this._audio.onEnded(MiniSoundChannel.bindToThis(this.onStopEndEd,this));
 		this._audio=null;
-		this._miniSound=null;
-		this._onEnd=null;
 	}
 
-	/**@private **/
+	//xiaosong
+	__proto.onStopEndEd=function(){}
 	__proto.pause=function(){
 		this.isStopped=true;
 		this._audio.pause();
 	}
 
-	/**@private **/
 	__proto.resume=function(){
 		if (!this._audio)
 			return;
@@ -58488,20 +57089,7 @@ var MiniSoundChannel=(function(_super){
 		this._audio.play();
 	}
 
-	/**@private **/
 	/**
-	*@private
-	*自动播放
-	*@param value
-	*/
-	__getset(0,__proto,'autoplay',function(){
-		return this._audio.autoplay;
-		},function(value){
-		this._audio.autoplay=value;
-	});
-
-	/**
-	*@private
 	*当前播放到的位置
 	*@return
 	*
@@ -58513,7 +57101,6 @@ var MiniSoundChannel=(function(_super){
 	});
 
 	/**
-	*@private
 	*获取总时间。
 	*/
 	__getset(0,__proto,'duration',function(){
@@ -58522,31 +57109,18 @@ var MiniSoundChannel=(function(_super){
 		return this._audio.duration;
 	});
 
-	/**@private **/
-	/**@private **/
-	__getset(0,__proto,'loop',function(){
-		return this._audio.loop;
-		},function(value){
-		this._audio.loop=value;
-	});
-
 	/**
-	*@private
 	*设置音量
 	*@param v
 	*
 	*/
 	/**
-	*@private
 	*获取音量
 	*@return
 	*/
 	__getset(0,__proto,'volume',function(){
-		if (!this._audio)return 1;
-		return this._audio.volume;
+		return 1;
 		},function(v){
-		if (!this._audio)return;
-		this._audio.volume=v;
 	});
 
 	MiniSoundChannel.bindToThis=function(fun,scope){
@@ -59583,7 +58157,6 @@ var Component=(function(_super){
 //class laya.d3.core.scene.Scene extends laya.display.Sprite
 var Scene=(function(_super){
 	function Scene(){
-		this._time=0;
 		/**@private */
 		//this.__loaded=false;
 		/**@private */
@@ -59786,6 +58359,14 @@ var Scene=(function(_super){
 	/**
 	*@private
 	*/
+	__proto._updateChildsConch=function(state){
+		for (var i=0,n=this._childs.length;i < n;++i)
+		this._childs[i]._updateConch(state);
+	}
+
+	/**
+	*@private
+	*/
 	__proto._preRenderScene=function(gl,state,boundFrustum){
 		var view=state._viewMatrix;
 		var projection=state._projectionMatrix;
@@ -59946,7 +58527,7 @@ var Scene=(function(_super){
 		var lightmaps=this._lightmaps;
 		lightmaps.length=lightMapCount;
 		for (var i=0;i < lightMapCount;i++)
-		lightmaps[i]=Loader.getRes(innerResouMap[lightMapsData[i].replace(".exr",".png")]);
+		lightmaps[i]=Loader.getRes(innerResouMap[lightMapsData[i].replace("exr","png")]);
 		this.setlightmaps(lightmaps);
 		var ambientColorData=nodeData.customProps.ambientColor;
 		(ambientColorData)&& (this.ambientColor=new Vector3(ambientColorData[0],ambientColorData[1],ambientColorData[2]));
@@ -59978,8 +58559,6 @@ var Scene=(function(_super){
 		this._updateComponents(renderState);
 		this._updateChilds(renderState);
 		this._lateUpdateComponents(renderState);
-		this._time+=renderState.elapsedTime / 1000;
-		this._shaderValues.setValue(22,this._time);
 	}
 
 	/**
@@ -59989,6 +58568,7 @@ var Scene=(function(_super){
 		var renderState=this._renderState;
 		this._prepareUpdateToRenderState(WebGL.mainContext,renderState);
 		this._updateComponents(renderState);
+		this._updateChildsConch(renderState);
 		this._lateUpdateComponents(renderState);
 		this._prepareSceneToRender(renderState);
 		for (var i=0,n=this._cameraPool.length;i < n;i++){
@@ -60229,10 +58809,7 @@ var Scene=(function(_super){
 	*@return 渲染队列。
 	*/
 	__proto.getRenderQueue=function(index){
-		if (index < 3000)
-			return this._quenes[1] || (this._quenes[1]=new RenderQueue(this));
-		else
-		return this._quenes[2] || (this._quenes[2]=new RenderQueue(this));
+		return this._quenes[index] || (this._quenes[index]=new RenderQueue(this));
 	}
 
 	/**
@@ -60393,7 +58970,6 @@ var Scene=(function(_super){
 		this._typeComponentsIndices=null;
 		this._components=null;
 		Loader.clearRes(this.url);
-		(this.loaded)|| (Laya3D._cancelLoadByUrl(this.url));
 	}
 
 	/**
@@ -60407,6 +58983,15 @@ var Scene=(function(_super){
 	*@private
 	*/
 	__proto.releaseRender=function(){}
+	/**
+	*@private
+	*/
+	__proto.createConchModel=function(){
+		var pScene=new ConchScene();
+		pScene.init(512,512,512,4);
+		return pScene;
+	}
+
 	/**
 	*@private
 	*/
@@ -60731,7 +59316,6 @@ var Scene=(function(_super){
 	Scene.SHADOWMAPTEXTURE2=19;
 	Scene.SHADOWMAPTEXTURE3=20;
 	Scene.AMBIENTCOLOR=21;
-	Scene.TIME=22;
 	return Scene;
 })(Sprite)
 
@@ -61092,7 +59676,7 @@ var Sprite3D=(function(_super){
 		if ((component instanceof laya.d3.component.physics.Collider )){
 			var rigidbody=this.getComponentByType(Rigidbody);
 			(rigidbody)&& ((component)._isRigidbody=true);
-			(this._activeInHierarchy)&& (this._layer._addCollider(component));
+			(this.displayedInStage)&& (this._layer._addCollider(component));
 			this._colliders.push(component);
 			}else if ((component instanceof laya.d3.component.Animator )){
 			var animator=component;
@@ -61118,7 +59702,7 @@ var Sprite3D=(function(_super){
 		var component=this._components[componentIndex];
 		if ((component instanceof laya.d3.component.physics.Collider )){
 			var colliderComponent=component;
-			(this._activeInHierarchy)&& (this._layer._removeCollider(colliderComponent));
+			(this.displayedInStage)&& (this._layer._removeCollider(colliderComponent));
 			this._colliders.splice(this._colliders.indexOf(colliderComponent),1);
 			}else if ((component instanceof laya.d3.component.Animator )){
 			var animator=component;
@@ -61152,6 +59736,13 @@ var Sprite3D=(function(_super){
 	}
 
 	/**
+	*@private
+	*/
+	__proto.createConchModel=function(){
+		return null;
+	}
+
+	/**
 	*清理自身渲染物体，请重载此函数。
 	*/
 	__proto._clearSelfRenderObjects=function(){}
@@ -61175,6 +59766,17 @@ var Sprite3D=(function(_super){
 	}
 
 	/**
+	*更新子节点。
+	*@param state 渲染相关状态。
+	*/
+	__proto._updateChildsConch=function(state){
+		var n=this._childs.length;
+		if (n===0)return;
+		for (var i=0;i < n;++i)
+		this._childs[i]._update((state));
+	}
+
+	/**
 	*排序函数。
 	*@param state 渲染相关状态。
 	*/
@@ -61187,6 +59789,20 @@ var Sprite3D=(function(_super){
 	*@param state 渲染相关状态
 	*/
 	__proto._update=function(state){
+		state.owner=this;
+		if (this._activeInHierarchy){
+			this._updateComponents(state);
+			this._lateUpdateComponents(state);
+			Stat.spriteCount++;
+			this._childs.length && this._updateChilds(state);
+		}
+	}
+
+	/**
+	*更新
+	*@param state 渲染相关状态
+	*/
+	__proto._updateConch=function(state){
 		state.owner=this;
 		if (this._activeInHierarchy){
 			this._updateComponents(state);
@@ -61357,25 +59973,6 @@ var Sprite3D=(function(_super){
 		}
 		for (i=0,n=this._childs.length;i < n;i++)
 		destSprite3D.addChild(this._childs[i].clone());
-		var destAnimator=destSprite3D.getComponentByType(Animator);
-		if (destAnimator){
-			var destLinkSpritesData=destAnimator._linkSpritesData;
-			if (destLinkSpritesData){
-				for (var k in destLinkSpritesData){
-					var path=destLinkSpritesData[k];
-					var sp=destSprite3D;
-					for (var j=0,m=path.length;j < m;j++){
-						sp=sp.getChildByName(path[j]);
-						if (!sp)
-							break ;
-					}
-					if (sp){
-						var node=destAnimator._avatarNodeMap[k];
-						sp._isLinkSpriteToAnimationNode(destAnimator,node,true);
-					}
-				}
-			}
-		}
 	}
 
 	/**
@@ -61405,7 +60002,6 @@ var Sprite3D=(function(_super){
 		this._transform=null;
 		this._colliders=null;
 		Loader.clearRes(this.url);
-		(this.loaded)|| (Laya3D._cancelLoadByUrl(this.url));
 	}
 
 	/**
@@ -61511,22 +60107,20 @@ var Sprite3D=(function(_super){
 	__getset(0,__proto,'layer',function(){
 		return this._layer;
 		},function(value){
-		if (this._layer!==value){
-			if (value){
-				if (this._activeInHierarchy){
-					var i=0,n=this._colliders.length;
-					if (this._layer){
-						for (i=0;i < n;i++)
-						this._layer._removeCollider(this._colliders[i]);
-					}
+		if (value){
+			if (this.displayedInStage){
+				var i=0,n=this._colliders.length;
+				if (this._layer){
 					for (i=0;i < n;i++)
-					value._addCollider(this._colliders[i]);
+					this._layer._removeCollider(this._colliders[i]);
 				}
-				this._layer=value;
-				this.event("layerchanged",value);
-				}else {
-				throw new Error("Layer value can be null.");
+				for (i=0;i < n;i++)
+				value._addCollider(this._colliders[i]);
 			}
+			this._layer=value;
+			this.event("layerchanged",value);
+			}else {
+			throw new Error("Layer value can be null.");
 		}
 	});
 
@@ -61998,9 +60592,6 @@ var Text=(function(_super){
 			this._charSize.height=this._currBitmapFont.getMaxHeight();
 			}else {
 			var measureResult=Browser.context.measureText(Text._testWord);
-			if (Render.isConchApp && measureResult.width===0 && measureResult.height===0){
-				measureResult=Browser.context.measureText('W');
-			}
 			this._charSize.width=measureResult.width;
 			this._charSize.height=(measureResult.height || this.fontSize);
 		};
@@ -62169,7 +60760,7 @@ var Text=(function(_super){
 	*/
 	__getset(0,__proto,'height',function(){
 		if (this._height)return this._height;
-		return this.textHeight;
+		return this.textHeight+this.padding[0]+this.padding[2];
 		},function(value){
 		if (value !=this._height){
 			Laya.superSet(Sprite,this,'height',value);
@@ -62783,7 +61374,7 @@ var Stage=(function(_super){
 		this.canvasDegree=0;
 		/**
 		*<p>设置是否渲染，设置为false，可以停止渲染，画面会停留到最后一次渲染上，减少cpu消耗，此设置不影响时钟。</p>
-		*<p>比如非激活状态，可以设置renderingEnabled=false以节省消耗。</p>
+		*<p>比如非激活状态，可以设置renderingEnabled=true以节省消耗。</p>
 		**/
 		this.renderingEnabled=true;
 		/**是否启用屏幕适配，可以适配后，在某个时候关闭屏幕适配，防止某些操作导致的屏幕以外改变*/
@@ -62995,10 +61586,10 @@ var Stage=(function(_super){
 		RunDriver.changeWebGLSize(canvasWidth,canvasHeight);
 		mat.scale(realWidth / canvasWidth / pixelRatio,realHeight / canvasHeight / pixelRatio);
 		if (this._alignH==="left")this.offset.x=0;
-		else if (this._alignH==="right")this.offset.x=(screenWidth-realWidth)/pixelRatio;
+		else if (this._alignH==="right")this.offset.x=screenWidth-realWidth;
 		else this.offset.x=(screenWidth-realWidth)*0.5 / pixelRatio;
 		if (this._alignV==="top")this.offset.y=0;
-		else if (this._alignV==="bottom")this.offset.y=(screenHeight-realHeight)/pixelRatio;
+		else if (this._alignV==="bottom")this.offset.y=screenHeight-realHeight;
 		else this.offset.y=(screenHeight-realHeight)*0.5 / pixelRatio;
 		this.offset.x=Math.round(this.offset.x);
 		this.offset.y=Math.round(this.offset.y);
@@ -63115,7 +61706,7 @@ var Stage=(function(_super){
 			}
 		}
 		if (Render.isConchNode)return;
-		if (this.renderingEnabled && (isFastMode || !isDoubleLoop || Render.isConchWebGL)){
+		if (this.renderingEnabled && (isFastMode || !isDoubleLoop)){
 			if (Render.isWebGL){
 				context.clear();
 				_super.prototype.render.call(this,context,x,y);
@@ -63300,15 +61891,12 @@ var Stage=(function(_super){
 		this._bgColor=value;
 		this.conchModel && this.conchModel.bgColor(value);
 		if (Render.isWebGL){
-			if (value){
+			if (value && value!=="black" && value!=="#000000"){
 				Stage._wgColor=Color$1.create(value)._color;
 				}else {
 				if (!Browser.onMiniGame)Stage._wgColor=null;
 			}
 		}
-		if (Browser.onLimixiu){
-			Stage._wgColor=Color$1.create(value)._color;
-		}else
 		if (value){
 			Render.canvas.style.background=value;
 			}else {
@@ -63393,10 +61981,8 @@ var Stage=(function(_super){
 	Stage.FRAME_SLOW="slow";
 	Stage.FRAME_MOUSE="mouse";
 	Stage.FRAME_SLEEP="sleep";
+	Stage._wgColor=null;
 	Stage.FRAME_MOUSE_THREDHOLD=2000;
-	__static(Stage,
-	['_wgColor',function(){return this._wgColor=[0,0,0,1];}
-	]);
 	return Stage;
 })(Sprite)
 
@@ -63424,26 +62010,14 @@ var BoxCollider=(function(_super){
 	*/
 	__proto._updateCollider=function(){
 		if (this._needUpdate){
-			var obbMat=this._transformOrientedBoundBox.transformation;
 			var transform=(this._owner).transform;
-			var rotation=transform.rotation;
-			var scale=transform.scale;
-			var centerE=this.center.elements;
-			if (centerE[0]===0.0 && centerE[1]===0.0 && centerE[2]===0.0){
-				Matrix4x4.createAffineTransformation(transform.position,rotation,Vector3.ONE,obbMat);
-				}else {
-				Vector3.multiply(this.center,scale,BoxCollider._deviationV3);
-				Vector3.transformQuat(BoxCollider._deviationV3,rotation,BoxCollider._deviationV3);
-				Vector3.add(transform.position,BoxCollider._deviationV3,BoxCollider._deviationV3);
-				Matrix4x4.createAffineTransformation(BoxCollider._deviationV3,rotation,Vector3.ONE,obbMat);
-			}
-			this._transformOrientedBoundBox.transformation=obbMat;
-			var extentsE=this._transformOrientedBoundBox.extents.elements;
-			var sizeE=this._size.elements;
-			var scaleE=scale.elements;
-			extentsE[0]=sizeE[0] *0.5 *scaleE[0];
-			extentsE[1]=sizeE[1] *0.5 *scaleE[1];
-			extentsE[2]=sizeE[2] *0.5 *scaleE[2];
+			var ownerWorldMatrix=transform.worldMatrix;
+			ownerWorldMatrix.cloneTo(this._transformOrientedBoundBox.transformation);
+			Vector3.multiply(transform.scale,this.center,BoxCollider._deviationV3);
+			Vector3.transformQuat(BoxCollider._deviationV3,transform.rotation,BoxCollider._deviationV3);
+			this._transformOrientedBoundBox.getCenter(BoxCollider._obbCenterV3);
+			Vector3.add(BoxCollider._obbCenterV3,BoxCollider._deviationV3,BoxCollider._deviationV3);
+			this._transformOrientedBoundBox.transformation.setTranslationVector(BoxCollider._deviationV3);
 			this._needUpdate=false;
 		}
 	}
@@ -63571,7 +62145,7 @@ var BoxCollider=(function(_super){
 		return this._size;
 		},function(value){
 		this._size=value;
-		this._needUpdate=true;
+		Vector3.scale(value,0.5,this._transformOrientedBoundBox.extents);
 	});
 
 	__static(BoxCollider,
@@ -63986,24 +62560,13 @@ var BlinnPhongMaterial=(function(_super){
 	}
 
 	/**
-	*@inheritDoc
-	*/
-	__proto.cloneTo=function(destObject){
-		_super.prototype.cloneTo.call(this,destObject);
-		var destMaterial=destObject;
-		destMaterial._enableLighting=this._enableLighting;
-		destMaterial._albedoIntensity=this._albedoIntensity;
-		this._albedoColor.cloneTo(destMaterial._albedoColor);
-	}
-
-	/**
 	*设置渲染模式。
 	*@return 渲染模式。
 	*/
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 0:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
@@ -64015,13 +62578,13 @@ var BlinnPhongMaterial=(function(_super){
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.alphaTest=true;
 				this.depthTest=0x0201;
 				this._removeShaderDefine(BlinnPhongMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 2:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -64032,7 +62595,7 @@ var BlinnPhongMaterial=(function(_super){
 				this._removeShaderDefine(BlinnPhongMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 3:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -64246,7 +62809,7 @@ var BlinnPhongMaterial=(function(_super){
 		BlinnPhongMaterial.SHADERDEFINE_SPECULARMAP=BlinnPhongMaterial.shaderDefines.registerDefine("SPECULARMAP");
 		BlinnPhongMaterial.SHADERDEFINE_REFLECTMAP=BlinnPhongMaterial.shaderDefines.registerDefine("REFLECTMAP");
 		BlinnPhongMaterial.SHADERDEFINE_TILINGOFFSET=BlinnPhongMaterial.shaderDefines.registerDefine("TILINGOFFSET");
-		BlinnPhongMaterial.SHADERDEFINE_ADDTIVEFOG=BlinnPhongMaterial.shaderDefines.registerDefine("ADDTIVEFOG");
+		BlinnPhongMaterial.SHADERDEFINE_ADDTIVEFOG=BlinnPhongMaterial.shaderDefines.registerDefine("ADDTIVEFOG");;
 	}
 
 	BlinnPhongMaterial.load=function(url){
@@ -64382,14 +62945,14 @@ var ExtendTerrainMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
 				this.depthTest=0x0201;
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -64598,19 +63161,19 @@ var GlitterMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
 				break ;
 			case 13:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -64618,7 +63181,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=0x0303;
 				break ;
 			case 14:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=1;
@@ -64626,7 +63189,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=0x0303;
 				break ;
 			case 15:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -64634,7 +63197,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=1;
 				break ;
 			case 16:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=1;
@@ -64642,7 +63205,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=1;
 				break ;
 			case 5:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -64650,7 +63213,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=0x0303;
 				break ;
 			case 6:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=0;
 				this.blend=1;
@@ -64658,7 +63221,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=0x0303;
 				break ;
 			case 7:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -64666,7 +63229,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=1;
 				break ;
 			case 8:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=0;
 				this.blend=1;
@@ -64674,7 +63237,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=1;
 				break ;
 			case 9:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=2;
 				this.blend=1;
@@ -64682,7 +63245,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=0x0303;
 				break ;
 			case 10:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=0;
 				this.blend=1;
@@ -64690,7 +63253,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=0x0303;
 				break ;
 			case 11:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=2;
 				this.blend=1;
@@ -64698,7 +63261,7 @@ var GlitterMaterial=(function(_super){
 				this.dstBlend=1;
 				break ;
 			case 12:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=0;
 				this.blend=1;
@@ -64958,14 +63521,14 @@ var PBRMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
 				this.alphaTest=false;
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
@@ -64975,10 +63538,10 @@ var PBRMaterial=(function(_super){
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				break ;
 			case 13:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -65867,7 +64430,7 @@ var StandardMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
@@ -65875,7 +64438,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
@@ -65886,12 +64449,12 @@ var StandardMaterial=(function(_super){
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.alphaTest=true;
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 4:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
@@ -65899,7 +64462,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 13:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -65909,7 +64472,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 14:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=1;
@@ -65919,7 +64482,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 15:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -65929,7 +64492,7 @@ var StandardMaterial=(function(_super){
 				this._addShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 16:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=1;
@@ -65939,7 +64502,7 @@ var StandardMaterial=(function(_super){
 				this._addShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 5:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -65949,7 +64512,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 6:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=0;
 				this.blend=1;
@@ -65959,7 +64522,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 7:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -65969,7 +64532,7 @@ var StandardMaterial=(function(_super){
 				this._addShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 8:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=0;
 				this.blend=1;
@@ -65979,7 +64542,7 @@ var StandardMaterial=(function(_super){
 				this._addShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 9:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=2;
 				this.blend=1;
@@ -65989,7 +64552,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 10:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=0;
 				this.blend=1;
@@ -65999,7 +64562,7 @@ var StandardMaterial=(function(_super){
 				this._removeShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 11:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=2;
 				this.blend=1;
@@ -66009,7 +64572,7 @@ var StandardMaterial=(function(_super){
 				this._addShaderDefine(StandardMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 12:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=0;
 				this.blend=1;
@@ -66399,14 +64962,14 @@ var TerrainMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
 				this.depthTest=0x0201;
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -66731,14 +65294,14 @@ var WaterMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
 				this.alphaTest=false;
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
@@ -66748,10 +65311,10 @@ var WaterMaterial=(function(_super){
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				break ;
 			case 13:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -66852,7 +65415,7 @@ var ShurikenParticleMaterial=(function(_super){
 	__getset(0,__proto,'renderMode',null,function(value){
 		switch (value){
 			case 1:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
@@ -66860,7 +65423,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 2:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
@@ -66871,12 +65434,12 @@ var ShurikenParticleMaterial=(function(_super){
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=0;
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.alphaTest=true;
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 4:
-				this.renderQueue=2000;
+				this.renderQueue=1;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=0;
@@ -66884,7 +65447,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 13:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -66894,7 +65457,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 14:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=1;
@@ -66904,7 +65467,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 15:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=2;
 				this.blend=1;
@@ -66914,7 +65477,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._addShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 16:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=true;
 				this.cull=0;
 				this.blend=1;
@@ -66924,7 +65487,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._addShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 5:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -66934,7 +65497,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 6:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=0;
 				this.blend=1;
@@ -66944,7 +65507,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 7:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=2;
 				this.blend=1;
@@ -66954,7 +65517,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._addShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 8:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthWrite=false;
 				this.cull=0;
 				this.blend=1;
@@ -66964,7 +65527,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._addShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 9:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=2;
 				this.blend=1;
@@ -66974,7 +65537,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 10:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=0;
 				this.blend=1;
@@ -66984,7 +65547,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._removeShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 11:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=2;
 				this.blend=1;
@@ -66994,7 +65557,7 @@ var ShurikenParticleMaterial=(function(_super){
 				this._addShaderDefine(ShurikenParticleMaterial.SHADERDEFINE_ADDTIVEFOG);
 				break ;
 			case 12:
-				this.renderQueue=3000;
+				this.renderQueue=2;
 				this.depthTest=0x0201;
 				this.cull=0;
 				this.blend=1;
@@ -67367,15 +65930,6 @@ var SkinnedMeshRender=(function(_super){
 	__proto._calculateBoundingBox=function(){
 		if (this._hasIndependentBound){
 			if (this._cacheAnimator){
-				var ownerTrans=this._owner.transform;
-				var ownWorMat=ownerTrans.worldMatrix;
-				if (this._cacheAnimator._canCache){
-					var curAvatarAnimationDatas=this._cacheAnimator._curAvatarNodeDatas;
-					Utils3D.matrix4x4MultiplyMFM((this._cacheAnimator.owner).transform.worldMatrix,curAvatarAnimationDatas[this._rootIndex],ownWorMat);
-					}else {
-					Utils3D.matrix4x4MultiplyMFM((this._cacheAnimator.owner).transform.worldMatrix,this._cacheAnimator._avatarNodeMap[this._rootBone].transform.getWorldMatrix(),ownWorMat);
-				}
-				ownerTrans.worldMatrix=ownWorMat;
 				var rootBone=this._cacheAnimator._avatarNodeMap[this._rootBone];
 				if (rootBone==null || this._localBoundBox==null)
 					this._boundingBox.toDefault();
@@ -67393,14 +65947,6 @@ var SkinnedMeshRender=(function(_super){
 	__proto._calculateBoundingSphere=function(){
 		if (this._hasIndependentBound){
 			if (this._cacheAnimator){
-				var ownerTrans=this._owner.transform;
-				var ownWorMat=ownerTrans.worldMatrix;
-				if (this._cacheAnimator._canCache){
-					var curAvatarAnimationDatas=this._cacheAnimator._curAvatarNodeDatas;
-					Utils3D.matrix4x4MultiplyMFM((this._cacheAnimator.owner).transform.worldMatrix,curAvatarAnimationDatas[this._rootIndex],ownWorMat);
-				}else
-				Utils3D.matrix4x4MultiplyMFM((this._cacheAnimator.owner).transform.worldMatrix,this._cacheAnimator._avatarNodeMap[this._rootBone].transform.getWorldMatrix(),ownWorMat);
-				ownerTrans.worldMatrix=ownWorMat;
 				var rootBone=this._cacheAnimator._avatarNodeMap[this._rootBone];
 				if (rootBone==null || this.localBoundSphere==null)
 					this._boundingSphere.toDefault();
@@ -67430,9 +65976,17 @@ var SkinnedMeshRender=(function(_super){
 		var animator=this._cacheAnimator;
 		var subMeshCount=this._cacheMesh.subMeshCount;
 		var ownerTrans=this._owner.transform;
+		var cache=animator._canCache;
 		if (animator){
-			var cache=animator._canCache;
 			var curAvatarAnimationDatas=this._cacheAnimator._curAvatarNodeDatas;
+			if (this._hasIndependentBound){
+				var ownWorMat=ownerTrans.worldMatrix;
+				if (cache)
+					Utils3D.matrix4x4MultiplyMFM((this._cacheAnimator.owner).transform.worldMatrix,curAvatarAnimationDatas[this._rootIndex],ownWorMat);
+				else
+				Utils3D.matrix4x4MultiplyMFM((this._cacheAnimator.owner).transform.worldMatrix,animator._avatarNodeMap[this._rootBone].transform.getWorldMatrix(),ownWorMat);
+				ownerTrans.worldMatrix=ownWorMat;
+			};
 			var aniOwner=animator.owner;
 			this._setShaderValueMatrix4x4(0,aniOwner._transform.worldMatrix);
 			projViewWorld=aniOwner.getProjectionViewWorldMatrix(projectionView);
@@ -67551,8 +66105,10 @@ var IndexBuffer3D=(function(_super){
 		throw new Error("unidentification index type.");
 		byteLength=this._indexTypeByteCount *indexCount;
 		this._byteLength=byteLength;
-		this._bind();
-		Buffer._gl.bufferData(this._bufferType,byteLength,this._bufferUsage);
+		if (!Render.isConchNode){
+			this._bind();
+			Buffer._gl.bufferData(this._bufferType,byteLength,this._bufferUsage);
+		}
 		if (canRead){
 			if (indexType=="ushort")
 				this._buffer=new Uint16Array(indexCount);
@@ -67587,8 +66143,10 @@ var IndexBuffer3D=(function(_super){
 			if (dataStartIndex!==0 || dataCount!==4294967295)
 				data=new Uint8Array(data.buffer,dataStartIndex *byteCount,dataCount);
 		}
-		this._bind();
-		Buffer._gl.bufferSubData(this._bufferType,bufferOffset *byteCount,data);
+		if (!Render.isConchNode){
+			this._bind();
+			Buffer._gl.bufferSubData(this._bufferType,bufferOffset *byteCount,data);
+		}
 		if (this._canRead){
 			if (bufferOffset!==0 || dataStartIndex!==0 || dataCount!==4294967295){
 				var maxLength=this._buffer.length-bufferOffset;
@@ -67686,8 +66244,10 @@ var VertexBuffer3D=(function(_super){
 		this._bufferType=0x8892;
 		this._canRead=canRead;
 		this.memorySize=this._byteLength=this._vertexDeclaration.vertexStride *vertexCount;
-		this._bind();
-		Buffer._gl.bufferData(this._bufferType,this._byteLength,this._bufferUsage);
+		if (!Render.isConchNode){
+			this._bind();
+			Buffer._gl.bufferData(this._bufferType,this._byteLength,this._bufferUsage);
+		}
 		canRead && (this._buffer=new Float32Array(this._byteLength / 4));
 	}
 
@@ -67715,8 +66275,10 @@ var VertexBuffer3D=(function(_super){
 		(dataCount===void 0)&& (dataCount=4294967295);
 		if (dataStartIndex!==0 || dataCount!==4294967295)
 			data=new Float32Array(data.buffer,dataStartIndex *4,dataCount);
-		this._bind();
-		Buffer._gl.bufferSubData(this._bufferType,bufferOffset *4,data);
+		if (!Render.isConchNode){
+			this._bind();
+			Buffer._gl.bufferSubData(this._bufferType,bufferOffset *4,data);
+		}
 		if (this._canRead){
 			if (bufferOffset!==0 || dataStartIndex!==0 || dataCount!==4294967295){
 				var maxLength=this._buffer.length-bufferOffset;
@@ -68173,6 +66735,11 @@ var PrimitiveMesh=(function(_super){
 		Stat.trianglesFaces+=this._numberIndices / 3;
 	}
 
+	/**NATIVE*/
+	__proto._renderRuntime=function(conchGraphics3D,renderElement,state){
+		conchGraphics3D.drawSubmesh(renderElement._conchSubmesh,0,0x0004,0,this._numberIndices);
+	}
+
 	__getset(0,__proto,'_vertexBufferCount',function(){
 		return 1;
 	});
@@ -68387,9 +66954,6 @@ var RenderTexture=(function(_super){
 		this._surfaceFormat=surfaceFormat;
 		this._surfaceType=surfaceType;
 		this._depthStencilFormat=depthStencilFormat;
-		if (Render.isConchWebGL && this._depthStencilFormat===0x84F9){
-			this._depthStencilFormat=0x81A5;
-		}
 		this._mipmap=mipMap;
 		this._repeat=repeat;
 		this._minFifter=minFifter;
@@ -68788,8 +67352,6 @@ var Texture2D=(function(_super){
 		var minFifter=this._minFifter;
 		var magFifter=this._magFifter;
 		var repeat=this._repeat ? 0x2901 :0x812F;
-		var wrapModeU=this._wrapModeU==0 ? 0x2901 :0x812F;
-		var wrapModeV=this._wrapModeV==0 ? 0x2901 :0x812F;
 		var isPot=Arith.isPOT(w,h);
 		if (isPot){
 			if (this._mipmap)
@@ -68801,8 +67363,6 @@ var Texture2D=(function(_super){
 			gl.texParameteri(this._type,0x2800,magFifter);
 			gl.texParameteri(this._type,0x2802,repeat);
 			gl.texParameteri(this._type,0x2803,repeat);
-			gl.texParameteri(this._type,0x2802,wrapModeU);
-			gl.texParameteri(this._type,0x2803,wrapModeV);
 			this._mipmap && gl.generateMipmap(this._type);
 			}else {
 			(minFifter!==-1)|| (minFifter=0x2601);
@@ -68842,10 +67402,6 @@ var Texture2D=(function(_super){
 			(format!==undefined)&& (this._format=format);
 			var mipmap=params[3];
 			(mipmap!==undefined)&& (this._mipmap=mipmap);
-			var wrapModeU=params.wrapModeU;
-			(wrapModeU!==undefined)&& (this._wrapModeU=wrapModeU);
-			var wrapModeV=params.wrapModeV;
-			(wrapModeV!==undefined)&& (this._wrapModeV=wrapModeV);
 		}
 		switch (this._format){
 			case 0x1907:
@@ -68857,17 +67413,10 @@ var Texture2D=(function(_super){
 				this._height=h;
 				this._size=new Size(w,h);
 				if (this._canRead){
-					if (Render.isConchApp){
-						if (data instanceof window.HTMLElement){
-							this._pixels=new Uint8Array(data.getImageData(0,0,w,h));
-						}
-					}
-					else {
-						Browser.canvas.size(w,h);
-						Browser.canvas.clear();
-						Browser.context.drawImage(data,0,0,w,h);
-						this._pixels=new Uint8Array(Browser.context.getImageData(0,0,w,h).data.buffer);
-					}
+					Browser.canvas.size(w,h);
+					Browser.canvas.clear();
+					Browser.context.drawImage(data,0,0,w,h);
+					this._pixels=new Uint8Array(Browser.context.getImageData(0,0,w,h).data.buffer);
 				}
 				break ;
 			case WebGL.compressEtc1.COMPRESSED_RGB_ETC1_WEBGL:;
@@ -69053,6 +67602,7 @@ var TextureCube=(function(_super){
 //class laya.d3.shader.Shader3D extends laya.webgl.shader.BaseShader
 var Shader3D=(function(_super){
 	function Shader3D(vs,ps,attributeMap,sceneUniformMap,cameraUniformMap,spriteUniformMap,materialUniformMap,renderElementUniformMap){
+		this.customCompile=false;
 		//this._attributeMap=null;
 		//this._sceneUniformMap=null;
 		//this._cameraUniformMap=null;
@@ -69091,6 +67641,9 @@ var Shader3D=(function(_super){
 		//this._uploadVertexBuffer=null;
 		Shader3D.__super.call(this);
 		if ((!vs)|| (!ps))throw "Shader Error";
+		if (Render.isConchApp || Render.isFlash){
+			this.customCompile=true;
+		}
 		this._id=++Shader3D._count;
 		this._vs=vs;
 		this._ps=ps;
@@ -69138,43 +67691,19 @@ var Shader3D=(function(_super){
 		gl.attachShader(this._program,this._vshader);
 		gl.attachShader(this._program,this._pshader);
 		gl.linkProgram(this._program);
-		if (!Render.isConchApp && ShaderCompile3D.debugMode && !gl.getProgramParameter(this._program,0x8B82))
+		if (ShaderCompile3D.debugMode && !this.customCompile && !gl.getProgramParameter(this._program,0x8B82))
 			throw gl.getProgramInfoLog(this._program);
 		var one,i=0,j=0,n=0,location;
-		var attribNum=0;
-		if (Render.isConchApp){
-			attribNum=gl.getProgramParameterEx(this._vs,this._ps,"",0x8B89);
-		}
-		else{
-			attribNum=gl.getProgramParameter(this._program,0x8B89);
-		}
+		var attribNum=this.customCompile ? result.attributes.length :gl.getProgramParameter(this._program,0x8B89);
 		for (i=0;i < attribNum;i++){
-			var attrib=null;
-			if (Render.isConchApp){
-				attrib=gl.getActiveAttribEx(this._vs,this._ps,"",i);
-			}
-			else{
-				attrib=gl.getActiveAttrib(this._program,i);
-			}
+			var attrib=this.customCompile ? result.attributes[i] :gl.getActiveAttrib(this._program,i);
 			location=gl.getAttribLocation(this._program,attrib.name);
 			one={vartype:"attribute",ivartype:0,attrib:attrib,location:location,name:attrib.name,type:attrib.type,isArray:false,isSame:false,preValue:null,indexOfParams:0};
 			this._attributeParams.push(one);
 		};
-		var nUniformNum=0;
-		if (Render.isConchApp){
-			nUniformNum=gl.getProgramParameterEx(this._vs,this._ps,"",0x8B86);
-		}
-		else{
-			nUniformNum=gl.getProgramParameter(this._program,0x8B86);
-		}
+		var nUniformNum=this.customCompile ? result.uniforms.length :gl.getProgramParameter(this._program,0x8B86);
 		for (i=0;i < nUniformNum;i++){
-			var uniform=null;
-			if (Render.isConchApp){
-				uniform=gl.getActiveUniformEx(this._vs,this._ps,"",i);
-			}
-			else{
-				uniform=gl.getActiveUniform(this._program,i);
-			}
+			var uniform=this.customCompile ? result.uniforms[i] :gl.getActiveUniform(this._program,i);
 			location=gl.getUniformLocation(this._program,uniform.name);
 			one={vartype:"uniform",ivartype:1,attrib:attrib,location:location,name:uniform.name,type:uniform.type,isArray:false,isSame:false,preValue:null,indexOfParams:0};
 			if (one.name.indexOf('[0]')> 0){
@@ -69640,10 +68169,9 @@ var Shader3D=(function(_super){
 	Shader3D.PERIOD_SPRITE=2;
 	Shader3D.PERIOD_CAMERA=3;
 	Shader3D.PERIOD_SCENE=4;
-	Shader3D._TEXTURES=[0x84C0,0x84C1,0x84C2,0x84C3,0x84C4,0x84C5,0x84C6,0x84C7];
 	Shader3D._count=0;
 	__static(Shader3D,
-	['shaderParamsMap',function(){return this.shaderParamsMap={"float":0x1406,"int":0x1404,"bool":0x8B56,"vec2":0x8B50,"vec3":0x8B51,"vec4":0x8B52,"ivec2":0x8B53,"ivec3":0x8B54,"ivec4":0x8B55,"bvec2":0x8B57,"bvec3":0x8B58,"bvec4":0x8B59,"mat2":0x8B5A,"mat3":0x8B5B,"mat4":0x8B5C,"sampler2D":0x8B5E,"samplerCube":0x8B60};},'nameKey',function(){return this.nameKey=new StringKey();}
+	['_TEXTURES',function(){return this._TEXTURES=[0x84C0,0x84C1,0x84C2,0x84C3,0x84C4,0x84C5,0x84C6,0x84C7];},'shaderParamsMap',function(){return this.shaderParamsMap={"float":0x1406,"int":0x1404,"bool":0x8B56,"vec2":0x8B50,"vec3":0x8B51,"vec4":0x8B52,"ivec2":0x8B53,"ivec3":0x8B54,"ivec4":0x8B55,"bvec2":0x8B57,"bvec3":0x8B58,"bvec4":0x8B59,"mat2":0x8B5A,"mat3":0x8B5B,"mat4":0x8B5C,"sampler2D":0x8B5E,"samplerCube":0x8B60};},'nameKey',function(){return this.nameKey=new StringKey();}
 	]);
 	return Shader3D;
 })(BaseShader)
@@ -69652,6 +68180,7 @@ var Shader3D=(function(_super){
 //class laya.webgl.shader.Shader extends laya.webgl.shader.BaseShader
 var Shader=(function(_super){
 	function Shader(vs,ps,saveName,nameMap){
+		this.customCompile=false;
 		//this._nameMap=null;
 		//shader参数别名，语义
 		//this._vs=null;
@@ -69669,6 +68198,9 @@ var Shader=(function(_super){
 		//this._id=0;
 		Shader.__super.call(this);
 		if ((!vs)|| (!ps))throw "Shader Error";
+		if (Render.isConchApp || Render.isFlash){
+			this.customCompile=true;
+		}
 		this._id=++Shader._count;
 		this._vs=vs;
 		this._ps=ps;
@@ -69703,6 +68235,8 @@ var Shader=(function(_super){
 		this._params=[];
 		var text=[this._vs,this._ps];
 		var result;
+		if (this.customCompile)
+			result=ShaderCompile.preGetParams(this._vs,this._ps);
 		var gl=WebGL.mainContext;
 		this._program=gl.createProgram();
 		this._vshader=Shader._createShader(gl,text[0],0x8B31);
@@ -69710,44 +68244,20 @@ var Shader=(function(_super){
 		gl.attachShader(this._program,this._vshader);
 		gl.attachShader(this._program,this._pshader);
 		gl.linkProgram(this._program);
-		if (!Render.isConchApp && !gl.getProgramParameter(this._program,0x8B82)){
+		if (!this.customCompile && !gl.getProgramParameter(this._program,0x8B82)){
 			throw gl.getProgramInfoLog(this._program);
 		};
 		var one,i=0,j=0,n=0,location;
-		var attribNum=0;
-		if (Render.isConchApp){
-			attribNum=gl.getProgramParameterEx(this._vs,this._ps,"",0x8B89);
-		}
-		else{
-			attribNum=gl.getProgramParameter(this._program,0x8B89);
-		}
+		var attribNum=this.customCompile ? result.attributes.length :gl.getProgramParameter(this._program,0x8B89);
 		for (i=0;i < attribNum;i++){
-			var attrib=null;
-			if (Render.isConchApp){
-				attrib=gl.getActiveAttribEx(this._vs,this._ps,"",i);
-			}
-			else{
-				attrib=gl.getActiveAttrib(this._program,i);
-			}
+			var attrib=this.customCompile ? result.attributes[i] :gl.getActiveAttrib(this._program,i);
 			location=gl.getAttribLocation(this._program,attrib.name);
 			one={vartype:"attribute",glfun:null,ivartype:0,attrib:attrib,location:location,name:attrib.name,type:attrib.type,isArray:false,isSame:false,preValue:null,indexOfParams:0};
 			this._params.push(one);
 		};
-		var nUniformNum=0;
-		if (Render.isConchApp){
-			nUniformNum=gl.getProgramParameterEx(this._vs,this._ps,"",0x8B86);
-		}
-		else{
-			nUniformNum=gl.getProgramParameter(this._program,0x8B86);
-		}
+		var nUniformNum=this.customCompile ? result.uniforms.length :gl.getProgramParameter(this._program,0x8B86);
 		for (i=0;i < nUniformNum;i++){
-			var uniform=null;
-			if (Render.isConchApp){
-				uniform=gl.getActiveUniformEx(this._vs,this._ps,"",i);
-			}
-			else{
-				uniform=gl.getActiveUniform(this._program,i);
-			}
+			var uniform=this.customCompile ? result.uniforms[i] :gl.getActiveUniform(this._program,i);
 			location=gl.getUniformLocation(this._program,uniform.name);
 			one={vartype:"uniform",glfun:null,ivartype:1,attrib:attrib,location:location,name:uniform.name,type:uniform.type,isArray:false,isSame:false,preValue:null,indexOfParams:0};
 			if (one.name.indexOf('[0]')> 0){
@@ -70139,13 +68649,11 @@ var Shader=(function(_super){
 		return shader;
 	}
 
-	Shader._TEXTURES=[0x84C0,0x84C1,0x84C2,0x84C3,0x84C4,0x84C5,0x84C6,,0x84C7,0x84C8];
 	Shader._count=0;
 	Shader._preCompileShader={};
 	Shader.SHADERNAME2ID=0.0002;
-	Shader.sharders=(Shader.sharders=[],Shader.sharders.length=0x20,Shader.sharders);
 	__static(Shader,
-	['nameKey',function(){return this.nameKey=new StringKey();}
+	['_TEXTURES',function(){return this._TEXTURES=[0x84C0,0x84C1,0x84C2,0x84C3,0x84C4,0x84C5,0x84C6,,0x84C7,0x84C8];},'nameKey',function(){return this.nameKey=new StringKey();},'sharders',function(){return this.sharders=(Shader.sharders=[],Shader.sharders.length=0x20,Shader.sharders);}
 	]);
 	return Shader;
 })(BaseShader)
@@ -70163,21 +68671,6 @@ var Buffer2D=(function(_super){
 
 	__class(Buffer2D,'laya.webgl.utils.Buffer2D',_super);
 	var __proto=Buffer2D.prototype;
-	/**
-	*在当前的基础上需要多大空间，单位是byte
-	*@param sz
-	*@return 增加大小之前的写位置。单位是byte
-	*/
-	__proto.needSize=function(sz){
-		var old=this._byteLength;
-		if (sz){
-			var needsz=this._byteLength+sz;
-			needsz <=this._buffer.byteLength || (this._resizeBuffer(needsz << 1,true));
-			this._byteLength=needsz;
-		}
-		return old;
-	}
-
 	__proto._bufferData=function(){
 		this._maxsize=Math.max(this._maxsize,this._byteLength);
 		if (Stat.loopCount % 30==0){
@@ -70276,21 +68769,6 @@ var Buffer2D=(function(_super){
 		}
 		n.set(data,0);
 		this._byteLength+=byteLen;
-		this._checkArrayUse();
-	}
-
-	/**
-	*附加Uint16Array的数据。数据长度是len。byte的话要*2
-	*@param data
-	*@param len
-	*/
-	__proto.appendU16Array=function(data,len){
-		this._resizeBuffer(this._byteLength+len*2,true);
-		var u=new Uint16Array(this._buffer,this._byteLength,len);
-		for (var i=0;i < len;i++){
-			u[i]=data[i];
-		}
-		this._byteLength+=len *2;
 		this._checkArrayUse();
 	}
 
@@ -70449,7 +68927,7 @@ var HTMLCanvas=(function(_super){
 				var ctx=_$this._ctx=_$this._source.getContext(contextID,other);
 				if (ctx){
 					ctx._canvas=o;
-					if(!Render.isFlash&&!Browser.onLimixiu)ctx.size=function (w,h){
+					if(!Render.isFlash)ctx.size=function (w,h){
 					};
 				}
 				return ctx;
@@ -70629,24 +69107,13 @@ var AtlasWebGLCanvas=(function(_super){
 			var preTarget=WebGLContext.curBindTexTarget;
 			var preTexture=WebGLContext.curBindTexValue;
 			WebGLContext.bindTexture(gl,0x0DE1,this._source);
-			if (Render.isConchWebGL){
-				if (bitmap !==ConchTextCanvas){
-					(xoffset-1 >=0)&& (gl.texSubImage2DEx(true,0x0DE1,0,xoffset-1,yoffset,0x1908,0x1401,bitmap));
-					(xoffset+1 <=this._w)&& (gl.texSubImage2DEx(true,0x0DE1,0,xoffset+1,yoffset,0x1908,0x1401,bitmap));
-					(yoffset-1 >=0)&& (gl.texSubImage2DEx(true,0x0DE1,0,xoffset,yoffset-1,0x1908,0x1401,bitmap));
-					(yoffset+1 <=this._h)&& (gl.texSubImage2DEx(true,0x0DE1,0,xoffset,yoffset+1,0x1908,0x1401,bitmap));
-				}
-				gl.texSubImage2DEx(true,0x0DE1,0,xoffset,yoffset,0x1908,0x1401,bitmap);
-			}
-			else {
-				gl.pixelStorei(0x9241,true);
-				(xoffset-1 >=0)&& (gl.texSubImage2D(0x0DE1,0,xoffset-1,yoffset,0x1908,0x1401,bitmap));
-				(xoffset+1 <=this._w)&& (gl.texSubImage2D(0x0DE1,0,xoffset+1,yoffset,0x1908,0x1401,bitmap));
-				(yoffset-1 >=0)&& (gl.texSubImage2D(0x0DE1,0,xoffset,yoffset-1,0x1908,0x1401,bitmap));
-				(yoffset+1 <=this._h)&& (gl.texSubImage2D(0x0DE1,0,xoffset,yoffset+1,0x1908,0x1401,bitmap));
-				gl.texSubImage2D(0x0DE1,0,xoffset,yoffset,0x1908,0x1401,bitmap);
-				gl.pixelStorei(0x9241,false);
-			}
+			gl.pixelStorei(0x9241,true);
+			(xoffset-1 >=0)&& (gl.texSubImage2D(0x0DE1,0,xoffset-1,yoffset,0x1908,0x1401,bitmap));
+			(xoffset+1 <=this._w)&& (gl.texSubImage2D(0x0DE1,0,xoffset+1,yoffset,0x1908,0x1401,bitmap));
+			(yoffset-1 >=0)&& (gl.texSubImage2D(0x0DE1,0,xoffset,yoffset-1,0x1908,0x1401,bitmap));
+			(yoffset+1 <=this._h)&& (gl.texSubImage2D(0x0DE1,0,xoffset,yoffset+1,0x1908,0x1401,bitmap));
+			gl.texSubImage2D(0x0DE1,0,xoffset,yoffset,0x1908,0x1401,bitmap);
+			gl.pixelStorei(0x9241,false);
 			(preTarget && preTexture)&& (WebGLContext.bindTexture(gl,preTarget,preTexture));
 			}else {
 			if (!this._flashCacheImage){
@@ -70666,14 +69133,9 @@ var AtlasWebGLCanvas=(function(_super){
 		var preTexture=WebGLContext.curBindTexValue;
 		WebGLContext.bindTexture(gl,0x0DE1,this._source);
 		var pixels=new Uint8Array(pixel.data);
-		if (Render.isConchWebGL){
-			gl.texSubImage2DEx(true,0x0DE1,0,xoffset,yoffset,width,height,0x1908,0x1401,pixels);
-		}
-		else {
-			gl.pixelStorei(0x9241,true);
-			gl.texSubImage2D(0x0DE1,0,xoffset,yoffset,width,height,0x1908,0x1401,pixels);
-			gl.pixelStorei(0x9241,false);
-		}
+		gl.pixelStorei(0x9241,true);
+		gl.texSubImage2D(0x0DE1,0,xoffset,yoffset,width,height,0x1908,0x1401,pixels);
+		gl.pixelStorei(0x9241,false);
 		(preTarget && preTexture)&& (WebGLContext.bindTexture(gl,preTarget,preTexture));
 	}
 
@@ -70702,6 +69164,8 @@ var AtlasWebGLCanvas=(function(_super){
 var WebGLCanvas=(function(_super){
 	function WebGLCanvas(){
 		this.flipY=true;
+		//上传的时候是否上下颠倒
+		this.premulAlpha=false;
 		//上传的时候是否预乘alpha
 		//this._ctx=null;
 		/**HTML Canvas*/
@@ -70727,7 +69191,6 @@ var WebGLCanvas=(function(_super){
 	__proto.destroy=function(){
 		this._ctx && this._ctx.destroy();
 		this._ctx=null;
-		laya.resource.Resource.prototype.destroy.call(this);
 	}
 
 	__proto._setContext=function(context){
@@ -70791,16 +69254,9 @@ __proto.createWebGlTexture=function(){
 	var preTexture=WebGLContext.curBindTexValue;
 	WebGLContext.bindTexture(gl,0x0DE1,glTex);
 	gl.pixelStorei(0x9240,this.flipY?1:0);
-	if (Render.isConchWebGL){
-		gl.texImage2DEx(WebGLCanvas.premulAlpha,0x0DE1,0,0x1908,0x1908,0x1401,this._imgData);
-	}
-
-	else {
-		WebGLCanvas.premulAlpha&&gl.pixelStorei(0x9241,true);
-		gl.texImage2D(0x0DE1,0,0x1908,0x1908,0x1401,this._imgData);
-		WebGLCanvas.premulAlpha && gl.pixelStorei(0x9241,false);
-	}
-
+	this.premulAlpha&&gl.pixelStorei(0x9241,true);
+	gl.texImage2D(0x0DE1,0,0x1908,0x1908,0x1401,this._imgData);
+	this.premulAlpha && gl.pixelStorei(0x9241,false);
 	gl.texParameteri(0x0DE1,0x2800,0x2601);
 	gl.texParameteri(0x0DE1,0x2801,0x2601);
 	gl.texParameteri(0x0DE1,0x2802,0x812F);
@@ -70821,16 +69277,9 @@ __proto.reloadCanvasData=function(){
 	var preTarget=WebGLContext.curBindTexTarget;
 	var preTexture=WebGLContext.curBindTexValue;
 	WebGLContext.bindTexture(gl,0x0DE1,this._source);
-	if (Render.isConchWebGL){
-		gl.texImage2DEx(WebGLCanvas.premulAlpha,0x0DE1,0,0x1908,0x1908,0x1401,this._imgData);
-	}
-
-	else {
-		WebGLCanvas.premulAlpha&&gl.pixelStorei(0x9241,true);
-		gl.texImage2D(0x0DE1,0,0x1908,0x1908,0x1401,this._imgData);
-		WebGLCanvas.premulAlpha && gl.pixelStorei(0x9241,false);
-	}
-
+	this.premulAlpha&&gl.pixelStorei(0x9241,true);
+	gl.texImage2D(0x0DE1,0,0x1908,0x1908,0x1401,this._imgData);
+	this.premulAlpha && gl.pixelStorei(0x9241,false);
 	gl.pixelStorei(0x9240,0);
 	(preTarget && preTexture)&& (WebGLContext.bindTexture(gl,preTarget,preTexture));
 }
@@ -70842,16 +69291,9 @@ __proto.texSubImage2D=function(webglCanvas,xoffset,yoffset){
 	var preTarget=WebGLContext.curBindTexTarget;
 	var preTexture=WebGLContext.curBindTexValue;
 	WebGLContext.bindTexture(gl,0x0DE1,this._source);
-	if (Render.isConchWebGL){
-		gl.texSubImage2DEx(true,0x0DE1,0,xoffset,yoffset,0x1908,0x1401,webglCanvas._source);
-	}
-
-	else {
-		gl.pixelStorei(0x9241,true);
-		gl.texSubImage2D(0x0DE1,0,xoffset,yoffset,0x1908,0x1401,webglCanvas._source);
-		gl.pixelStorei(0x9241,false);
-	}
-
+	gl.pixelStorei(0x9241,true);
+	gl.texSubImage2D(0x0DE1,0,xoffset,yoffset,0x1908,0x1401,webglCanvas._source);
+	gl.pixelStorei(0x9241,false);
 	(preTarget && preTexture)&& (WebGLContext.bindTexture(gl,preTarget,preTexture));
 }
 
@@ -70866,7 +69308,6 @@ __proto.toBase64=function(type,encoderOptions,callBack){
 }
 
 
-//由于resource的dispose被郭磊改成了destroy，这里会重载父类的destroy，所以必须调用这个，否则会有泄露。
 __getset(0,__proto,'context',function(){
 	return this._ctx;
 });
@@ -70884,7 +69325,6 @@ __getset(0,__proto,'asBitmap',null,function(value){
 
 
 WebGLCanvas._createContext=null;
-WebGLCanvas.premulAlpha=false;
 return WebGLCanvas;
 })(Bitmap)
 
@@ -70966,8 +69406,7 @@ var WebGLCharImage=(function(_super){
 			if (this.xs !=1 || this.ys !=1){
 				nFontSize=parseInt(nFontSize *((this.xs > this.ys)? this.xs :this.ys)+"");
 			};
-			var sFont="normal 100 "+this.font;
-			sFont=sFont.replace(WebGLCharImage._fontSizeReg,nFontSize);
+			var sFont="normal 100 "+nFontSize+"px Arial";
 			if (this.borderColor){
 				sFont+=" 1 "+this.borderColor;
 			}
@@ -70977,7 +69416,6 @@ var WebGLCharImage=(function(_super){
 			this._ctx.fillText(this.char,this.CborderSize,this.CborderSize,null,null,null);
 			}else {
 			this._ctx.save();
-			this._ctx.lineJoin="round";
 			(this._ctx).clearRect(0,0,this.cw+this.CborderSize *2,this.ch+this.CborderSize *2);
 			this._ctx.font=this.font;
 			if (Text.RightToLeft){
@@ -71057,7 +69495,6 @@ var WebGLCharImage=(function(_super){
 		return char;
 	}
 
-	WebGLCharImage._fontSizeReg=new RegExp("\\d+(?=px)","g");
 	return WebGLCharImage;
 })(Bitmap)
 
@@ -71087,9 +69524,6 @@ var WebGLRenderTarget=(function(_super){
 		this._surfaceFormat=surfaceFormat;
 		this._surfaceType=surfaceType;
 		this._depthStencilFormat=depthStencilFormat;
-		if (Render.isConchWebGL && this._depthStencilFormat===0x84F9){
-			this._depthStencilFormat=0x81A5;
-		}
 		this._mipMap=mipMap;
 		this._repeat=repeat;
 		this._minFifter=minFifter;
@@ -71258,16 +69692,9 @@ __proto.createWebGlTexture=function(){
 	var preTarget=WebGLContext.curBindTexTarget;
 	var preTexture=WebGLContext.curBindTexValue;
 	WebGLContext.bindTexture(gl,0x0DE1,glTex);
-	if (Render.isConchWebGL){
-		gl.texImage2DEx(true,0x0DE1,0,0x1908,0x1908,0x1401,this.canvas);
-	}
-
-	else {
-		gl.pixelStorei(0x9241,true);
-		gl.texImage2D(0x0DE1,0,0x1908,0x1908,0x1401,this.canvas);
-		gl.pixelStorei(0x9241,false);
-	};
-
+	gl.pixelStorei(0x9241,true);
+	gl.texImage2D(0x0DE1,0,0x1908,0x1908,0x1401,this.canvas);
+	gl.pixelStorei(0x9241,false);
 	var minFifter=this.minFifter;
 	var magFifter=this.magFifter;
 	var repeat=this.repeat ? 0x2901 :0x812F;
@@ -71424,6 +69851,65 @@ var CCharacterBuilder=(function(_super){
 })(CBean)
 
 
+//class core.game.ecsLoop.CGameSystemHandler extends core.framework.CBean
+var CGameSystemHandler=(function(_super){
+	function CGameSystemHandler(__comps){
+		// gameSystemHandler需要GameObject拥有哪些组件
+		this.m_supportedComponentClassList=null;
+		this.m_isEnable=false;
+		var comps=arguments;
+		CGameSystemHandler.__super.call(this);
+		this.m_supportedComponentClassList=[];
+		var cls;
+		for(var $each_cls in comps){
+			cls=comps[$each_cls];
+			if (cls){
+				this.m_supportedComponentClassList.push(cls);
+			}
+		}
+		this.m_isEnable=true;
+	}
+
+	__class(CGameSystemHandler,'core.game.ecsLoop.CGameSystemHandler',_super);
+	var __proto=CGameSystemHandler.prototype;
+	Laya.imps(__proto,{"core.game.ecsLoop.IGameSystemHandler":true})
+	__proto.isComponentSupported=function(obj){
+		if (!this.m_supportedComponentClassList || this.m_supportedComponentClassList.length==0){
+			return true;
+			}else {
+			var supported=true;
+			var clz;
+			for(var $each_clz in this.m_supportedComponentClassList){
+				clz=this.m_supportedComponentClassList[$each_clz];
+				var comp=obj.getComponentByClass(clz,true);
+				if (!comp){
+					supported=false;
+					break ;
+				}
+			}
+			return supported;
+		}
+	}
+
+	__proto.onEnbaled=function(v){}
+	__proto.beforeTick=function(delta){}
+	__proto.tickValidate=function(delta,obj){
+		return this.enable;
+	}
+
+	__proto.tickUpdate=function(delta,obj){}
+	__proto.afterTick=function(delta){}
+	__getset(0,__proto,'enable',function(){
+		return this.m_isEnable;
+		},function(v){
+		this.m_isEnable=v;
+		this.onEnbaled(v);
+	});
+
+	return CGameSystemHandler;
+})(CBean)
+
+
 /**
 *...
 *@author
@@ -71483,10 +69969,10 @@ var CSceneLayer=(function(_super){
 var CViewBean=(function(_super){
 	function CViewBean(){
 		this.m_showHandler=null;
-		this.m_state=0;
+		this.m_viewState=0;
 		this.m_pUISystem=null;
 		CViewBean.__super.call(this);
-		this._$4_m_state=CViewBean.STATE_UNREADY;
+		this.m_viewState=CViewBean.STATE_UNREADY;
 	}
 
 	__class(CViewBean,'core.framework.CViewBean',_super);
@@ -71504,7 +69990,7 @@ var CViewBean=(function(_super){
 		_super.prototype.onDestroy.call(this);
 		this.m_pUISystem=null;
 		this.m_showHandler=null;
-		this._$4_m_state=CViewBean.STATE_UNREADY;
+		this.m_viewState=CViewBean.STATE_UNREADY;
 	}
 
 	__proto._viewRes=function(){
@@ -71516,7 +70002,7 @@ var CViewBean=(function(_super){
 	}
 
 	__proto.show=function(pShowHandler){
-		this._$4_m_state=0;
+		this.m_viewState=0;
 		this.showHandler=pShowHandler;
 		var loadRes;
 		var viewRes=this._viewRes();
@@ -71549,7 +70035,7 @@ var CViewBean=(function(_super){
 	__proto._onComplete=function(){
 		this._onShow();
 		this.event("showed");
-		this._$4_m_state=1;
+		this.m_viewState=1;
 	}
 
 	__proto._onShow=function(){}
@@ -71564,7 +70050,7 @@ var CViewBean=(function(_super){
 	__proto.hide=function(){
 		this._onHide();
 		this.event("hided");
-		this._$4_m_state=2;
+		this.m_viewState=2;
 	}
 
 	__proto._onHide=function(){}
@@ -71595,7 +70081,7 @@ var CViewBean=(function(_super){
 	});
 
 	__getset(0,__proto,'isUnReadyState',function(){
-		return CViewBean.STATE_UNREADY==this._$4_m_state;
+		return CViewBean.STATE_UNREADY==this.m_viewState;
 	});
 
 	__getset(0,__proto,'uiSystem',function(){
@@ -71612,15 +70098,15 @@ var CViewBean=(function(_super){
 	});
 
 	__getset(0,__proto,'isLoadingState',function(){
-		return 0==this._$4_m_state;
+		return 0==this.m_viewState;
 	});
 
 	__getset(0,__proto,'isShowingState',function(){
-		return 1==this._$4_m_state;
+		return 1==this.m_viewState;
 	});
 
 	__getset(0,__proto,'isHidedState',function(){
-		return 2==this._$4_m_state;
+		return 2==this.m_viewState;
 	});
 
 	CViewBean.EVENT_OK="ok";
@@ -71811,7 +70297,9 @@ var CGameSystem=(function(_super){
 
 	__proto.createScene=function(sceneID){
 		this.m_pSceneSystem.createScene(sceneID);
-		this.spawnCharacter({ID:1,type:0,skin:"1001",defAni:"die",x:300,y:100});
+		var gameObj=this.spawnCharacter({ID:1,type:0,skin:"1001",defAni:"die",x:300,y:100});
+		var pPlayHandler=this.m_pEcsLoop.getBean(CPlayHandler);
+		pPlayHandler.hero=gameObj;
 		this.spawnCharacter({ID:2,type:0,skin:"1001",defAni:"idle",x:300,y:300});
 		this.spawnCharacter({ID:3,type:0,skin:"1001",defAni:"move",x:500,y:300});
 	}
@@ -71821,9 +70309,9 @@ var CGameSystem=(function(_super){
 		var characterBuilder=this.m_pCharacterSystem.getBean(CCharacterBuilder);
 		characterBuilder.build(gameObj,data);
 		this.m_pSceneSystem.spawnCharacter(gameObj);
+		return gameObj;
 	}
 
-	// spawn不是即时,需要等　characterAdded
 	__proto._onSceneChacterAdded=function(__characters){
 		var characters=arguments;
 		var character;
@@ -72461,52 +70949,6 @@ var CSceneObjectList=(function(_super){
 *...
 *@author
 */
-//class core.scene.CSceneRendering extends core.framework.CBean
-var CSceneRendering=(function(_super){
-	function CSceneRendering(){
-		this.m_root=null;
-		this.m_sceneLayer=null;
-		CSceneRendering.__super.call(this);
-	}
-
-	__class(CSceneRendering,'core.scene.CSceneRendering',_super);
-	var __proto=CSceneRendering.prototype;
-	Laya.imps(__proto,{"core.framework.IUpdate":true})
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		this.m_root=new CSceneLayer();
-		CCommon.stage.addChildAt(this.m_root,0);
-		this.m_sceneLayer=new CSceneLayer();
-		this.m_root.addChild(this.m_sceneLayer);
-		return ret;
-	}
-
-	__proto.addDisplayObject=function(c){
-		this.m_sceneLayer.addChild(c);
-	}
-
-	__proto.update=function(delta){}
-	__proto.createScene=function(sceneID){
-		while (this.m_sceneLayer.numChildren > 0){
-			this.m_sceneLayer.removeChildAt(0);
-		};
-		var bgUrl=CPathUtils.getScenePath("b");
-		var bg=new Image(bgUrl);
-		this.m_sceneLayer.addChild(bg);
-	}
-
-	__getset(0,__proto,'isReady',function(){
-		return true;
-	});
-
-	return CSceneRendering;
-})(CBean)
-
-
-/**
-*...
-*@author
-*/
 //class core.pool.CPoolSystem extends core.framework.CAppSystem
 var CPoolSystem=(function(_super){
 	function CPoolSystem(){
@@ -72572,6 +71014,52 @@ var CPoolSystem=(function(_super){
 
 	return CPoolSystem;
 })(CAppSystem)
+
+
+/**
+*...
+*@author
+*/
+//class core.scene.CSceneRendering extends core.framework.CBean
+var CSceneRendering=(function(_super){
+	function CSceneRendering(){
+		this.m_root=null;
+		this.m_sceneLayer=null;
+		CSceneRendering.__super.call(this);
+	}
+
+	__class(CSceneRendering,'core.scene.CSceneRendering',_super);
+	var __proto=CSceneRendering.prototype;
+	Laya.imps(__proto,{"core.framework.IUpdate":true})
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_root=new CSceneLayer();
+		CCommon.stage.addChildAt(this.m_root,0);
+		this.m_sceneLayer=new CSceneLayer();
+		this.m_root.addChild(this.m_sceneLayer);
+		return ret;
+	}
+
+	__proto.addDisplayObject=function(c){
+		this.m_sceneLayer.addChild(c);
+	}
+
+	__proto.update=function(delta){}
+	__proto.createScene=function(sceneID){
+		while (this.m_sceneLayer.numChildren > 0){
+			this.m_sceneLayer.removeChildAt(0);
+		};
+		var bgUrl=CPathUtils.getScenePath("b");
+		var bg=new Image(bgUrl);
+		this.m_sceneLayer.addChild(bg);
+	}
+
+	__getset(0,__proto,'isReady',function(){
+		return true;
+	});
+
+	return CSceneRendering;
+})(CBean)
 
 
 /**
@@ -72852,7 +71340,8 @@ var CBoostSystem=(function(_super){
 	__proto.onAwake=function(){
 		_super.prototype.onAwake.call(this);
 		var pEcsLoop=this.stage.getSystem(CECSLoop);
-		var handlers=[];
+		var handlers=[
+		new CPlayHandler()];
 		var handler;
 		for(var $each_handler in handlers){
 			handler=handlers[$each_handler];
@@ -72998,43 +71487,6 @@ var CPlayerSystem=(function(_super){
 
 /**
 *...
-*@author
-*/
-//class game.procedure.CProcedureSystem extends core.framework.CAppSystem
-var CProcedureSystem=(function(_super){
-	function CProcedureSystem(){
-		this.m_procedureManager=null;
-		CProcedureSystem.__super.call(this);
-	}
-
-	__class(CProcedureSystem,'game.procedure.CProcedureSystem',_super);
-	var __proto=CProcedureSystem.prototype;
-	__proto.onAwake=function(){
-		_super.prototype.onAwake.call(this);
-		var fsmSystem=this.stage.getSystem(CFsmSystem);
-		var procedureList=[
-		new CProcedureEntry(),new CProcedureLaunch(),new CProcedureCheckVersion(),new CProcedureLoadDataTable,
-		new CProcedureStageStart(),new CProcedureChangeScene(),
-		new CProcedureLoginMenu(),new CProcedureGaming()];
-		this.m_procedureManager=fsmSystem.createProcedure("gameProcedure",procedureList);
-	}
-
-	__proto.onStart=function(){
-		var ret=_super.prototype.onStart.call(this);
-		this.m_procedureManager.startProcedure(CProcedureEntry);
-		return ret;
-	}
-
-	__proto.onDestroy=function(){
-		_super.prototype.onDestroy.call(this);
-	}
-
-	return CProcedureSystem;
-})(CAppSystem)
-
-
-/**
-*...
 *@author auto
 */
 //class game.CGameStage extends core.framework.CAppStage
@@ -73087,6 +71539,43 @@ var CGameStage=(function(_super){
 	CGameStage.m_stage=null;
 	return CGameStage;
 })(CAppStage)
+
+
+/**
+*...
+*@author
+*/
+//class game.procedure.CProcedureSystem extends core.framework.CAppSystem
+var CProcedureSystem=(function(_super){
+	function CProcedureSystem(){
+		this.m_procedureManager=null;
+		CProcedureSystem.__super.call(this);
+	}
+
+	__class(CProcedureSystem,'game.procedure.CProcedureSystem',_super);
+	var __proto=CProcedureSystem.prototype;
+	__proto.onAwake=function(){
+		_super.prototype.onAwake.call(this);
+		var fsmSystem=this.stage.getSystem(CFsmSystem);
+		var procedureList=[
+		new CProcedureEntry(),new CProcedureLaunch(),new CProcedureCheckVersion(),new CProcedureLoadDataTable,
+		new CProcedureStageStart(),new CProcedureChangeScene(),
+		new CProcedureLoginMenu(),new CProcedureGaming()];
+		this.m_procedureManager=fsmSystem.createProcedure("gameProcedure",procedureList);
+	}
+
+	__proto.onStart=function(){
+		var ret=_super.prototype.onStart.call(this);
+		this.m_procedureManager.startProcedure(CProcedureEntry);
+		return ret;
+	}
+
+	__proto.onDestroy=function(){
+		_super.prototype.onDestroy.call(this);
+	}
+
+	return CProcedureSystem;
+})(CAppSystem)
 
 
 /**
@@ -73407,6 +71896,10 @@ var BaseCamera=(function(_super){
 
 	__class(BaseCamera,'laya.d3.core.BaseCamera',_super);
 	var __proto=BaseCamera.prototype;
+	__proto.createConchModel=function(){
+		return new ConchCamera();
+	}
+
 	/**
 	*通过RenderingOrder属性对摄像机机型排序。
 	*/
@@ -73570,6 +72063,9 @@ var BaseCamera=(function(_super){
 		},function(value){
 		this._sky=value;
 		value._ownerCamera=this;
+		if (this.conchModel){
+			this.conchModel.setSkyMesh(this._sky._conchSky);
+		}
 	});
 
 	/**
@@ -73823,6 +72319,20 @@ var RenderableSprite3D=(function(_super){
 		_super.prototype.destroy.call(this,destroyChild);
 		this._render._destroy();
 		this._render=null;
+	}
+
+	/**
+	*@inheritDoc
+	*/
+	__proto._updateConch=function(state){
+		state.owner=this;
+		if (this._activeInHierarchy){
+			this._updateComponents(state);
+			this._render._updateOctreeNode();
+			this._lateUpdateComponents(state);
+			Stat.spriteCount++;
+			this._childs.length && this._updateChildsConch(state);
+		}
 	}
 
 	RenderableSprite3D.__init__=function(){
@@ -76318,7 +74828,7 @@ var ScrollBar=(function(_super){
 	*滑块位置发生改变的处理函数。
 	*/
 	__proto.onSliderChange=function(){
-		if(this._value !=this.slider.value)this.value=this.slider.value;
+		this.value=this.slider.value;
 	}
 
 	/**
@@ -76476,10 +74986,7 @@ var ScrollBar=(function(_super){
 		Laya.stage.off("mouseup",this,this.onStageMouseUp2);
 		Laya.stage.off("mouseout",this,this.onStageMouseUp2);
 		Laya.timer.clear(this,this.loop);
-		if (this._clickOnly){
-			if(this._value>=this.min&&this._value<=this.max)
-				return;
-		}
+		if (this._clickOnly)return;
 		this._target.mouseEnabled=true;
 		if (this._isElastic){
 			if (this._value < this.min){
@@ -76620,16 +75127,13 @@ var ScrollBar=(function(_super){
 		return this._value;
 		},function(v){
 		if (v!==this._value){
-			this._value=v;
-			if (!this._isElastic){
-				if (this.slider._value !=v){
-					this.slider._value=v;
-					this.slider.changeValue();
-				}
-				this._value=this.slider._value;
+			if (this._isElastic)this._value=v;
+			else {
+				this.slider.value=v;
+				this._value=this.slider.value;
 			}
 			this.event("change");
-			this.changeHandler && this.changeHandler.runWith(this._value);
+			this.changeHandler && this.changeHandler.runWith(this.value);
 		}
 	});
 
@@ -76722,7 +75226,6 @@ var ScrollBar=(function(_super){
 		return this._mouseWheelEnable;
 		},function(value){
 		this._mouseWheelEnable=value;
-		this.target=this._target;
 	});
 
 	/**
@@ -77980,6 +76483,13 @@ var Input=(function(_super){
 		this.overflow=Text.SCROLL;
 		this.on("mousedown",this,this._onMouseDown);
 		this.on("undisplay",this,this._onUnDisplay);
+		if (Render.isConchApp){
+			var input=this.nativeInput;
+			var thisObj=this;
+			input.setOnHideKeyboard && input.setOnHideKeyboard(function(value){
+				thisObj.changeText(value);
+			});
+		}
 	}
 
 	__class(Input,'laya.display.Input',_super);
@@ -78048,6 +76558,7 @@ var Input=(function(_super){
 		this._setPromptColor();
 		input.readOnly=!this._editable;
 		if (Render.isConchApp){
+			if (input.setOnHideKeyboard)input.setRegular(this.restrict);
 			input.setType(this._type);
 			input.setForbidEdit(!this._editable);
 		}
@@ -78236,7 +76747,9 @@ var Input=(function(_super){
 				input.target=null;
 				this._focusOut();
 				Browser.document.body.scrollTop=0;
-				input.blur();
+				if (!Render.isConchApp){
+					input.blur();
+				}
 				if (Render.isConchApp){
 					input.setPos(-10000,-10000);
 				}else if (Input.inputContainer.contains(input))
@@ -78380,15 +76893,17 @@ var Input=(function(_super){
 	Input._processInputting=function(e){
 		var input=laya.display.Input.inputElement.target;
 		if (!input)return;
-		var value=laya.display.Input.inputElement.value;
-		if (input._restrictPattern){
-			value=value.replace(/\u2006|\x27/g,"");
-			if (input._restrictPattern.test(value)){
-				value=value.replace(input._restrictPattern,"");
-				laya.display.Input.inputElement.value=value;
+		if (!Render.isConchApp || (Render.isConchApp && !laya.display.Input.inputElement.setOnHideKeyboard)){
+			var value=laya.display.Input.inputElement.value;
+			if (input._restrictPattern){
+				value=value.replace(/\u2006|\x27/g,"");
+				if (input._restrictPattern.test(value)){
+					value=value.replace(input._restrictPattern,"");
+					laya.display.Input.inputElement.value=value;
+				}
 			}
+			input._text=value;
 		}
-		input._text=value;
 		input.event("input");
 	}
 
@@ -78999,7 +77514,7 @@ var FrameAnimation=(function(_super){
 			this._calculateFrameValues(keyframes[i],keyframes[i+1],frames);
 		}
 		if (len==0){
-			frames[keyframes[0].index]=keyframes[0].value;
+			frames[0]=keyframes[0].value;
 			if (this._animationNewFrames)
 				this._animationNewFrames[keyframes[0].index]=true;
 		}
@@ -79454,13 +77969,10 @@ var VertexBuffer2D=(function(_super){
 
 	__proto.disposeResource=function(){
 		_super.prototype.disposeResource.call(this);
-		return;
 		var enableAtributes=Buffer._enableAtributes;
-		if (!Render.isConchWebGL){
-			for (var i=0;i < 10;i++){
-				WebGL.mainContext.disableVertexAttribArray(i);
-				enableAtributes[i]=null;
-			}
+		for (var i=0;i < 10;i++){
+			WebGL.mainContext.disableVertexAttribArray(i);
+			enableAtributes[i]=null;
 		}
 	}
 
@@ -79483,6 +77995,71 @@ var VertexBuffer2D=(function(_super){
 
 	return VertexBuffer2D;
 })(Buffer2D)
+
+
+/**
+*...
+*@author
+*/
+//class core.character.CPlayHandler extends core.game.ecsLoop.CGameSystemHandler
+var CPlayHandler=(function(_super){
+	function CPlayHandler(){
+		this.m_targetPos=null;
+		this.m_running=false;
+		this.m_step=5;
+		this.m_pHero=null;
+		CPlayHandler.__super.call(this);
+		this.m_targetPos=new Vector3();
+	}
+
+	__class(CPlayHandler,'core.character.CPlayHandler',_super);
+	var __proto=CPlayHandler.prototype;
+	__proto.onStart=function(){
+		var ret=core.framework.CBean.prototype.onStart.call(this);
+		CCommon.stage.on("click",this,this._onMouseClick)
+		return ret;
+	}
+
+	__proto.tickUpdate=function(delta,obj){
+		_super.prototype.tickUpdate.call(this,delta,obj);
+		if (this.m_running){
+			var transform=obj.transform;
+			var distX=this.m_targetPos.x-transform.x;
+			var absDistX=Math.abs(distX);
+			if (distX !=0){
+				var moveStep=this.m_step;
+				if (absDistX < this.m_step){
+					moveStep=absDistX;
+				}
+				transform.x+=moveStep *(distX/absDistX);
+			}
+			distX=this.m_targetPos.x-transform.x;
+			if (Math.abs(distX)< 0.000001){
+				this.m_running=false;
+			}
+		}
+	}
+
+	__proto._onMouseClick=function(){
+		if (this.m_pHero && this.m_pHero.isRunning){
+			this.m_running=true;
+			this.m_targetPos.x=CCommon.stage.mouseX;
+			this.m_targetPos.y=CCommon.stage.mouseY;
+		}
+	}
+
+	__proto.isComponentSupported=function(obj){
+		return this.m_pHero==obj;
+	}
+
+	__getset(0,__proto,'hero',function(){
+		return this.m_pHero;
+		},function(v){
+		this.m_pHero=v;
+	});
+
+	return CPlayHandler;
+})(CGameSystemHandler)
 
 
 /**
@@ -79672,7 +78249,6 @@ var View=(function(_super){
 		if (this._width > 0 && uiView.props.hitTestPrior==null && !this.mouseThrough)this.hitTestPrior=true;
 	}
 
-	__proto.onEvent=function(type,event){}
 	/**
 	*@private
 	*装载UI视图。用于加载模式。
@@ -79755,11 +78331,6 @@ var View=(function(_super){
 		var props=uiView.props;
 		for (var prop in props){
 			var value=props[prop];
-			if (View.eventDic[prop]){
-				if (value&&view){
-					(comp).on(prop,view,view.onEvent,[value]);
-				}
-			}else
 			View.setCompValue(comp,prop,value,view,dataMap);
 		}
 		if (Laya.__typeof(comp,'laya.ui.IItem'))(comp).initItems();
@@ -79804,7 +78375,7 @@ var View=(function(_super){
 		if (prop==="var" && view){
 			view[value]=comp;
 			}else if (prop=="onClick"){
-			var fun=Laya._runScript("(function(){"+value+"})");
+			var fun=Browser.window.eval("(function(){"+value+"})");
 			comp.on("click",view,fun);
 			}else {
 			comp[prop]=(value==="true" ? true :(value==="false" ? false :value));
@@ -79832,7 +78403,7 @@ var View=(function(_super){
 	View.viewClassMap={};
 	View._sheet=null;
 	__static(View,
-	['uiClassMap',function(){return this.uiClassMap={"ViewStack":ViewStack,"LinkButton":Button,"TextArea":TextArea,"ColorPicker":ColorPicker,"Box":Box,"Button":Button,"CheckBox":CheckBox,"Clip":Clip,"ComboBox":ComboBox,"Component":Component,"HScrollBar":HScrollBar,"HSlider":HSlider,"Image":Image,"Label":Label,"List":List,"Panel":Panel,"ProgressBar":ProgressBar,"Radio":Radio,"RadioGroup":RadioGroup,"ScrollBar":ScrollBar,"Slider":Slider,"Tab":Tab,"TextInput":TextInput,"View":View,"VScrollBar":VScrollBar,"VSlider":VSlider,"Tree":Tree,"HBox":HBox,"VBox":VBox,"Sprite":Sprite,"Animation":Animation,"Text":Text,"FontClip":FontClip};},'eventDic',function(){return this.eventDic={"mousedown":true,"mouseup":true,"mousemove":true,"mouseover":true,"mouseout":true,"click":true,"doubleclick":true,"rightmousedown":true,"rightmouseup":true,"rightclick":true };},'_parseWatchData',function(){return this._parseWatchData=/\${(.*?)}/g;},'_parseKeyWord',function(){return this._parseKeyWord=/[a-zA-Z_][a-zA-Z0-9_]*(?:(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)/g;}
+	['uiClassMap',function(){return this.uiClassMap={"ViewStack":ViewStack,"LinkButton":Button,"TextArea":TextArea,"ColorPicker":ColorPicker,"Box":Box,"Button":Button,"CheckBox":CheckBox,"Clip":Clip,"ComboBox":ComboBox,"Component":Component,"HScrollBar":HScrollBar,"HSlider":HSlider,"Image":Image,"Label":Label,"List":List,"Panel":Panel,"ProgressBar":ProgressBar,"Radio":Radio,"RadioGroup":RadioGroup,"ScrollBar":ScrollBar,"Slider":Slider,"Tab":Tab,"TextInput":TextInput,"View":View,"VScrollBar":VScrollBar,"VSlider":VSlider,"Tree":Tree,"HBox":HBox,"VBox":VBox,"Sprite":Sprite,"Animation":Animation,"Text":Text,"FontClip":FontClip};},'_parseWatchData',function(){return this._parseWatchData=/\${(.*?)}/g;},'_parseKeyWord',function(){return this._parseKeyWord=/[a-zA-Z_][a-zA-Z0-9_]*(?:(?:\.[a-zA-Z_][a-zA-Z0-9_]*)+)/g;}
 	]);
 	View.__init$=function(){
 		View._regs()
@@ -80048,9 +78619,9 @@ var List=(function(_super){
 		this._createdLine=0;
 		/**@private */
 		this._cellChanged=false;
+		List.__super.call(this);
 		this._cells=[];
 		this._offset=new Point();
-		List.__super.call(this);
 	}
 
 	__class(List,'laya.ui.List',_super);
@@ -81552,8 +80123,12 @@ var Camera=(function(_super){
 		Matrix4x4.multiply(this._projectionMatrix,this._viewMatrix,this._projectionViewMatrix);
 		this.viewport.project(position,this._projectionViewMatrix,out);
 		var outE=out.elements;
-		outE[0]=outE[0] / Laya.stage.clientScaleX;
-		outE[1]=outE[1] / Laya.stage.clientScaleY;
+		if (out.z < 0.0 || out.z > 1.0){
+			outE[0]=outE[1]=outE[2]=NaN;
+			}else {
+			outE[0]=outE[0] / Laya.stage.clientScaleX;
+			outE[1]=outE[1] / Laya.stage.clientScaleY;
+		}
 	}
 
 	/**
@@ -81565,8 +80140,12 @@ var Camera=(function(_super){
 		Matrix4x4.multiply(this._projectionMatrix,this._viewMatrix,this._projectionViewMatrix);
 		this.normalizedViewport.project(position,this._projectionViewMatrix,out);
 		var outE=out.elements;
-		outE[0]=outE[0] / Laya.stage.clientScaleX;
-		outE[1]=outE[1] / Laya.stage.clientScaleY;
+		if (out.z < 0.0 || out.z > 1.0){
+			outE[0]=outE[1]=outE[2]=NaN;
+			}else {
+			outE[0]=outE[0] / Laya.stage.clientScaleX;
+			outE[1]=outE[1] / Laya.stage.clientScaleY;
+		}
 	}
 
 	/**
@@ -82031,6 +80610,10 @@ var MeshSprite3D=(function(_super){
 		renderElement._sprite3D=this;
 		renderElement.renderObj=renderObj;
 		renderElement._material=material;
+		if (Render.isConchNode){
+			var vertexBuffer=renderObj._getVertexBuffer();
+			renderElement._conchSubmesh.setVBIB(vertexBuffer.vertexDeclaration._conchVertexDeclaration,vertexBuffer.getData(),renderObj._getIndexBuffer().getData());
+		}
 		return renderElement;
 	}
 
@@ -82045,6 +80628,9 @@ var MeshSprite3D=(function(_super){
 		renderElement._sprite3D=this;
 		renderElement.renderObj=renderObj;
 		renderElement._material=material;
+		if (Render.isConchNode){
+			renderElement._conchSubmesh.setMaterial(material._conchMaterial);
+		}
 		return renderElement;
 	}
 
@@ -82052,6 +80638,8 @@ var MeshSprite3D=(function(_super){
 	*@private
 	*/
 	__proto._changeRenderObjectsByMesh=function(){
+		if (Render.isConchNode){
+		};
 		var renderElementsCount=(this._geometryFilter).sharedMesh.getRenderElementsCount();
 		this._render._renderElements.length=renderElementsCount;
 		for (var i=0;i < renderElementsCount;i++)
@@ -82184,6 +80772,13 @@ var MeshSprite3D=(function(_super){
 		(mesh.loaded)|| (mesh.off("loaded",this,this._applyMeshMaterials));
 		_super.prototype.destroy.call(this,destroyChild);
 		(this._geometryFilter)._destroy();
+	}
+
+	/**
+	*@private
+	*/
+	__proto.createConchModel=function(){
+		return null;
 	}
 
 	/**
@@ -82462,8 +81057,8 @@ var ShuriKenParticle3D=(function(_super){
 		var randomSeed=customProps.randomSeed;
 		(randomSeed !=null)&& (particleSystem.randomSeed[0]=randomSeed);
 		var emissionData=customProps.emission;
-		var emission=particleSystem.emission;
 		if (emissionData){
+			var emission=particleSystem.emission;
 			emission.emissionRate=emissionData.emissionRate;
 			var burstsData=emissionData.bursts;
 			if (burstsData)
@@ -83088,6 +81683,13 @@ var SkinnedMeshSprite3D=(function(_super){
 	}
 
 	/**
+	*@private
+	*/
+	__proto.createConchModel=function(){
+		return null;
+	}
+
+	/**
 	*获取网格过滤器。
 	*@return 网格过滤器。
 	*/
@@ -83236,37 +81838,6 @@ var TrailSprite3D=(function(_super){
 		}
 		_colorGradient.setKeys(colorKeys,alphaKeys);
 		filter.colorGradient=_colorGradient;
-	}
-
-	__proto.reset=function(){
-		this.trailFilter.reset();
-	}
-
-	/**
-	*@inheritDoc
-	*/
-	__proto.cloneTo=function(destObject){
-		laya.d3.core.Sprite3D.prototype.cloneTo.call(this,destObject);
-		var i=0,j=0;
-		var _trailSprite3D=destObject;
-		var _trailFilter=_trailSprite3D.trailFilter;
-		_trailFilter.time=this.trailFilter.time;
-		_trailFilter.minVertexDistance=this.trailFilter.minVertexDistance;
-		_trailFilter.widthMultiplier=this.trailFilter.widthMultiplier;
-		var widthCurve=this.trailFilter.widthCurve;
-		var _widthCurve=[];
-		for (i=0,j=widthCurve.length;i < j;i++){
-			var _keyFrame=new TrailKeyFrame();
-			widthCurve[i].cloneTo(_keyFrame);
-			_widthCurve.push(_keyFrame);
-		}
-		_trailFilter.widthCurve=_widthCurve;
-		var _colorGradient=new Gradient();
-		this.trailFilter.colorGradient.cloneTo(_colorGradient);
-		_trailFilter.colorGradient=_colorGradient;
-		_trailFilter.textureMode=this.trailFilter.textureMode;
-		var _trailRender=_trailSprite3D.trailRender;
-		_trailRender.sharedMaterial=this.trailRender.sharedMaterial;
 	}
 
 	/**
@@ -83494,7 +82065,9 @@ var Panel=(function(_super){
 	__proto.removeChildren=function(beginIndex,endIndex){
 		(beginIndex===void 0)&& (beginIndex=0);
 		(endIndex===void 0)&& (endIndex=0x7fffffff);
-		this._content.removeChildren(beginIndex,endIndex);
+		for (var i=this._content.numChildren-1;i >-1;i--){
+			this._content.removeChildAt(i);
+		}
 		this._setScrollChanged();
 		return this;
 	}
@@ -84361,6 +82934,13 @@ var TerrainChunk=(function(_super){
 		renderElement._material=terrainMaterial;
 		this._render._materials.push(terrainMaterial);
 		this._render._renderElements.push(renderElement);
+	}
+
+	/**
+	*@private
+	*/
+	__proto.createConchModel=function(){
+		return null;
 	}
 
 	/**
@@ -85742,8 +84322,7 @@ var GraphicAnimation=(function(_super){
 			var vArr=obj[key];
 			if (frame >=vArr.length)
 				frame=vArr.length-1;
-			if(obj[key][frame]!=undefined)
-				return obj[key][frame];
+			return obj[key][frame];
 		}
 		if (obj2.hasOwnProperty(key)){
 			return obj2[key];
@@ -85970,12 +84549,11 @@ var GraphicAnimation=(function(_super){
 		return rst;
 	}
 
-	GraphicAnimation._drawTextureCmd=[["skin",null],["x",0],["y",0],["width",-1],["height",-1],["pivotX",0],["pivotY",0],["scaleX",1],["scaleY",1],["rotation",0],["alpha",1],["skewX",0],["skewY",0],["anchorX",0],["anchorY",0]];
 	GraphicAnimation._temParam=[];
 	GraphicAnimation._I=null;
 	GraphicAnimation._rootMatrix=null;
 	__static(GraphicAnimation,
-	['_tempMt',function(){return this._tempMt=new Matrix();}
+	['_drawTextureCmd',function(){return this._drawTextureCmd=[["skin",null],["x",0],["y",0],["width",-1],["height",-1],["pivotX",0],["pivotY",0],["scaleX",1],["scaleY",1],["rotation",0],["alpha",1],["skewX",0],["skewY",0],["anchorX",0],["anchorY",0]];},'_tempMt',function(){return this._tempMt=new Matrix();}
 	]);
 	GraphicAnimation.__init$=function(){
 		//class GraphicNode
@@ -86091,28 +84669,16 @@ var WebGLImage=(function(_super){
 		var preTarget=WebGLContext.curBindTexTarget;
 		var preTexture=WebGLContext.curBindTexValue;
 		WebGLContext.bindTexture(gl,0x0DE1,glTex);
-		if (Render.isConchWebGL){
-			switch (this._format){
-				case 0x1908:
-					gl.texImage2DEx(true,0x0DE1,0,this._format,0x1908,0x1401,this._image);
-					break ;
-				case WebGL.compressEtc1.COMPRESSED_RGB_ETC1_WEBGL:
-					gl.compressedTexImage2D(0x0DE1,0,this._format,this._w,this._h,0,this._image);
-					break ;
-				}
-		}
-		else {
-			gl.pixelStorei(0x9241,true);
-			switch (this._format){
-				case 0x1908:
-					gl.texImage2D(0x0DE1,0,this._format,0x1908,0x1401,this._image);
-					break ;
-				case WebGL.compressEtc1.COMPRESSED_RGB_ETC1_WEBGL:
-					gl.compressedTexImage2D(0x0DE1,0,this._format,this._w,this._h,0,this._image);
-					break ;
-				}
-			gl.pixelStorei(0x9241,false);
-		};
+		gl.pixelStorei(0x9241,true);
+		switch (this._format){
+			case 0x1908:
+				gl.texImage2D(0x0DE1,0,this._format,0x1908,0x1401,this._image);
+				break ;
+			case WebGL.compressEtc1.COMPRESSED_RGB_ETC1_WEBGL:
+				gl.compressedTexImage2D(0x0DE1,0,this._format,this._w,this._h,0,this._image);
+				break ;
+			}
+		gl.pixelStorei(0x9241,false);
 		var minFifter=this.minFifter;
 		var magFifter=this.magFifter;
 		var repeat=this.repeat ? 0x2901 :0x812F;
@@ -87136,13 +85702,14 @@ var GameStartUI=(function(_super){
 		this.createView(GameStartUI.uiView);
 	}
 
-	GameStartUI.uiView={"type":"Dialog","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"width":720,"skin":"gameUI/bg.jpg","sizeGrid":"4,4,4,4","height":1280}},{"type":"Image","props":{"y":378,"x":179,"skin":"gameUI/logo.png"}},{"type":"Text","props":{"y":587,"x":20,"width":681,"var":"txt_load","text":"游戏资源加载进度","height":29,"fontSize":30,"font":"SimHei","color":"#1c1c1c","align":"center"}},{"type":"Text","props":{"y":1200,"x":20,"width":681,"text":"LayaAir1.7.3引擎教学演示版","height":29,"fontSize":26,"font":"SimHei","color":"#7c7979","bold":true,"align":"center"}},{"type":"Box","props":{"y":691,"x":261,"visible":true,"var":"btn_start"},"child":[{"type":"Button","props":{"y":0,"x":0,"width":240,"visible":true,"stateNum":2,"skin":"gameUI/btn_bg.png","sizeGrid":"20,20,20,20","height":80}},{"type":"Image","props":{"y":19,"x":41,"skin":"gameUI/start.png"}}]}]};
+	__static(GameStartUI,
+	['uiView',function(){return this.uiView={"type":"Dialog","props":{"width":720,"height":1280},"child":[{"type":"Image","props":{"y":0,"x":0,"width":720,"skin":"gameUI/bg.jpg","sizeGrid":"4,4,4,4","height":1280}},{"type":"Image","props":{"y":378,"x":179,"skin":"gameUI/logo.png"}},{"type":"Text","props":{"y":587,"x":20,"width":681,"var":"txt_load","text":"游戏资源加载进度","height":29,"fontSize":30,"font":"SimHei","color":"#1c1c1c","align":"center"}},{"type":"Text","props":{"y":1200,"x":20,"width":681,"text":"LayaAir1.7.3引擎教学演示版","height":29,"fontSize":26,"font":"SimHei","color":"#7c7979","bold":true,"align":"center"}},{"type":"Box","props":{"y":691,"x":261,"visible":true,"var":"btn_start"},"child":[{"type":"Button","props":{"y":0,"x":0,"width":240,"visible":true,"stateNum":2,"skin":"gameUI/btn_bg.png","sizeGrid":"20,20,20,20","height":80}},{"type":"Image","props":{"y":19,"x":41,"skin":"gameUI/start.png"}}]}]};}
+	]);
 	return GameStartUI;
 })(Dialog)
 
 
 	Laya.__init([LoaderManager,EventDispatcher,DrawText,CECSLoop,CSequentialProcedureManager,CSequentiaProcedureSystem,Browser,Timer,Render,WebGLContext2D,View,ShaderCompile,GraphicAnimation,LocalStorage,AtlasGrid]);
-	/**LayaGameStart**/
 	new LayaUISample();
 
 })(window,document,Laya);

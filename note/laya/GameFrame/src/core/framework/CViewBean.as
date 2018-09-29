@@ -20,7 +20,7 @@ package core.framework
 		public static const EVENT_HIDED:String = "hided";
 
 		public function CViewBean(){
-			m_state = STATE_UNREADY;
+			m_viewState = STATE_UNREADY;
 		}
 
 		protected override function onAwake() : void {
@@ -36,7 +36,7 @@ package core.framework
 
 			m_pUISystem = null;
 			m_showHandler = null;
-			m_state = STATE_UNREADY;
+			m_viewState = STATE_UNREADY;
 		}
 
 		// ==========================================================================
@@ -50,7 +50,7 @@ package core.framework
 			return null;
 		}
 		public final function show(pShowHandler:Handler = null) : void {
-			m_state = STATE_LOADING;
+			m_viewState = STATE_LOADING;
 			showHandler = pShowHandler;
 
 			var loadRes:Array;
@@ -81,7 +81,7 @@ package core.framework
 		protected function _onComplete() : void {
 			_onShow();
 			event(EVENT_SHOWED);			
-			m_state = STATE_SHOWING;
+			m_viewState = STATE_SHOWING;
 		}
 		protected virtual function _onShow() : void {
 
@@ -98,7 +98,7 @@ package core.framework
 		public function hide() : void {
 			_onHide();
 			event(EVENT_HIDED);
-			m_state = STATE_HIDED;
+			m_viewState = STATE_HIDED;
 		}
 		protected virtual function _onHide() : void {
 			
@@ -131,16 +131,16 @@ package core.framework
 
 
 		public function get isUnReadyState() : Boolean {
-			return STATE_UNREADY == m_state;
+			return STATE_UNREADY == m_viewState;
 		}
 		public function get isLoadingState() : Boolean {
-			return STATE_LOADING == m_state;
+			return STATE_LOADING == m_viewState;
 		}
 		public function get isShowingState() : Boolean {
-			return STATE_SHOWING == m_state;
+			return STATE_SHOWING == m_viewState;
 		}
 		public function get isHidedState() : Boolean {
-			return STATE_HIDED == m_state;
+			return STATE_HIDED == m_viewState;
 		}
 
 		public function get showHandler() : Handler {
@@ -155,7 +155,7 @@ package core.framework
 		protected static const STATE_LOADING:int = 0;
 		protected static const STATE_SHOWING:int = 1;
 		protected static const STATE_HIDED:int = 2;
-		private var m_state:int; 
+		private var m_viewState:int; 
 		private var m_pUISystem:IUICanvas;
 		
 	}

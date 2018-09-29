@@ -197,7 +197,7 @@ public class CGameObject extends EventDispatcher implements IDispose, IDataHolde
                 m_pTransform = null;
             }
 
-            for (var keyClassID:int in classToComponentMap) {
+            for (var keyClassID:* in classToComponentMap) {
                 if (classToComponentMap[keyClassID] == comp) {
                     delete classToComponentMap[keyClassID];
                     break;
@@ -236,7 +236,7 @@ public class CGameObject extends EventDispatcher implements IDispose, IDataHolde
 
         reversed.slice(0, reversed.length);
 
-        for (var keyClassID:int in classToComponentMap) {
+        for (var keyClassID:* in classToComponentMap) {
             delete classToComponentMap[keyClassID];
         }
     }

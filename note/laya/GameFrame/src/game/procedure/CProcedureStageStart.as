@@ -24,7 +24,7 @@ package game.procedure
 			fsm.setData(EProcedureKey.NEXT_SCENE_ID, ESceneID.LOGIN_MENU);
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
-			super.onUpdate(fsm);
+			super.onUpdate(fsm, deltaTime);
 			changeProcedure(fsm, CProcedureChangeScene);
 
 		}

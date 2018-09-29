@@ -6,7 +6,7 @@ package core.fsm
 	 */
 	public interface IFsmManager{
 		// function get count() : int;
-		function get hasFsm(name:String) : Boolean;
+		function hasFsm(name:String) : Boolean;
 		function getFsm(name:String) : IFsm;
 		function getAllFsms() : Object ;
 

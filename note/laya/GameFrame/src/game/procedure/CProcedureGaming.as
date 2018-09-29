@@ -25,7 +25,7 @@ package game.procedure
 
 		}
 		protected override function onUpdate(fsm:IFsm, deltaTime:Number) : void {
-			super.onUpdate(fsm);
+			super.onUpdate(fsm, deltaTime);
 		}
 		protected override function onLeave(fsm:IFsm, isShutDown:Boolean) : void {
 			super.onLeave(fsm, isShutDown);

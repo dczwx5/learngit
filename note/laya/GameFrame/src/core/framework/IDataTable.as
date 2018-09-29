@@ -10,8 +10,8 @@ package core.framework
 		function get tableMap() : Object;
 		function findByPrimaryKey(value:*) : *;
 		function findByProperty(sPropertyName:String, filterVal:*) : Array;
-		function first() : *;
-		function last() : *;
+		function get first() : *;
+		function get last() : *;
 
 		function toArray() : Array;
 	}
