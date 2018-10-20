@@ -1,0 +1,20 @@
+1,0.00,,0,Project command:D:\myGit\learngit\note\laya\idle_click/.actionScriptProperties;iflash=false;windowshow=false;chromerun=false;quickcompile=true
+Project configuration:D:\myGit\learngit\note\laya\idle_click/.actionScriptProperties.
+1,0.00,,0,output path:D:/myGit/learngit/note/laya/idle_click/bin/h5/
+1,0.00,,0,Main Class:D:/myGit/learngit/note/laya/idle_click/src/LayaUISample.as
+1,0.00,,0,output file:LayaUISample
+1,0.00,,0,compilerSourcePath D:/myGit/learngit/note/laya/idle_click/libs/laya/src/
+
+1,0.00,,0,Compile Path:D:/myGit/learngit/note/laya/idle_click/src/
+
+1,0.00,,0,Compile Path:D:/myGit/learngit/note/laya/idle_click/libs/laya/src/
+
+1,0.00,D:/myGit/learngit/note/laya/idle_click/src,0,Collect
+1,0.00,D:/myGit/learngit/note/laya/idle_click/libs/laya/src,0,Collect
+1,2.00,,0,read class message
+7,53.59,D:/myGit/learngit/note/laya/idle_click/src/core/pathing/astar/node/CCloseList.as,4,iflash.utils.Dictionary This variable is not defined.
+1,89.91,,0,Disable Flash3D D:/myGit/learngit/note/laya/idle_click/src/LayaUISample.as
+12,89.91,D:/myGit/learngit/note/laya/idle_click/bin/h5/LayaUISample.max.js,2842327,
+11,89.91,D:/myGit/learngit/note/laya/idle_click/bin/h5/LayaUISample.max.html,895,
+******************************************************************************
+14,89.91,,0,

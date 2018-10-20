@@ -1,0 +1,33 @@
+{
+    "server_runtime": {
+        "pvp": false
+    },
+    "account": {
+        "id": 1,
+        "name": "jeremy",
+        "token": null
+    },
+    "role": {
+        "roleID": 10086,
+        "name": "Hero P1",
+        "operateSide" : 1,
+        "operateIndex" : 1,
+        "prototypeID": 10,
+        "level": 1,
+        "curExp": 0,
+        "money": 0,
+        "diamond": 0,
+        "x": 348,
+        "y": 768,
+        "dirX": 1,
+        "dirY": 0,
+        "line": 1,
+        "mapID": 1,
+        "mapType" : 1,
+        "battleValue": 0,
+        "atk": 10000,
+        "moveSpeed": 680,
+        "hp": 10000,
+        "mp": 100
+    }
+}

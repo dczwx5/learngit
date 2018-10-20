@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="RubbishBinCellSkin" width="250" height="192" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="165cbb804e6" ></w:Config>
+	<e:Rect id="rect_bg" left="0" right="0" bottom="0" top="0" fillColor="0xc6c4c4"/>
+	<e:Image id="img_icon" anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="0" verticalCenter="0" source="icon_rubbishBin_png" x="63" y="55" scaleX="1" scaleY="1"/>
+</e:Skin>

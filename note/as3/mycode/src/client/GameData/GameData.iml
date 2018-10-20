@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="GameData">
+    <configurations>
+      <configuration name="GameData" pure-as="true" output-type="Library" output-file="GameData.swc" output-folder="$MODULE_DIR$/bin">
+        <dependencies target-player="15.0">
+          <sdk name="AIRSDK_Compiler" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$/../../table_codes/as">
+      <sourceFolder url="file://$MODULE_DIR$/../../table_codes/as" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_Compiler" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

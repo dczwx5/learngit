@@ -1,0 +1,4 @@
+<?XML version="1.0" encoding="UTF-8"?>
+<root>
+    <asset constName="CorePackage" nextName="RoleCreate" title="核心库" path="assets/dll/GameCoreDll.swf" isLoadBytes="true" useCdn="true"></asset>
+</root>

@@ -1,0 +1,24 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="AnonymousFunctionJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="DivideByZeroJS" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="Duplicates" enabled="true" level="WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSFieldCanBeLocal" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSMethodCanBeStatic" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="JSUntypedDeclaration" enabled="true" level="ERROR" enabled_by_default="true" />
+    <inspection_tool class="JSUnusedGlobalSymbols" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="myReportUnusedDefinitions" value="true" />
+      <option name="myReportUnusedProperties" value="true" />
+    </inspection_tool>
+    <inspection_tool class="JSValidateJSDoc" enabled="true" level="WEAK WARNING" enabled_by_default="true" />
+    <inspection_tool class="LoggerInitializedWithForeignClass" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="loggerClassName" value="org.apache.log4j.Logger,org.slf4j.LoggerFactory,org.apache.commons.logging.LogFactory,java.util.logging.Logger" />
+      <option name="loggerFactoryMethodName" value="getLogger,getLogger,getLog,getLogger" />
+    </inspection_tool>
+    <inspection_tool class="NestedFunctionJS" enabled="true" level="WEAK WARNING" enabled_by_default="true">
+      <option name="m_includeAnonymousFunctions" value="false" />
+    </inspection_tool>
+    <inspection_tool class="ReservedWordUsedAsNameJS" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>

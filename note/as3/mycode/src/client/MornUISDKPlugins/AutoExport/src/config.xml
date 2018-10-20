@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <plugin>
+        <!-- 插件名称，会显示在插件菜单内 -->
+        <name>自动发布</name>
+        <!-- 插件资源文件名称 -->
+        <file>AutoExport.swf</file>
+        <!-- 插件包名，调用的入口，执行时调用下面类的start方法 -->
+        <start>AutoExport</start>
+        <!-- 快捷键（Keyboard对应的ASCII），不能与编辑器其他快捷键冲突 -->
+        <shortcut>999999</shortcut>
+        <!--<shortcut ctrl="true" shift="true">70</shortcut>-->
+        <!-- 插件说明 -->
+        <intro>自动发布项目内容。</intro>
+    </plugin>
+    <setting>
+        <!-- 自定义配置 -->
+    </setting>
+</root>

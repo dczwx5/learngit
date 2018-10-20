@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="WxOtherGameIconSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="16614c4c7aa" ></w:Config>
+	<e:Image id="img_gameIcon" horizontalCenter="0" verticalCenter="0"/>
+</e:Skin>

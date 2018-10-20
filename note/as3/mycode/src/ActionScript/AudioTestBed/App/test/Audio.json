@@ -1,0 +1,32 @@
+﻿[
+    {
+        "name" : "Click",
+        "fileName" : "./res/sound/10002.mp3",
+        "preLoad" : 1
+    },
+    {
+        "name" : "Hit",
+        "fileName" : "./res/sound/10003.mp3",
+        "preLoad" : 1
+    },
+    {
+        "name" : "Scene_fuben",
+        "fileName" : "./res/sound/scene_fuben.mp3",
+        "preLoad" : 1
+    },
+    {
+        "name" : "Scene",
+        "fileName" : "./res/sound/scene.mp3",
+        "preLoad" : 1
+    },
+    {
+        "name" : "Attack",
+        "fileName" : "./res/sound/10004.mp3",
+        "preLoad" : 1
+    },
+    {
+        "name" : "Kof_select_role",
+        "fileName" : "./res/sound/kof_select_role.mp3",
+        "preLoad" : 1
+    }
+]

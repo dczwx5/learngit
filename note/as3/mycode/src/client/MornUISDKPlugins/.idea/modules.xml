@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AutoExport/AutoExport.iml" filepath="$PROJECT_DIR$/AutoExport/AutoExport.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AutoSizeView/AutoSizeView.iml" filepath="$PROJECT_DIR$/AutoSizeView/AutoSizeView.iml" />
+      <module fileurl="file://$PROJECT_DIR$/OpenPage/OpenPage.iml" filepath="$PROJECT_DIR$/OpenPage/OpenPage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PluginCommon/PluginCommon.iml" filepath="$PROJECT_DIR$/PluginCommon/PluginCommon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PluginSupport/PluginSupport.iml" filepath="$PROJECT_DIR$/PluginSupport/PluginSupport.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Publish/Publish.iml" filepath="$PROJECT_DIR$/Publish/Publish.iml" />
+      <module fileurl="file://$PROJECT_DIR$/RefactorResource/RefactorResource.iml" filepath="$PROJECT_DIR$/RefactorResource/RefactorResource.iml" />
+    </modules>
+  </component>
+</project>

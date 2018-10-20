@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="LoadingShell">
+    <configurations>
+      <configuration name="LoadingShell" pure-as="true" main-class="kof.app.LoadingShell" output-file="LoadingShell.swf" output-folder="$MODULE_DIR$/../../runtime/client" wrapper-template-path="$MODULE_DIR$/html-template">
+        <dependencies target-player="15.0">
+          <entries>
+            <entry library-id="4210de6c-c7c3-4601-96f9-f292900b4ee6">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="Foundation" build-configuration-name="Foundation">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="6e5c1ded-5863-4b2c-8c2d-33b18c86cf37">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK_Compiler" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/config" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/html-template" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_Compiler" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="4210de6c-c7c3-4601-96f9-f292900b4ee6" />
+        <CLASSES>
+          <root url="file://$MODULE_DIR$/libs" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+        <jarDirectory url="file://$MODULE_DIR$/libs" recursive="false" />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" exported="" name="MonsterDebugger" level="project" />
+    <orderEntry type="module" module-name="Foundation" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="6e5c1ded-5863-4b2c-8c2d-33b18c86cf37" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../../tool/SWFEncryptor/bin/SWFEncryptor.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

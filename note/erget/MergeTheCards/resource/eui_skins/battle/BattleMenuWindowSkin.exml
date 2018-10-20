@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="BattleMenuWindowSkin" width="600" height="352" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="165e72e35e7" ></w:Config>
+	<e:Rect top="0" right="0" bottom="0" fillColor="0xffffff" strokeColor="0x000000" strokeAlpha="1" strokeWeight="5" ellipseWidth="30" ellipseHeight="30" left="0"/>
+	<e:Image top="-70" right="-70" source="btn_close_png" visible="false"/>
+	<e:Image id="icon_backHome" source="icon_backHome_png" left="40" verticalCenter="50"/>
+	<e:Image id="icon_continue" verticalCenter="50" horizontalCenter="0" source="icon_continue_png"/>
+	<e:Image id="icon_reset" verticalCenter="50" right="40" source="icon_reset_png"/>
+	<e:Label text="游戏菜单" textColor="0x000000" bold="true" size="60" horizontalCenter="0.5" top="30"/>
+</e:Skin>

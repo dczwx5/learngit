@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/GameBackendMock" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/GameClient" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/GameCore" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/GameData" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/GameUI" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/LoadingShell" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/MornUIExt" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/client/ProtocolMessage" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/AI" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Audio" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Collision" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Framework" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Graphics/Character" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Graphics/Common" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Graphics/FX" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Graphics/Scene" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Graphics/Sprite" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/common_lib/QFLib/ActionScript/Math" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/game_ui/src" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/protocol/as3" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/runtime/client/assets" vcs="svn" />
+    <mapping directory="F:/KOF_PG_Client/trunk/table_codes/as" vcs="svn" />
+  </component>
+</project>

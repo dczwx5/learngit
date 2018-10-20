@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="Audio">
+    <configurations>
+      <configuration name="Audio" pure-as="true" output-type="Library" output-file="Audio.swc" output-folder="$MODULE_DIR$/bin">
+        <dependencies target-player="15.0">
+          <entries>
+            <entry module-name="Foundation" build-configuration-name="Foundation">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="RenderCore" build-configuration-name="RenderCore">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-id="2fdf71c1-9c01-4941-85cf-0edf42a340a3">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK_Compiler" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_Compiler" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="Foundation" exported="" />
+    <orderEntry type="module" module-name="RenderCore" exported="" />
+    <orderEntry type="module-library" exported="">
+      <library type="flex">
+        <properties id="2fdf71c1-9c01-4941-85cf-0edf42a340a3" />
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/../ThirdParty/libs/greensock.swc!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+  </component>
+</module>

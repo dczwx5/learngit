@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<define>
+
+    <!--定义项目根目录-->
+    <path ROOT="c:\Projects\KOFAutobuild\KOFProject\client"/>
+
+    <!--定义应用程序引用库目录-->
+    <path APP_LIB_DIR1="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\ThirdParty\libs\"/>
+    <path APP_LIB_DIR2="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Graphics\RenderCore\libs\"/>
+    <path APP_LIB_DIR3="c:\Projects\KOFAutobuild\KOFProject\client\LoadingShell\libs\"/>
+    <path APP_LIB_DIR4="c:\Projects\KOFAutobuild\KOFProject\client\LoadingShell\libs\"/> <!-- unused -->
+        
+    <compiler> 
+    
+        <!--是否编译为Debug版本-->
+        <debug>false</debug>
+        <!--是否编译为最佳化版本-->
+        <optimize>true</optimize>
+
+        <def NAME1="CONFIG::debug" VALUE1="true"/>
+        <def NAME2="CONFIG::release" VALUE2="false"/>
+        <def NAME3="CONFIG::undefine3" VALUE3="false"/> <!-- unused -->
+        <def NAME4="CONFIG::undefine4" VALUE4="false"/> <!-- unused -->
+        
+        <arg LINE1="-swf-version=27"/>
+        <arg LINE2="-target-player=23"/>
+        <arg LINE3="-advanced-telemetry"/>
+        <arg LINE4=""/> <!-- unused -->
+        
+    </compiler> 
+    
+    <library>
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\"             PROJECT_LIB="Foundation"         SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\"             PROJECT_LIB="Math" 		        SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\"             PROJECT_LIB="AI" 			    SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\"             PROJECT_LIB="Audio"              SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Graphics\"    PROJECT_LIB="RenderCore"         SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Graphics\"    PROJECT_LIB="Character"          SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Graphics\"    PROJECT_LIB="FX"                 SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Graphics\"    PROJECT_LIB="Scene"              SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Graphics\"    PROJECT_LIB="Sprite" 		    SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\"    		   PROJECT_LIB="Collision"          SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\"             PROJECT_LIB="Framework"          SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\client\"                                    PROJECT_LIB="ProtocolMessage"    SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\"                                           PROJECT_LIB="protocol"           SRC_PATH="as3"  INCLUDE_SRC_PATH="as3/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\client\"                                    PROJECT_LIB="MornUIExt"          SRC_PATH="src"  INCLUDE_SRC_PATH="src/* ext/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\"                                           PROJECT_LIB="game_ui"            SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\"                                           PROJECT_LIB="table_codes"        SRC_PATH="as"   INCLUDE_SRC_PATH="as/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\client\"                                    PROJECT_LIB="GameCore"           SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\client\"                                    PROJECT_LIB="GameBackendMock"    SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+        <item PROJECT_LIB_DIR="c:\Projects\KOFAutobuild\KOFProject\client\"                                    PROJECT_LIB="GameClient"         SRC_PATH="src"  INCLUDE_SRC_PATH="src/*" />
+    </library>
+	<main>
+		<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\common_lib\QFLib\ActionScript\Foundation"   MAIN_CLASS="QFLib\ResourceLoader\Worker\CResourceWorker"	MAIN_OUTPUT="..\runtime\client\assets\bin\ResourceWorker.swf"/>
+		<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\GameClientRuntime"   MAIN_CLASS="GameClient" 			    MAIN_OUTPUT="..\runtime\client\assets\bin\GameClient.swf"/>
+		<!--<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\GMClient"            MAIN_CLASS="GMClient"                   MAIN_OUTPUT="..\runtime\client\assets\bin\GMClient.swf"/>-->
+		<!--<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\GameClientRuntime"   MAIN_CLASS="TGSClient" 				    MAIN_OUTPUT="..\runtime\client\assets\bin\TGSClient.swf"/>-->
+    	<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\LoginStandalone"     MAIN_CLASS="kof\app\LoginStandalone"    MAIN_OUTPUT="..\runtime\client\LoginStandalone.swf"/>
+		<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\LoadingShell"        MAIN_CLASS="kof\app\LoadingShell" 	    MAIN_OUTPUT="..\runtime\client\LoadingShell.swf"/>
+		<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\LevelPreview"        MAIN_CLASS="LevelPreview"               MAIN_OUTPUT="..\runtime\client\preview\LevelPreview.swf"/>
+		<!--<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\battleTutor"        MAIN_CLASS="CBattleTutor"               MAIN_OUTPUT="..\runtime\client\assets\bin\battleTutor.swf"/>-->
+		<!--<item MAIN_DIR="c:\Projects\KOFAutobuild\KOFProject\client\GameClient"          MAIN_CLASS="CDataRuntime" 				MAIN_OUTPUT="..\runtime\client\dll\GameDataRuntime.swf"/>-->
+	</main>
+    <module>
+		<item MODULE_DIR="c:\Projects\KOFAutobuild\KOFProject\client\GameBackendMock"       MODULE_CLASS="GameDummy"     MODULE_OUTPUT="..\runtime\client\assets\bin\GameDummy.swf" DEPENDS="GameClient"/>
+		<item MODULE_DIR="c:\Projects\KOFAutobuild\KOFProject\client\battleTutor"       MODULE_CLASS="CBattleTutor"     MODULE_OUTPUT="..\runtime\client\assets\bin\battleTutor.swf" DEPENDS="GameClient"/>
+		<item MODULE_DIR="c:\Projects\KOFAutobuild\KOFProject\client\GMClient"          MODULE_CLASS="GMClient"         MODULE_OUTPUT="..\runtime\client\assets\bin\GMClient.swf" DEPENDS="GameClient"/>
+    </module>
+</define>

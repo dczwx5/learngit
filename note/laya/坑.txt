@@ -1,0 +1,9 @@
+包名 : 
+core.framework.xxx
+其中core和微信小游戏的window.core重名
+
+整形 : 
+没有整形, 全是number, 需要用math.floor
+
+常量 ：
+要把\.laya\gulpfile.js 里编译参数的quickcompaire设成false, 不然有些关联不会改过来

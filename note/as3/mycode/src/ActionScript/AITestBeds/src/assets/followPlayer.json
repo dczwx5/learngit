@@ -1,0 +1,14 @@
+{
+	"followPlayer": {
+		"objectType": "Selector",
+		"name": "Selector",
+		"children": [{
+			"objectType": "CFollowAction",
+			"name": "FollowAction",
+			"param": {
+				"followDistance": 150.0,
+				"testBool": "True"
+			}
+		}]
+	}
+}

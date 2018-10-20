@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/AI/AI.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/AI/AI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Audio/Audio.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Audio/Audio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Character/Character.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Character/Character.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Collision/Collision.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Collision/Collision.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Common/Common.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Common/Common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/FX/FX.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/FX/FX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Foundation/Foundation.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Foundation/Foundation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../QFLib/ActionScript/Graphics/Framework/Framework.iml" filepath="$PROJECT_DIR$/../../QFLib/ActionScript/Graphics/Framework/Framework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GameBackendMock/GameBackendMock.iml" filepath="$PROJECT_DIR$/../GameBackendMock/GameBackendMock.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GameClient/GameClient.iml" filepath="$PROJECT_DIR$/../GameClient/GameClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GameCore/GameCore.iml" filepath="$PROJECT_DIR$/../GameCore/GameCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GameData/GameData.iml" filepath="$PROJECT_DIR$/../GameData/GameData.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../GameUI/GameUI.iml" filepath="$PROJECT_DIR$/../GameUI/GameUI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../LevelPreview/LevelPreview.iml" filepath="$PROJECT_DIR$/../LevelPreview/LevelPreview.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../LoadingShell/LoadingShell.iml" filepath="$PROJECT_DIR$/../LoadingShell/LoadingShell.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Math/Math.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Math/Math.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../MornUIExt/MornUIExt.iml" filepath="$PROJECT_DIR$/../MornUIExt/MornUIExt.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../ProtocolMessage/ProtocolMessage.iml" filepath="$PROJECT_DIR$/../ProtocolMessage/ProtocolMessage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Framework/QFFramework.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Framework/QFFramework.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Sprite/QFGraphicsSprite.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Sprite/QFGraphicsSprite.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/RenderCore/RenderCore.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/RenderCore/RenderCore.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Scene/Scene.iml" filepath="$PROJECT_DIR$/../../common_lib/QFLib/ActionScript/Graphics/Scene/Scene.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="greenscok-source" type="flex">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../GameCore/lib/greenscok-source.zip!/" />
+    </SOURCES>
+  </library>
+</component>

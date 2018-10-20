@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="libs">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Graphics/RenderCore/libs/hookOggVorbisLib.swc!/" />
+      <root url="jar://$PROJECT_DIR$/../Graphics/RenderCore/libs/font.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

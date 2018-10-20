@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="QIFUN_AS_COMPILE" basedir="." default="build">
+
+    <!--定义FLexSDK存放位置-->
+    <property name="FLEX_HOME"       value="c:\Projects\sdk\AIRSDK_Compiler"/>
+
+    <!--定义ant存放位置-->
+    <property name="ANT_LIB_DIR"     value="${FLEX_HOME}\ant\lib\"/>
+
+    <!--定义ant-contrib存放位置-->
+    <property name="ANT_CONTRIB_LIB" value="c:\Projects\sdk\"/>
+
+    <!--载入外部配置文件-->
+    <xmlproperty file="./define.xml" prefix="DEFINE"/>
+
+    <!--定义输出文件位置-->
+    <property name="OUT_DIR"         value="${DEFINE.define.path(ROOT)}\Build"/>
+    <!--定义临时库库位置-->
+    <property name="TEMP_LIBS"       value="${DEFINE.define.path(ROOT)}\Build\temp"/>
+    <!--定义报告位置-->
+    <property name="REPORT_DIR"      value="${DEFINE.define.path(ROOT)}\Build\report"/>
+
+    <!-- build targets -->
+    <target name="build">
+        <ant antfile="..\..\StarAutobuild\scripts\basic\build_as3.xml" dir="." inheritall="true" inheritrefs="true" target="build"/>
+    </target>
+    <target name="clean">
+        <ant antfile="..\..\StarAutobuild\scripts\basic\build_as3.xml" dir="." inheritall="true" inheritrefs="true" target="clean"/>
+    </target>
+</project>

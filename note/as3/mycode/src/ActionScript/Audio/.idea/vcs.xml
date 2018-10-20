@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Foundation" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Graphics/Common" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Graphics/RenderCore" vcs="svn" />
+    <mapping directory="$PROJECT_DIR$/../Math" vcs="svn" />
+  </component>
+</project>

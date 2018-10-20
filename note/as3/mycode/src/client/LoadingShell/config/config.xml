@@ -1,0 +1,56 @@
+<?XML version="1.0" encoding="UTF-8"?>
+<!----------------------------------------------------------------------------->
+<!-- Copyright (C) 2017 Shenzhen Qifun Network Co. Ltd. All Rights Reserved. -->
+<!----------------------------------------------------------------------------->
+
+<all>
+    <please><![CDATA[如果您修改了这个xml的属性名或新增了属性，请修改和它放在一起的'config参数说明文档']]></please>
+    <isDebugVersion><![CDATA[1]]></isDebugVersion>
+    <enableGM><![CDATA[1]]></enableGM>
+    <GMAppURL><![CDATA[assets/bin/GMClient.swf]]></GMAppURL>
+    <isEncryption>0</isEncryption>
+    <isConfigEncryption>0</isConfigEncryption>
+    <enableProtocolEncryption><![CDATA[0]]></enableProtocolEncryption>
+    <createRoleTimeOut><![CDATA[9999]]></createRoleTimeOut>
+    <language><![CDATA[zh_cn]]></language>
+    <sandbox port="843"/>
+    <!-- 是否打开网络通讯的Log -->
+    <networkLog>1</networkLog>
+    <!-- 网络同步频率（单位ms）不适用于事件同步类 -->
+    <networkSyncInterval>250</networkSyncInterval>
+    <logLevel>INFO</logLevel>
+    <popUpLogLevel>LOG_LEVEL_WARNING</popUpLogLevel>
+    <enableQsonLoading>0</enableQsonLoading>
+    <!-- 读取Table、Character下的合并后的Json文件 -->
+    <enablePackedQsonLoading>0</enablePackedQsonLoading>
+    <!-- 检测文件是否存在与AssetVersion中 -->
+    <enableFileExistencePreChecking>0</enableFileExistencePreChecking>
+    <fileCheckLevel>0</fileCheckLevel>
+    <!--<server host="dummy" port="2546" />-->
+    <server host="10.10.17.41" port="2546" />
+    <!--<server host="127.0.0.1" port="2546" />-->
+    <gameNotice><![CDATA[抵制不良游戏  拒绝盗版游戏  注意自我保护  谨防受骗上当|适度游戏益脑  沉迷游戏伤身  合理安排时间  享受健康生活]]></gameNotice>
+    <gameHomepage><![CDATA[http://www.baidu.com]]></gameHomepage>
+    <gameForum><![CDATA[http://www.163.com]]></gameForum>
+    <platforms enabledRecharge="1">
+        <platform name="qzone">
+            <txBuyGoodsUrl><![CDATA[http://deposit.qq.qifun.com/buygoods]]></txBuyGoodsUrl>
+            <txSandbox><![CDATA[1]]></txSandbox>
+            <txAppId><![CDATA[1105122324]]></txAppId>
+            <txPtVipUrl><![CDATA[http://pay.qq.com/qzone/index.shtml?aid=game{appId}.op]]></txPtVipUrl>
+            <txYearPtVip><![CDATA[http://pay.qq.com/qzone/index.shtml?aid=game{appId}.yop&paytime=year]]></txYearPtVip>
+        </platform>
+        <platform name="qqgame">
+            <txBuyGoodsUrl><![CDATA[http://deposit.qq.qifun.com/buygoods]]></txBuyGoodsUrl>
+            <txSandbox><![CDATA[1]]></txSandbox>
+            <txAppId><![CDATA[1105122324]]></txAppId>
+        </platform>
+        <platform name="37">
+        </platform>
+    </platforms>
+    <loadBytes size="7684640"/>
+    <randomTips>
+        <tips><![CDATA[首次充值可以获得丰厚大奖]]></tips>
+    </randomTips>
+    <videoURL>http://10.10.17.72/</videoURL>
+</all>

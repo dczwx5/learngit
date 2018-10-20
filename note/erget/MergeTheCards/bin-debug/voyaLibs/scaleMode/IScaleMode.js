@@ -1,0 +1,1 @@
+//# sourceMappingURL=IScaleMode.js.map

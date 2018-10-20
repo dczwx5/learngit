@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="FlyScoreTipSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="165e6a3c6f8" ></w:Config>
+	<e:Rect id="rect_bg" ellipseWidth="20" ellipseHeight="20" right="0" left="0" bottom="0" top="0"/>
+	<e:Label id="lb_score" text="+ 30" size="50" right="10" bottom="10" top="10" left="10"/>
+</e:Skin>

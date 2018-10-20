@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="BattleViewSkin" width="1080" height="1920" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+	<w:Config id="165a78c3911" ></w:Config>
+	<e:Rect id="rect_bg" strokeColor="0xe8e8e8" fillColor="0xe8e8e8" left="0" right="0" top="0" bottom="0"/>
+	<e:Group id="grp_content" width="1080" height="1920" horizontalCenter="0" verticalCenter="0">
+		<ns1:BattleRecordPanel id="battlePanel" horizontalCenter="0" top="0" width="1080"/>
+		<e:Group y="248" anchorOffsetX="0" width="1080" horizontalCenter="0">
+			<ns1:CardGroup id="cardGroup0" x="78" y="72"/>
+			<ns1:CardGroup id="cardGroup1" x="48" y="42"/>
+			<ns1:CardGroup id="cardGroup2" x="58" y="52"/>
+			<ns1:CardGroup id="cardGroup3" x="68" y="62"/>
+			<e:layout>
+				<e:HorizontalLayout horizontalAlign="left" gap="1" paddingRight="0" paddingLeft="0"/>
+			</e:layout>
+		</e:Group>
+		<e:Group width="1080" height="400" horizontalCenter="0" bottom="92">
+			<ns1:RefreshBtn id="btn_refreshHandCard" left="30" bottom="23" touchChildren="false" touchEnabled="true"/>
+			<e:Group id="grp_handCards" width="456" height="384" anchorOffsetX="0" anchorOffsetY="0" verticalCenter="0" horizontalCenter="0">
+			</e:Group>
+			<ns1:RubbishBin id="rubbishBin" verticalCenter="0" right="29" touchChildren="false" touchEnabled="true"/>
+			<e:Image id="btn_menu" anchorOffsetX="0" anchorOffsetY="0" verticalCenter="-113" left="30" source="icon_menu_png"/>
+			<e:Image id="btn_help" anchorOffsetX="0" anchorOffsetY="0" verticalCenter="-113" left="161" source="icon_help_png"/>
+		</e:Group>
+		<e:Image source="img_cutPartLine_png" horizontalCenter="0" verticalCenter="453" x="108" y="1353" scaleX="1" scaleY="1" width="1028"/>
+	</e:Group>
+</e:Skin>

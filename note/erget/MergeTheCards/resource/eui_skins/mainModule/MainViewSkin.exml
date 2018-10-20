@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="MainViewSkin" width="1080" height="1920" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+	<w:Config id="165a79a0124" ></w:Config>
+	<e:Image id="img_bg" source="01_bg" right="0" left="0" top="0" bottom="0"/>
+	<e:Image source="01_logo" horizontalCenter="0" verticalCenter="-322"/>
+	<e:Group id="grp_content" width="1080" height="1920" horizontalCenter="0" verticalCenter="0">
+		<e:Button id="btn_start" label="" horizontalCenter="0" verticalCenter="400">
+			<e:skinName>
+				<e:Skin states="up,down,disabled">
+				<e:Image width="100%" height="100%" source="01_btn_start" source.down="01_btn_start" source.disabled="01_btn_start"/>
+				<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+				</e:Skin>
+			</e:skinName>
+		</e:Button>
+		<e:Group verticalCenter="0" right="0">
+			<e:Group x="1" y="60" width="180" height="185" visible="false">
+				<e:Button id="btn_shop" label="" verticalCenter="0" horizontalCenter="0">
+					<e:skinName>
+						<e:Skin states="up,down,disabled">
+						<e:Image width="100%" height="100%" source="01_btn_freeSkin" source.down="01_btn_freeSkin" source.disabled="01_btn_freeSkin"/>
+						<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+						</e:Skin>
+					</e:skinName>
+				</e:Button>
+			</e:Group>
+			<e:Group x="65" y="179" scaleX="1" scaleY="1" width="161" height="181">
+				<e:Button id="btn_rank" label="" verticalCenter="0" horizontalCenter="0">
+					<e:skinName>
+						<e:Skin states="up,down,disabled">
+						<e:Image width="100%" height="100%" source="01_btn_rank" source.down="01_btn_rank" source.disabled="01_btn_rank"/>
+						<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+						</e:Skin>
+					</e:skinName>
+				</e:Button>
+			</e:Group>
+			<e:Group x="79.99999999999989" y="331" scaleX="1" scaleY="1" width="190" height="184">
+				<e:Button id="btn_share" label="" verticalCenter="0" horizontalCenter="0">
+					<e:skinName>
+						<e:Skin states="up,down,disabled">
+						<e:Image width="100%" height="100%" source="01_btn_share" source.down="01_btn_share" source.disabled="01_btn_share"/>
+						<e:Label id="labelDisplay" horizontalCenter="0" verticalCenter="0"/>
+						</e:Skin>
+					</e:skinName>
+				</e:Button>
+			</e:Group>
+			<e:layout>
+				<e:VerticalLayout horizontalAlign="center" verticalAlign="middle" gap="20"/>
+			</e:layout>
+		</e:Group>
+		<ns1:WxOtherGameIcon id="wxOtherGameIcon0" verticalCenter="455" y="1330" scaleX="1" scaleY="1" left="0"/>
+		<ns1:WxOtherGameIcon id="wxOtherGameIcon1" verticalCenter="455" right="0" x="1080" y="1363" scaleX="1" scaleY="1"/>
+	</e:Group>
+</e:Skin>

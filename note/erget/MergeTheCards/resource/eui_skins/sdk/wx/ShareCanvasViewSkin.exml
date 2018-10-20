@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ShareCanvasViewSkin" width="1080" height="1920" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="165f511e1cd" ></w:Config>
+	<e:Rect id="rect_bg" fillAlpha="0.5" left="0" top="0" bottom="0" right="0"/>
+	<e:Group id="grp_canvasLayer" anchorOffsetX="0" anchorOffsetY="0" left="0" bottom="0" top="0" right="0" touchThrough="true">
+	</e:Group>
+	<e:Group id="grp_topLayer" anchorOffsetX="0" anchorOffsetY="0" left="0" bottom="0" top="0" right="0">
+		<e:Group id="btn_back" touchChildren="false" touchEnabled="true" verticalCenter="-260" horizontalCenter="422">
+			<e:Image width="60" height="60" anchorOffsetX="0" anchorOffsetY="0" right="0" verticalCenter="0" source="btn_close1_png"/>
+			<e:layout>
+				<e:HorizontalLayout/>
+			</e:layout>
+		</e:Group>
+		<!--<ns1:Btn_Back id="btn_back" right="20" bottom="20"/>-->
+	</e:Group>
+</e:Skin>

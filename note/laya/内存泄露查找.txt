@@ -1,0 +1,7 @@
+RenderSprite ：
+查找　var RenderSprite=(function(){
+
+然后 在
+__proto._childs=function(sprite,context,x,y){
+
+查看　childs的数据 , 这里是所有的ｓｐｒｉｔｅ

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="RenderCore">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Graphics/RenderCore/bin/RenderCore.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="Scene">
+    <configurations>
+      <configuration name="Scene" pure-as="true" output-type="Library" output-file="Scene.swc" output-folder="$MODULE_DIR$/bin">
+        <dependencies target-player="15.0">
+          <entries>
+            <entry module-name="RenderCore" build-configuration-name="RenderCore">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="Foundation" build-configuration-name="Foundation">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry module-name="Math" build-configuration-name="Math">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="AIRSDK_Compiler" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="AIRSDK_Compiler" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="RenderCore" exported="" />
+    <orderEntry type="module" module-name="Foundation" exported="" />
+    <orderEntry type="module" module-name="Math" exported="" />
+  </component>
+</module>

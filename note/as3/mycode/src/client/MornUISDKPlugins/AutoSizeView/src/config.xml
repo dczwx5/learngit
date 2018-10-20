@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <plugin>
+        <!-- 插件名称，会显示在插件菜单内 -->
+        <name>自动设置大小 (Ctrl+Shift+F)</name>
+        <!-- 插件资源文件名称 -->
+        <file>AutoSizeView.swf</file>
+        <!-- 插件包名，调用的入口，执行时调用下面类的start方法 -->
+        <start>AutoSizeView</start>
+        <!-- 快捷键（Keyboard对应的ASCII），不能与编辑器其他快捷键冲突 -->
+        <shortcut ctrl="true" shift="true">70</shortcut>
+        <!-- 插件说明 -->
+        <intro>自动设置页面尺寸以匹配内容大小。</intro>
+    </plugin>
+    <setting>
+        <!-- 自定义配置 -->
+    </setting>
+</root>

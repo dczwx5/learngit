@@ -1,0 +1,1 @@
+{"type":"View","props":{"width":500,"height":500},"compId":1,"child":[{"type":"Button","props":{"y":108,"x":151,"skin":"comp/button.png","label":"label"},"compId":2},{"type":"Button","props":{"y":304,"x":234,"skin":"comp/button.png","label":"label"},"compId":3}],"loadList":["comp/button.png"],"loadList3D":[],"components":[]}

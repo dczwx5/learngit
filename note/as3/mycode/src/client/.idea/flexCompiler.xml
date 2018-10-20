@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FlexIdeProjectLevelCompilerOptionsHolder">
+    <compiler-options>
+      <map>
+        <entry key="compiler.define" value="CONFIG::debug&#9;true&#10;CONFIG::release&#9;false" />
+      </map>
+      <option name="additionalOptions" value="-advanced-telemetry" />
+    </compiler-options>
+  </component>
+</project>

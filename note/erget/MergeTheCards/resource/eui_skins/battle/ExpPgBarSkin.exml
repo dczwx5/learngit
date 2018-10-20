@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="ExpPgBarSkin" width="400" height="20" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="165d0eec21f" ></w:Config>
+	<e:Rect id="rect_bg" left="0" right="0" top="0" bottom="0" fillColor="0xcccccc"/>
+	<e:Rect id="rect_value" bottom="0" width="400" left="0" top="0" fillColor="0xf90404"/>
+</e:Skin>

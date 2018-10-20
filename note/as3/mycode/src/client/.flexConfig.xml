@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<flex-config xmlns="http://www.adobe.com/2006/flex-config">
+	<compiler>
+		<locale>
+			<locale-element>en_US</locale-element>
+		</locale>
+		<define>
+			<name>CONFIG::debug</name>
+			<value>true</value>
+		</define>
+		<define>
+			<name>CONFIG::release</name>
+			<value>false</value>
+		</define>
+		<define>
+			<name>CONFIG::dummy</name>
+			<value>true</value>
+		</define>
+		<keep-as3-metadata>
+		</keep-as3-metadata>
+		<namespaces>
+		</namespaces>
+		<theme>
+		</theme>
+<!-- 		<inline>true</inline>
+		<optimize>true</optimize>
+ -->	</compiler>
+	<metadata>
+	</metadata>
+</flex-config>

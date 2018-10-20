@@ -1,0 +1,23 @@
+{
+    "client_version":"1.4",
+
+    "isDebug":true,
+
+    "isCDN":false,
+    "CDN_head_img":"",
+    "CDN_RESOURCE":"",
+    "//CDN_RESOURCE1":"",
+    "LOCAL_RESOURCE":"resource/",
+
+    "//pf_Doc":"wanba_ts/yingyongbao/空字符串表示本地/weixin/h5sdk",
+    "pf":"",
+
+    "//videoAdUnitId":"微信视频广告ID",
+    "videoAdUnitId":"",
+    "//bannerAdUnitId":"微信BANNER广告ID",
+    "bannerAdUnitId":"",
+
+    "HttpServer":"",
+    "serverPort":"/zhipai/game/api"
+
+}

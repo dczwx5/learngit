@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="Foundation">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../Foundation/bin/Foundation.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

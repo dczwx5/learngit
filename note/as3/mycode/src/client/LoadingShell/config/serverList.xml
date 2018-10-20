@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<servers>
+    <server host="dummy" port="0" label="单机 (Dummy)" />
+    <server host="127.0.0.1" port="2546" label="本机 (127.0.0.1:2546)" />
+    <server host="10.10.17.223" port="2546" label="内网Dev (10.10.17.223:2546)" />
+    <server host="10.10.17.238" port="2546" label="内网Alpha (10.10.17.238:2546)" />
+</servers>

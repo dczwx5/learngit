@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="CardSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing"  width="250" height="384">
+	<w:Config id="165a8cb695b" ></w:Config>
+	<e:Rect id="rect_bg" left="0" right="0" top="0" bottom="0" ellipseWidth="50" ellipseHeight="50" strokeWeight="2" strokeColor="0x000000"/>
+	<e:Image id="img_bg" left="0" right="0" top="0" bottom="0" source="" visible="false"/>
+	<e:Label id="lb_value" text="2048" left="11" top="12" size="70"/>
+</e:Skin>

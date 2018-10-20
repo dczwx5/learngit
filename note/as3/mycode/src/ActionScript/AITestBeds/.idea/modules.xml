@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../AI/AI.iml" filepath="$PROJECT_DIR$/../AI/AI.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../AISystem/AISystem.iml" filepath="$PROJECT_DIR$/../AISystem/AISystem.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AITestBeds.iml" filepath="$PROJECT_DIR$/AITestBeds.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Foundation/Foundation.iml" filepath="$PROJECT_DIR$/../Foundation/Foundation.iml" />
+    </modules>
+  </component>
+</project>

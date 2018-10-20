@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<!--
+Smart developers always View Source.
+
+This application was built using Adobe Flex, an open source framework
+for building rich Internet applications that get delivered via the
+Flash Player or to desktops via Adobe AIR.
+
+Learn more about Flex at http://flex.org
+// -->
+<head>
+    <title>拳皇98 - 终极之战Web</title>
+    <meta name="google" value="notranslate"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <meta name="renderer" content="ie-stand" />
+    <!-- Include CSS to eliminate any default margins/padding and set the height of the html element and
+         the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as
+         the percentage of the height of its parent container, which has to be set explicitly.  Fix for
+         Firefox 3.6 focus border issues.  Initially, don't display flashContent div so it won't show
+         if JavaScript disabled.
+    -->
+    <style type="text/css" media="screen">
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: auto;
+            text-align: center;
+            background-color: #000000;
+        }
+
+        object:focus {
+            outline: none;
+        }
+
+        #flashContent {
+            display: none;
+        }
+
+        #splash_16words {
+            width: 100%;
+            height: 100%;
+            background-color: black;
+            position: fixed;
+            text-align: center;
+        }
+
+        #splash_16words_content {
+            width: 960px;
+            height: 500px;
+            margin: -250px auto 0;
+            position: relative;
+            top: 50%;
+        }
+
+        #splash_16words_content p {
+            font-family: "黑体",serif;
+            font-size: 36px;
+            color: #FFFFFF;
+        }
+    </style>
+
+    <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
+    <!-- BEGIN Browser History required section -->
+    <link rel="stylesheet" type="text/css" href="history/history.css"/>
+</head>
+<body>
+
+<div id="splash_16words">
+    <div id="splash_16words_content">
+        <p style="text-align: center">《健康游戏忠告》</p>
+        <p>抵制不良游戏，拒绝盗版游戏。</p>
+        <p>注意自我保护，谨防受骗上当。</p>
+        <p>适度游戏益脑，沉迷游戏伤身。</p>
+        <p>合理安排时间，享受健康生活。</p>
+    </div>
+</div>
+
+<!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough
+     JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
+     when JavaScript is disabled.
+-->
+<div id="flashContent">
+    <p>
+        To view this page ensure that Adobe Flash Player version
+        ${version_major}.${version_minor}.${version_revision} or greater is installed.
+    </p>
+    <a href='http://www.adobe.com/go/getflashplayer'>Get FlashPlayer</a>
+</div>
+
+<script type="text/javascript" src="history/history.js"></script>
+<!-- END Browser History required section -->
+
+<script type="text/javascript" src="swfobject.js"></script>
+<script type="text/javascript" src="jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+    // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection.
+    var swfVersionStr = "12.0.0";
+    // To use express install, set to playerProductInstall.swf, otherwise the empty string.
+    var xiSwfUrlStr = "playerProductInstall.swf";
+    var flashvars = {
+        timestamp: new Date().valueOf()
+    };
+    var params = {};
+    params.quality = "high";
+    params.bgcolor = "#000000";
+    params.allowscriptaccess = "sameDomain";
+    params.allowfullscreen = "true";
+    params.wmode = "direct";
+    var attributes = {};
+    attributes.id = "LoginStandalone";
+    attributes.name = "LoginStandalone";
+    attributes.align = "middle";
+    var minFlashContentSize = {width: 1000, height: 600};
+    var flashWidth = 1500;
+    var flashHeight = 900;
+    var flashHWRate = minFlashContentSize.height / minFlashContentSize.width;
+
+    swfobject.embedSWF(
+            "LoginStandalone.swf", "flashContent",
+            flashWidth, flashHeight,
+            swfVersionStr, xiSwfUrlStr,
+            flashvars, params, attributes);
+    // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+    swfobject.createCSS("#flashContent", "display:block;text-align:left;margin: auto;");
+
+    (function () {
+
+        function _resize() {
+            var target = $('#' + attributes.id);
+            var min = false;
+            var flashHWRateFixed = flashHWRate ? true : false;
+
+            var documentHeight = $(document.body).height();
+            var documentWidth = $(document.body).width();
+
+            if (documentHeight < minFlashContentSize.height) {
+                target[0].height = minFlashContentSize.height;
+                min = true;
+            } else {
+                target[0].height = documentHeight;
+            }
+
+            if (documentWidth < minFlashContentSize.width) {
+                target[0].width = minFlashContentSize.width;
+                min = true;
+            } else {
+                target[0].width = documentWidth;
+            }
+
+            if (min) {
+                $(document.body).css('overflow', 'auto');
+            } else {
+                $(document.body).css('overflow', 'hidden');
+            }
+
+            if (flashHWRateFixed) {
+                if ( target[0].width * flashHWRate > target[0].height ) {
+                    target[0].width = target[0].height / flashHWRate;
+                } else {
+                    target[0].height = target[0].width * flashHWRate;
+                }
+            }
+
+            target.css('margin-top', (0.5 * (documentHeight - target[0].height)) + "px")
+        }
+
+        $(window).on('resize', function () {
+            _resize();
+        });
+
+        $(document.body).ready(function () {
+            _resize();
+            var target = $('#' + attributes.id);
+            target.hide();
+
+            setTimeout(function() {
+                $('#splash_16words').remove();
+                target.show();
+            }, 5000);
+        });
+    })
+    ();
+
+</script>
+</body>
+</html>

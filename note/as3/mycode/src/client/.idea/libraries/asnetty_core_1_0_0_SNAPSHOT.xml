@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="asnetty-core-1.0.0-SNAPSHOT" type="flex">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/GameCore/lib/asnetty-core-1.0.0-SNAPSHOT.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/GameCore/lib/ASNetty-sources.zip!/" />
+    </SOURCES>
+  </library>
+</component>

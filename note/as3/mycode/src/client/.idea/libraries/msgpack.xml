@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="msgpack" type="flex">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/GameCore/lib/msgpack.swc!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/GameCore/lib/msgpack-sources.zip!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,1 @@
+{"rootTask":{"objectType":"PrioritySelector","name":"Priority Selector","children":[{"objectType":"kof.game.character.ai.conditions::CWhetherCanFleePlayerCondition","name":"C Whether Can Flee Player Condition"},{"objectType":"kof.game.character.ai.actions::CFleeAction","name":"C Flee Action"},{"objectType":"kof.game.character.ai.actions::CIdleAction","name":"C Idle Action"}]}}

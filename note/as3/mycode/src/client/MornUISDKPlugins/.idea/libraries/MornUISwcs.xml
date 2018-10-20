@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="MornUISwcs" type="flex">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../tool/MornUIEditor/swcs" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+    <jarDirectory url="file://$PROJECT_DIR$/../../tool/MornUIEditor/swcs" recursive="false" />
+  </library>
+</component>

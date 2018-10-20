@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="CardGroupSkin" width="270" height="1150" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+	<w:Config id="165a8d0c01d" ></w:Config>
+	<e:Image id="img_border" source="dropBorder_png" scale9Grid="44,44,7,7" left="-10" right="-10" top="-10" bottom="-10" visible="false"/>
+	<e:Rect fillColor="0xe8e8e8" ellipseWidth="50" ellipseHeight="50" anchorOffsetX="0" anchorOffsetY="0" left="10" right="10" top="10" bottom="10"/>
+	<e:Image id="img_dropArea" horizontalCenter="0" top="10" anchorOffsetX="0" anchorOffsetY="0" source="img_cardArea_png" width="250" height="384"/>
+</e:Skin>

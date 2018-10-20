@@ -1,0 +1,1 @@
+{"type":"View","props":{"width":750,"height":1334},"compId":1,"child":[{"type":"Sprite","props":{"y":8,"x":682,"var":"pause_btn","texture":"gameUI/pause.png"},"compId":2}],"loadList":["gameUI/pause.png"],"loadList3D":[],"components":[]}

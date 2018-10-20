@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="BattleRecordPanelSkin" width="1080" height="234" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" >
+	<w:Config id="165a8b557ce" ></w:Config>
+	<e:Image source="img_crown_png" verticalCenter="-60" left="32" anchorOffsetX="0" width="82" anchorOffsetY="0" height="55"/>
+	<e:Label id="lb_highScore" text="3000" left="123" textColor="0x000000" size="40" verticalCenter="-60" bold="true"/>
+	<e:Label id="lb_currScore" text="5000" size="50" horizontalCenter="0" textColor="0x000000" verticalCenter="-60" bold="true"/>
+	<ns1:LvBlock id="lvBlock_curr" skinName="LvBlockSkin" verticalCenter="40" left="60"/>
+	<ns1:LvBlock id="lvBlock_next" skinName="LvBlockSkin" verticalCenter="40" right="60"/>
+	<ns1:ExpPgBar id="expPgBar" width="760" horizontalCenter="0" verticalCenter="40"/>
+	<e:Group anchorOffsetX="0" anchorOffsetY="0" horizontalCenter="249.5" verticalCenter="-60">
+		<e:Rect id="rect_bg_scoreMultiple" left="0" right="0" top="0" bottom="0" fillColor="0xf7f2f2" ellipseWidth="15" ellipseHeight="15"/>
+		<e:Label id="lb_scoreMultiple" text="X100" textColor="0x000000" bold="true" horizontalCenter="0" verticalCenter="0" left="5" right="5" top="5" bottom="5"/>
+	</e:Group>
+</e:Skin>

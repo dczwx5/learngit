@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../Audio/Audio.iml" filepath="$PROJECT_DIR$/../Audio/Audio.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AudioTestBed.iml" filepath="$PROJECT_DIR$/AudioTestBed.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Graphics/Common/Common.iml" filepath="$PROJECT_DIR$/../Graphics/Common/Common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Foundation/Foundation.iml" filepath="$PROJECT_DIR$/../Foundation/Foundation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Math/Math.iml" filepath="$PROJECT_DIR$/../Math/Math.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Graphics/RenderCore/RenderCore.iml" filepath="$PROJECT_DIR$/../Graphics/RenderCore/RenderCore.iml" />
+    </modules>
+  </component>
+</project>

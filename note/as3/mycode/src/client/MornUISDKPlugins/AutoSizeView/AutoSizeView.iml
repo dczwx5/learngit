@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="Flex" version="4">
+  <component name="FlexBuildConfigurationManager" active="AutoSizeView">
+    <configurations>
+      <configuration name="AutoSizeView" target-platform="Desktop" pure-as="true" main-class="AutoSizeView" output-file="AutoSizeView.swf" output-folder="$MODULE_DIR$/../../../tool/MornUIEditor/plugins/AutoSizeView">
+        <dependencies>
+          <entries>
+            <entry module-name="PluginSupport" build-configuration-name="PluginSupport">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="PluginSupportLibs" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="MornUILib" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+            <entry library-name="MornUISwcs" library-level="project">
+              <dependency linkage="Merged" />
+            </entry>
+          </entries>
+          <sdk name="FLEX_Compiler" />
+        </dependencies>
+        <compiler-options />
+        <packaging-air-desktop package-file-name="AutoSizeView" />
+        <packaging-android />
+        <packaging-ios />
+      </configuration>
+    </configurations>
+    <compiler-options />
+  </component>
+  <component name="NewModuleRootManager" inherit-compiler-output="true">
+    <exclude-output />
+    <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
+    </content>
+    <orderEntry type="jdk" jdkName="FLEX_Compiler" jdkType="Flex SDK Type (new)" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="MornUILib" level="project" />
+    <orderEntry type="module" module-name="PluginSupport" exported="" />
+    <orderEntry type="library" exported="" name="PluginSupportLibs" level="project" />
+    <orderEntry type="library" exported="" name="MornUISwcs" level="project" />
+  </component>
+</module>

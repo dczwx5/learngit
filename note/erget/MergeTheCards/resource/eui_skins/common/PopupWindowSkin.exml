@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="PopupWindowSkin" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="1661aa5ce62" ></w:Config>
+	<e:Rect left="0" bottom="0" top="0" ellipseWidth="30" ellipseHeight="30" fillAlpha="1" strokeColor="0x000000" strokeWeight="5" right="0" fillColor="0xFFFFFF"/>
+	<e:Image id="btn_close" source="btn_close_png" right="-40" top="-40"/>
+	<e:Label id="lb_content" text="Label" textColor="0x000000" left="50" right="50" size="36" top="120" bottom="100"/>
+	<e:Label id="lb_title" text="标题" y="22" size="60" textColor="0x000000" textAlign="center" left="120" right="120"/>
+</e:Skin>
