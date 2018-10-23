@@ -1,0 +1,186 @@
+{
+	"groups": [
+		{
+			"keys": "description_json,lobby_json,x-jiazai_png",
+			"name": "preload"
+		},
+		{
+			"keys": "Battle_json",
+			"name": "battle"
+		}
+	],
+	"resources": [
+		{
+			"url": "config/description.json",
+			"type": "json",
+			"name": "description_json"
+		},
+		{
+			"url": "assets/lobby/lobby.json",
+			"type": "sheet",
+			"name": "lobby_json",
+			"subkeys": "01_bg,01_btn_freeSkin,01_btn_rank,01_btn_share,01_btn_start,01_logo"
+		},
+		{
+			"url": "config/config.json",
+			"type": "json",
+			"name": "config_json"
+		},
+		{
+			"url": "assets/bg.jpg",
+			"type": "image",
+			"name": "bg_jpg"
+		},
+		{
+			"url": "assets/egret_icon.png",
+			"type": "image",
+			"name": "egret_icon_png"
+		},
+		{
+			"url": "assets/CheckBox/checkbox_select_disabled.png",
+			"type": "image",
+			"name": "checkbox_select_disabled_png"
+		},
+		{
+			"url": "assets/CheckBox/checkbox_select_down.png",
+			"type": "image",
+			"name": "checkbox_select_down_png"
+		},
+		{
+			"url": "assets/CheckBox/checkbox_select_up.png",
+			"type": "image",
+			"name": "checkbox_select_up_png"
+		},
+		{
+			"url": "assets/CheckBox/checkbox_unselect.png",
+			"type": "image",
+			"name": "checkbox_unselect_png"
+		},
+		{
+			"url": "assets/Button/button_down.png",
+			"type": "image",
+			"name": "button_down_png"
+		},
+		{
+			"url": "assets/Button/button_up.png",
+			"type": "image",
+			"name": "button_up_png"
+		},
+		{
+			"url": "assets/ItemRenderer/selected.png",
+			"type": "image",
+			"name": "selected_png"
+		},
+		{
+			"url": "assets/Panel/border.png",
+			"type": "image",
+			"name": "border_png"
+		},
+		{
+			"url": "assets/Panel/header.png",
+			"type": "image",
+			"name": "header_png"
+		},
+		{
+			"url": "assets/ProgressBar/thumb_pb.png",
+			"type": "image",
+			"name": "thumb_pb_png"
+		},
+		{
+			"url": "assets/ProgressBar/track_pb.png",
+			"type": "image",
+			"name": "track_pb_png"
+		},
+		{
+			"url": "assets/RadioButton/radiobutton_select_disabled.png",
+			"type": "image",
+			"name": "radiobutton_select_disabled_png"
+		},
+		{
+			"url": "assets/RadioButton/radiobutton_select_down.png",
+			"type": "image",
+			"name": "radiobutton_select_down_png"
+		},
+		{
+			"url": "assets/RadioButton/radiobutton_select_up.png",
+			"type": "image",
+			"name": "radiobutton_select_up_png"
+		},
+		{
+			"url": "assets/RadioButton/radiobutton_unselect.png",
+			"type": "image",
+			"name": "radiobutton_unselect_png"
+		},
+		{
+			"url": "assets/ScrollBar/roundthumb.png",
+			"type": "image",
+			"name": "roundthumb_png"
+		},
+		{
+			"url": "assets/ScrollBar/track_sb.png",
+			"type": "image",
+			"name": "track_sb_png"
+		},
+		{
+			"url": "assets/Slider/thumb.png",
+			"type": "image",
+			"name": "thumb_png"
+		},
+		{
+			"url": "assets/Slider/track.png",
+			"type": "image",
+			"name": "track_png"
+		},
+		{
+			"url": "assets/Slider/tracklight.png",
+			"type": "image",
+			"name": "tracklight_png"
+		},
+		{
+			"url": "assets/ToggleSwitch/handle.png",
+			"type": "image",
+			"name": "handle_png"
+		},
+		{
+			"url": "assets/ToggleSwitch/off.png",
+			"type": "image",
+			"name": "off_png"
+		},
+		{
+			"url": "assets/ToggleSwitch/on.png",
+			"type": "image",
+			"name": "on_png"
+		},
+		{
+			"url": "assets/battle/Battle.json",
+			"type": "sheet",
+			"name": "Battle_json",
+			"subkeys": "btn_resetBg_png,card_awsome_png,card_bomb_png,card_restore_png,icon_backHome_png,icon_clearRubbishBin_png,icon_continue_png,icon_disable_png,icon_help_png,icon_menu_png,icon_playVideo_png,icon_resetHandCard_png,icon_reset_png,icon_rubbishBinDropable_png,icon_rubbishBin_disable_png,icon_rubbishBin_png,icon_share_png,img_cardArea_png,img_crown_png,img_cutPartLine_png"
+		},
+		{
+			"url": "assets/common/btn_close.png",
+			"type": "image",
+			"name": "btn_close_png"
+		},
+		{
+			"url": "assets/common/dropBorder.png",
+			"type": "image",
+			"name": "dropBorder_png"
+		},
+		{
+			"url": "assets/common/icon_back.png",
+			"type": "image",
+			"name": "icon_back_png"
+		},
+		{
+			"url": "assets/common/x-jiazai.png",
+			"type": "image",
+			"name": "x-jiazai_png"
+		},
+		{
+			"url": "assets/common/btn_close1.png",
+			"type": "image",
+			"name": "btn_close1_png"
+		}
+	]
+}

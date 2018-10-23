@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="SkinWindowSkin" width="800" height="1400" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="16675956166" ></w:Config>
+	<e:Rect left="0" bottom="0" top="0" ellipseWidth="30" ellipseHeight="30" fillAlpha="1" strokeColor="0x000000" strokeWeight="5" right="0" fillColor="0xFFFFFF"/>
+	<e:Scroller left="25" right="25" top="200" bottom="25" scrollPolicyH="off" scrollPolicyV="auto">
+	<e:List id="dGroup_cardSkins" width="200" height="200" x="748" y="126" itemRendererSkinName="CardSkinItemRendererSkin">
+		<e:layout>
+		<e:TileLayout orientation="rows" horizontalGap="25" verticalGap="25" rowHeight="366" requestedRowCount="3" columnWidth="233" requestedColumnCount="3"/>
+		</e:layout>
+	</e:List>
+	</e:Scroller>
+	
+	<e:Image id="btn_close" source="btn_close_png" right="-40" top="-40"/>
+	<e:Label text="卡牌皮肤" size="60" textColor="0x000000" textAlign="center" bold="true" top="30" horizontalCenter="0"/>
+	<e:Group y="103" horizontalCenter="0">
+		<e:Image x="0" y="0" source="icon_unlocked_png"/>
+		<e:Label id="lb_unlockedCount" text="3/20" size="60" textColor="0x000000" textAlign="center" bold="true" x="137.06" y="7"/>
+		<e:layout>
+			<e:HorizontalLayout verticalAlign="middle" gap="20"/>
+		</e:layout>
+	</e:Group>
+</e:Skin>

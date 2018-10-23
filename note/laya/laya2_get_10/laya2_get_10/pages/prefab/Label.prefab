@@ -1,0 +1,1 @@
+{"type":"Label","props":{"styleSkin":"comp/label.png","text":"label","x":0,"y":0,"width":76,"height":28,"preset":"laya/pages/prefab/Label.prefab","presetID":1,"isPresetRoot":true},"child":[],"isAniNode":true,"nodeParent":1,"label":"Label","isDirectory":false,"hasChild":false,"x":15}

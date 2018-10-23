@@ -1,0 +1,5 @@
+<res>
+   <item name="scene/frame.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=8,4,12,3" picType="0" scale="0"/>
+   <item name="comp/img_bg.png" type="Image" compress="0" pack="0" quality="80" props="sizeGrid=29,6,7,5" picType="0" scale="0"/>
+   <item name="gameUI/ass.png" type="Sprite" compress="0" pack="0" quality="80" props="sizeGrid=36,29,49,39" picType="0" scale="0"/>
+</res>

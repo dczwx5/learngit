@@ -1,0 +1,25 @@
+{
+    "client_version":"1.8",
+
+    "isDebug":false,
+
+    "isCDN":false,
+    "CDN_head_img":"https://evogames-10062920.file.myqcloud.com/h5/head_image/",
+    "CDN_RESOURCE":"https://cdn.evogames.com.cn/h5/wx20180702/",
+    "//CDN_RESOURCE1":"https://cdn.evogames.com.cn/h5/test/resource/",
+    "LOCAL_RESOURCE":"resource/",
+
+    "//pf_Doc":"wanba_ts/yingyongbao/空字符串表示本地/weixin/h5sdk",
+    "pf":"weixin",
+
+    "//videoAdUnitId":"微信视频广告ID",
+    "videoAdUnitId":"adunit-b2d87a5a790bb5df",
+    "//bannerAdUnitId":"微信BANNER广告ID",
+    "bannerAdUnitId":"adunit-cc704a517bd8e0f9",
+
+    "HttpServer":"https://wawa.paopaoren.cn",
+    "serverPort":"/zhipai/game/api",
+    "//测试域名": "https://wawa.paopaoren.cn",
+    "//正式域名": "https://wawash.paopaoren.cn"
+
+}

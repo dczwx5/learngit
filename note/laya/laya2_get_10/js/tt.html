@@ -1,0 +1,170 @@
+﻿<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<title>js study</title>
+
+<body>
+<p>教程</p>
+<input type="button" id="jumpToTutorialForWindow", value="window教程", onClick="_onJumpToTutorialForWindow()">
+<input type="button" id="jumpToTutorialForEvent", value="事件教程", onClick="_onJumpToTutorialForEvent()">
+<input type="button" id="jumpToTutorialForDocument", value="document教程", onClick="_onJumpToTutorialForDocument()">
+<input type="button" id="jumpToTutorialForElement", value="element教程", onClick="_onJumpToTutorialForElement()">
+<input type="button" id="jumpToTutorialForElement", value="keycode", onClick="_onJumpToKeyboardCode()">
+
+<br/>
+
+<label id="aa">abc</label>
+
+<p id="obj2">
+	<child>i'm child1</child>
+	<child>i'm child2</child>
+</p>
+
+<input type="button" onClick="_onClickButton()", value="点击按钮">
+<input type="button" onClick="_onOpenNewWindow()", value="点击打开窗口">
+
+<input type="button" id="jumpPage" value="跳转到其他页面" onClick="_onJumpToBaidu()">
+
+<input type="button" id="refreshPage" value="刷新页面" onClick="_onRefresh()">
+
+<br/>
+
+<canvas id="myCanvas" width="200" height="100" style="border:1px solid #000000;">
+</canvas>
+
+<img id="testImage" src="QQ图片20181018162252.jpg" alt="some_text"> 
+
+<p id="driverInfo"></p>
+
+
+
+
+
+<script type="text/javascript">
+	// -------------------------------function-----------------
+	function _ln(times) {
+		var str = "<br>";
+		if (times > 1) {
+			for (var i = 0; i < times-1; i++) {
+				str += "<br>";
+			}
+		}
+		document.write(str);
+	}
+	// window function alert
+	function _onClickButton() {
+		alert("点击了input button");
+	}
+	// window , open new window
+	function _onOpenNewWindow() {
+		// ie可以打开两个
+		// 但是chome只能打开一个
+		window.open("http://baidu.com/");
+		window.open("http://www.runoob.com/");
+	}
+	function _showDriverInfo() {
+		var txt = "<p>浏览器代号: " + navigator.appCodeName + "</p>";
+		txt+= "<p>浏览器名称: " + navigator.appName + "</p>";
+		txt+= "<p>浏览器版本: " + navigator.appVersion + "</p>";
+		txt+= "<p>启用Cookies: " + navigator.cookieEnabled + "</p>";
+		txt+= "<p>硬件平台: " + navigator.platform + "</p>";
+		txt+= "<p>用户代理: " + navigator.userAgent + "</p>";
+		txt+= "<p>用户代理语言: " + navigator.systemLanguage + "</p>";
+		document.getElementById("driverInfo").innerHTML=txt;
+	}
+	// jump to other page
+	function _onJumpToBaidu() {
+		window.location.assign("http://www.baidu.com");
+	}
+	
+	// refresh
+	function _onRefresh() {
+		window.location.reload();
+	}
+	// native
+	function _onJumpToTutorialForEvent() {
+		window.open("http://www.runoob.com/jsref/dom-obj-event.html");
+	}
+	function _onJumpToTutorialForDocument() {
+		window.open("http://www.runoob.com/jsref/dom-obj-document.html");
+	}
+	function _onJumpToTutorialForElement() {
+		window.open("http://www.runoob.com/jsref/dom-obj-all.html");
+	}
+	function _onJumpToTutorialForWindow() {
+		window.open("http://www.runoob.com/jsref/obj-window.html");
+	}
+	function _onJumpToKeyboardCode() {
+		window.open("https://www.jb51.net/article/102524.htm");
+	}
+
+	// canvas
+	function _canvasUsage() {
+		var c=document.getElementById("myCanvas");
+		var ctx=c.getContext("2d");
+		ctx.fillStyle="#FF0000";
+		ctx.fillRect(0,0,150,75);
+		
+		var img=document.getElementById("testImage");
+		ctx.drawImage(img, 0, 0);
+	}
+	// -----------------------------------------------------------
+	document.write("<br><br>================javascript================<br>")
+	// getElementById
+	// tag.innerHTML
+	var p = document.getElementById("aa");
+	p.innerHTML = "ccc";
+	document.write("p.innerHTML  : " + p.innerHTML);
+	
+	_ln();
+	
+	// null obj
+	var nullObj = document.getElementById("noneID");
+	if (null == nullObj) {
+		document.write("noneID obj not exist!!!");
+	} else {
+		document.write(nullObj);
+	}
+
+	// getElementsByTagName
+	var obj2 = document.getElementById("obj2");
+	_ln();
+	var tags = obj2.getElementsByTagName("child");
+	for (var i = 0; i < tags.length; i++) {
+		var tag = tags[i];
+		document.write(tag.innerHTML + ",");
+	}
+	
+	// date
+	_ln();
+	var curData = new Date();
+	document.write(curData);
+	
+	// _showDriverInfo
+	_showDriverInfo();
+	
+	// net
+	document.write(location.host);
+	
+	// localStorage 
+	// ie不能用
+	// chome可以用
+	//window.localStorage['abc'] = 12;
+	//var saveMap = window.localStorage;
+	//document.write(saveMap['abc']);
+	
+	_canvasUsage();
+	
+	// window.close()
+	_ln(2);
+	document.write("end");
+	
+	
+</script>
+
+
+
+</body>
+</html>

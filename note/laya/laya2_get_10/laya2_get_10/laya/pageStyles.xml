@@ -1,0 +1,11 @@
+<page>
+   <item name="GameScene.scene" props="" ifExport="分离模式" aName=""/>
+   <item name="ResultView.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="LoginMenu.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="prefab/NumberView.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="MessageView.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="ResultPlayerItem.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="NumberView.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="RankView.scene" props="" ifExport="内嵌模式" aName=""/>
+   <item name="RankItem.scene" props="" ifExport="内嵌模式" aName=""/>
+</page>

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<e:Skin class="CardSkinItemRendererSkin" minHeight="50" minWidth="100" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" xmlns:ns1="*" width="233" height="366"  states="using,enabled,disabled" >
+
+	<w:Config id="16675a3ee80" ></w:Config>
+	<e:Rect id="rect_bg" ellipseWidth="50" ellipseHeight="50" left="0" right="0" top="0" bottom="20" strokeColor="0x000000" strokeWeight="10" fillColor="0xffffff"  strokeColor.using="0x30e930" strokeColor.enabled="0x1464a0" strokeColor.disabled="0x999999" strokeWeight.disabled="10"/>
+	<e:Group id="grp_cards" top="15" visible.disabled="false" bottom="60" scrollRect="0,0,200,291" scrollEnabled="true" left="17" right="16">
+		<e:Group x="22" y="-6" scaleX="1" scaleY="1" scrollRect="0,0,200,286">
+		<e:Rect id="rect_cardBg0" height="100" x="0" width="200" ellipseWidth="50" ellipseHeight="50" scaleX="1" scaleY="1" strokeColor="0x000000" strokeWeight="2" fillColor="0xE21414"/>
+		<e:Label id="lb_cardValue0" text="64" size="40" x="13" y="6"/>
+		</e:Group>
+		<e:Group x="32" y="4" scaleX="1" scaleY="1">
+		<e:Rect id="rect_cardBg1" height="100" x="0" width="200" ellipseWidth="50" ellipseHeight="50" scaleX="1" scaleY="1" strokeColor="0x000000" strokeWeight="2" fillColor="0xE21414"/>
+		<e:Label id="lb_cardValue1" text="64" size="40" x="13" y="6"/>
+		</e:Group>
+		<e:Group x="42" y="14" scaleX="1" scaleY="1">
+		<e:Rect id="rect_cardBg2" height="100" x="0" width="200" ellipseWidth="50" ellipseHeight="50" scaleX="1" scaleY="1" strokeColor="0x000000" strokeWeight="2" fillColor="0xE21414"/>
+		<e:Label id="lb_cardValue2" text="64" size="40" x="13" y="6"/>
+		</e:Group>
+		<e:Group x="52" y="24" scaleX="1" scaleY="1">
+		<e:Rect id="rect_cardBg3" height="100" x="0" width="200" ellipseWidth="50" ellipseHeight="50" scaleX="1" scaleY="1" strokeColor="0x000000" strokeWeight="2" fillColor="0xE21414"/>
+		<e:Label id="lb_cardValue3" text="64" size="40" x="13" y="6"/>
+		</e:Group>
+		<e:Group x="62" y="34" scaleX="1" scaleY="1">
+		<e:Rect id="rect_cardBg4" height="100" x="0" width="200" ellipseWidth="50" ellipseHeight="50" scaleX="1" scaleY="1" strokeColor="0x000000" strokeWeight="2" fillColor="0xE21414"/>
+		<e:Label id="lb_cardValue4" text="64" size="40" x="13" y="6"/>
+		</e:Group>
+		<e:Group x="72" y="44" scaleX="1" scaleY="1">
+		<e:Rect id="rect_cardBg5" height="100" x="0" width="200" ellipseWidth="50" ellipseHeight="50" scaleX="1" scaleY="1" strokeColor="0x000000" strokeWeight="2" fillColor="0xE21414"/>
+		<e:Label id="lb_cardValue5" text="64" size="40" x="13" y="6"/>
+		</e:Group>
+		<e:layout>
+		<e:VerticalLayout horizontalAlign="center" gap="-54"/>
+		</e:layout>
+	</e:Group>
+	<e:Rect id="rect_mask" top="15" left="17" right="16" bottom="60" fillAlpha="1"/>
+	<e:Image id="icon_locked" horizontalCenter="0" verticalCenter="-20" source="icon_locked_png" visible.using="false" visible.enabled="false"/>
+	<e:Group x="42" y="316" touchEnabled="true" touchChildren="false" horizontalCenter="0">
+		<e:Rect id="rect_statusBg" fillColor="0x30E930" ellipseWidth="50" ellipseHeight="50" x="0" y="0" left="0" bottom="0" top="0" height="50" right="0" fillColor.using="0x30e930" fillColor.enabled="0x1464a0" fillColor.disabled="0x999999"/>
+		<e:Label id="lb_status" text="使用中" size="40" horizontalCenter="0" verticalCenter="0" left="15" wordWrap="false" right="15" multiline="false" text.enabled="可使用" text.disabled="10级解锁" size.enabled="40" size.disabled="40" size.using="40" top="10" bottom="10"/>
+	</e:Group>
+</e:Skin>

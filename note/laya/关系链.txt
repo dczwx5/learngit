@@ -1,0 +1,7 @@
+https://blog.csdn.net/q771410116/article/details/82193074?utm_source=blogxgwz0
+
+将子域项目中的..\wxgame下的code.js、game.js、weapp-adapter.js这三个文件拷贝到刚才在主域wxgame中新建的open文件夹中去，此时我们的项目结构应该如下所示 
+
+打开主域工程中的game.json文件加入"openDataContext": "openDataContext"即可拉起子域，
+
+此时我们还需要将openDataContext文件夹中的game.js改名为index.js,

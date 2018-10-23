@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<e:Skin class="HelpWindowSkin" width="750" height="767" xmlns:e="http://ns.egret.com/eui" xmlns:w="http://ns.egret.com/wing" >
+	<w:Config id="165e6e8df0e" ></w:Config>
+	<e:Rect left="0" bottom="0" top="0" ellipseWidth="30" ellipseHeight="30" fillAlpha="1" strokeColor="0x000000" strokeWeight="5" right="0" fillColor="0xffffff"/>
+	<e:Image id="btn_close" source="btn_close_png" right="-40" top="-40"/>
+	<e:Scroller left="50" right="50" top="150" bottom="50" scrollPolicyH="off" scrollPolicyV="auto">
+		<e:Group>
+			<e:Label id="lb_context" text="1、将相同面值的卡牌合并成更大面值的卡牌，获得积分。  \n\n2、将炸弹牌与相同面值的卡牌合并，会将整列的卡牌都消除。  \n\n3、万能牌真的是万能的，它可以和任意面值的卡牌合并。  \n\n4、当前的手牌不理想？不用担心，你可以将它拖动到右下角的丢弃区进行丢弃。  \n\n5、所有的手牌都很糟糕！怎么办？快点击左下角的刷新按钮，重新获取一副手牌。  \n\n6、每当你合并出一张面值2048的卡牌时，会将整列的卡牌都消除，同时还能为你重置刷新手牌和丢弃区的使用权，更能成倍提升你后续获得积分的效率！  \n\n7、当你升级时，同样能为你重置刷新按钮和丢弃区的使用权。  \n\n那么，祝你好运！" textColor="0x000000" size="36" scaleX="1" scaleY="1" left="0" top="5" y="0" right="0"/>
+		</e:Group>
+	</e:Scroller>
+	<e:Label text="游戏说明" horizontalCenter="0" top="50" textColor="0x000000" size="60"/>
+	
+</e:Skin>

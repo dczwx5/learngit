@@ -1,0 +1,7 @@
+{"file":"lobby.png","frames":{
+"01_bg":{"x":0,"y":0,"w":912,"h":1624,"offX":0,"offY":0,"sourceW":912,"sourceH":1624},
+"01_btn_freeSkin":{"x":1106,"y":1092,"w":180,"h":185,"offX":0,"offY":0,"sourceW":180,"sourceH":185},
+"01_btn_rank":{"x":914,"y":1278,"w":161,"h":181,"offX":0,"offY":0,"sourceW":161,"sourceH":181},
+"01_btn_share":{"x":914,"y":1092,"w":190,"h":184,"offX":0,"offY":0,"sourceW":190,"sourceH":184},
+"01_btn_start":{"x":914,"y":692,"w":336,"h":398,"offX":0,"offY":0,"sourceW":336,"sourceH":398},
+"01_logo":{"x":914,"y":0,"w":680,"h":690,"offX":0,"offY":0,"sourceW":680,"sourceH":690}}}

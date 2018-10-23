@@ -1,0 +1,36 @@
+{
+	"initial": [
+		"libs/modules/egret/egret.js",
+		"libs/modules/egret/egret.web.js",
+		"libs/modules/game/game.js",
+		"libs/modules/promise/promise.js"
+	],
+	"game": [
+		"bin-debug/lib/base/objectPool/ObjectPool.js",
+		"bin-debug/lib/base/objectPool/CacheableClass.js",
+		"bin-debug/lib/base/command/Command.js",
+		"bin-debug/lib/msg/msgHandler/MsgHandler.js",
+		"bin-debug/lib/ui/components/ListItem.js",
+		"bin-debug/lib/ui/components/ListPanel.js",
+		"bin-debug/lib/base/command/CommandGroup.js",
+		"bin-debug/lib/base/command/DelegateCommand.js",
+		"bin-debug/lib/msg/WxOpenDataContextMsg.js",
+		"bin-debug/lib/base/objectPool/ICacheable.js",
+		"bin-debug/data/PlayerData.js",
+		"bin-debug/lib/contextEvent/ContextEventDispatcher.js",
+		"bin-debug/lib/contextEvent/IEventDispatcher.js",
+		"bin-debug/data/GlobalData.js",
+		"bin-debug/lib/msg/msgHandler/MsgRouter.js",
+		"bin-debug/lib/common.js",
+		"bin-debug/lib/msg/msgHandler/handlers/CloseContextHandler.js",
+		"bin-debug/lib/msg/msgHandler/handlers/UpdatePlayerDataHandler.js",
+		"bin-debug/lib/ui/ViewManager.js",
+		"bin-debug/lib/ui/components/Img.js",
+		"bin-debug/lib/base/command/ICommand.js",
+		"bin-debug/Main.js",
+		"bin-debug/module/friendRankList/ShowFriendRankListHandler.js",
+		"bin-debug/module/friendRankList/view/FriendRankListPanel.js",
+		"bin-debug/module/friendRankList/view/RankListItem.js",
+		"bin-debug/lib/contextEvent/events/ContextEvent.js"
+	]
+}

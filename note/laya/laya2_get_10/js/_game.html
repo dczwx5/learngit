@@ -1,0 +1,272 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<title>gaming</title>
+
+<body> 
+
+<canvas id="myCanvas" width="640" height="480" style="border:1px solid #000000;">
+</canvas>
+<script type="text/javascript">
+	// ========================创建类方式
+	// 构造函数方式
+	function CRole(rx, ry, size, rvalue) {
+		// 私有成员变量
+		this.width = size;
+		this.height = size;
+		
+		this.value = Math.floor(rvalue);
+		
+		// 公有成员变量
+		this.x = rx;
+		this.y = ry;
+		this.dead = false;
+		
+		var _fallTime = 0;
+		var _v0 = 0.3;
+		var _g = 0.3;
+		
+
+		// 私有成员函数
+		function _xxxx() {
+			
+		};
+		
+		this.render = function (ctx) {
+			var tempStyle = ctx.fillStyle
+			ctx.fillStyle="#FF0000";
+			ctx.fillRect(this.x, this.y, this.width, this.height); 
+			ctx.fillStyle="#000000";
+			ctx.fillText(this.value, this.x+20, this.y+30);
+			ctx.fillStyle = tempStyle;
+			
+		};
+		
+		this.update = function(deltaTime) {
+			_fallTime += deltaTime;
+			
+			if (this.value <= 0) {
+				this.dead = true;
+			}
+			if (this.y + size <= 480) {
+				this.y += (_v0 + _g*_fallTime*0.001);
+			} else {
+				this.dead = true;
+			}
+		};
+		
+		this.hit = function (mx, my) {
+			if (this.value > 0) {
+				this.value--;
+			}
+			var tx = this.x + this.width/2 - mx;
+			var ty = this.y + this.height/2 - my;
+			this.x += tx * 5;
+			this.y += ty * 5;
+			if (this.x < 0) {
+				this.x = 0;
+			} else if (this.x > 640 - this.width) {
+				this.x = 640 - this.width;
+			}
+			_fallTime = 0;
+		};
+	};
+	 
+</script>
+
+<script type="text/javascript">
+	function CFps() {
+		var _isShowFps = true;
+		var _fps = 0;
+		var _count = 0; // 1秒内执行帧数
+		var _passTime = 0; // 1秒统计时间, 到1秒就重新计算fps
+		
+		this.update = function(duretime) {
+			_count++;
+			_passTime += duretime;
+			if (_passTime >= 1000) {
+				_passTime = _passTime - 1000;
+				_fps = _count;
+				_count = 0;
+			}
+		}
+		this.render = function(ctx) {
+			if (!_isShowFps) {
+				return ;
+			}
+			ctx.fillText("fps : " + _fps, 2, 20);
+		}
+	};
+	
+</script>
+
+<script type="text/javascript">
+	function Game() {
+		var _fps;
+		var _lastTime = 0;
+		var _lastBuildFlatTime = 0;
+		
+		var _life = 50;
+		var _score = 0;
+		
+		this.width;
+		this.height;
+		
+		this.flatList;
+		
+		this.canvas;
+		this.ctx;
+
+		function _init() {
+			_fps = new CFps();
+			this.canvas = document.getElementById("myCanvas");
+			width = this.canvas.width;
+			height = this.canvas.height;
+			this.ctx = this.canvas.getContext("2d");
+			this.flatList = new Array();
+			
+			window.requestAnimationFrame(_loop);
+			
+			document.onkeyup = _onKeyUp;
+			this.canvas.onmousedown = _onMouseDown;
+		};
+		
+		function _onMouseDown(ev) {
+			//IE浏览器直接使用event或者window.event得到事件本身。
+			var e= ev || event;
+			 var mx = e.clientX;
+			 var my = e.clientY;
+
+			// IE下鼠标的 左键是1 ，  右键是2   ff和chrome下 鼠标左键是0  右键是2
+			for (var i = 0; i < flatList.length; i++) {
+				var flat = flatList[i];
+				if (!flat.dead) {
+					var isInRect = _pointInRectangle(mx, my, flat.x, flat.y, 
+						flat.x + flat.width, flat.y + flat.height);
+					if (isInRect) {
+						flat.hit(mx, my);
+						_score++;
+						break;
+					}
+				}
+			}
+		};
+		function _pointInRectangle(px, py, rx1, ry1, rx2, ry2) {
+			if (Math.max(rx1, rx2) >= px &&                  
+				Math.min(rx1, rx2) <= px &&         
+				Math.max(ry1, ry2) >= py &&      
+				Math.min(ry1, ry2) <= py) {
+				return true;  
+			}
+				 
+			return false;
+		}
+
+		function _onKeyUp(e) {
+			switch (e.keyCode) {
+				case 32 :
+					// space
+					
+					break;
+				case 87 :
+					// w
+					break;
+				case 65 :
+					// a
+					break;
+				case 83 :
+					// s
+					break;
+				case 68 :
+					// d
+					break;
+			}
+		};
+		
+		// timestamp : 当前时间, 从0开始, 单位mm
+		function _loop(timestamp) {
+			var duretime = timestamp - _lastTime;
+			
+			_update(duretime);
+			_render();
+			
+			_lastTime = timestamp;
+			window.requestAnimationFrame(_loop);
+			
+			
+		}
+		function _update(duretime) {
+			_fps.update(duretime);
+			for (var i = 0; i < this.flatList.length; ++i) {
+				var flat = this.flatList[i];
+				flat.update(duretime);
+				if (flat.dead) {
+					this.flatList.splice(i, 1);
+					--i;
+					_life -= flat.value;
+				}
+			}
+			
+			if (_lastTime - _lastBuildFlatTime > 1000) {
+				_lastBuildFlatTime = _lastTime;
+				_createNewFlat();
+			}
+			
+			if (_life <= 0) {
+				_life = 0;
+				alert("pullshit");
+				
+				_reset();
+				
+			}
+			
+		}
+		function _reset() {
+			_life = 50;
+			_score = 0;
+			for (var i = 0; i < this.flatList.length; ++i) {
+				this.flatList.splice(i, 1);
+				--i;
+			}
+		}
+		function _createNewFlat() {
+			var x = Math.random()*10*50;
+				var y = -50;
+				var flat = new CRole(x, y, 50, Math.random()*10);
+				this.flatList[this.flatList.length] = flat;
+		}
+		
+		function _render() {
+			ctx.clearRect(0, 0, width, height);
+			ctx.font="20px Georgia";
+			
+			_fps.render(ctx);
+			
+			for (var i = 0; i < this.flatList.length; ++i) {
+				var flat = this.flatList[i];
+				flat.render(ctx);
+			}
+			
+			ctx.fillText("lift : " + _life.toString(), 300, 20);
+			ctx.fillText("score : " + _score.toString(), 500, 20);
+		}
+		
+		_init();
+	};
+	
+</script>
+
+<script type="text/javascript">
+	var game = new Game();
+	
+	function Global() {
+	};
+	
+</script>
+
+
+
+</body>
+</html>

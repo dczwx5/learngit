@@ -1,0 +1,90 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+<title>_class</title>
+
+<body> 
+
+<canvas id="myCanvas" width="10" height="10" style="border:1px solid #000000;">
+</canvas>
+<script type="text/javascript">
+	// test for member
+	function CTestClass() {
+		CTestClass.KK = 1000; // 静态成问题, 访问必段用CTestClass.KK
+		
+		var m_privateMember = 100; // 闭包 : 私有, 公有, 无型函数都可以访问,
+		this.publicMember = 200; // 访问需要this
+		
+		// 闭包 -> this不是指向对象
+		// 可以通过call等改变this指针
+		
+		var _privateFunction = function () {
+			document.write("_privateFunction -> privateMember : " + m_privateMember);
+			document.write("<br>");
+			document.write("_privateFunction -> publicMember : " + this.publicMember);
+			document.write("<br>");
+			document.write("KK " + CTestClass.KK);
+		}.bind(this); // 绑定this后, 闭包里可以使用this
+		
+		// 成员函数, 所有对象各持有一份
+		this.publicFunction = function() {
+			document.write("publicFunction -> m_privateMember : " + m_privateMember);
+			document.write("<br>");
+			document.write("publicFunction -> publicMember : " + this.publicMember);
+		}.bind(this); // 绑定this后, 在回调等问题上, 可以避免出问题
+		// 元型, 共享函数
+		CTestClass.prototype.prototypeFunction = function () {
+			document.write("prototypeFunction -> m_privateMember : " + m_privateMember);
+			document.write("<br>");
+			document.write("prototypeFunction -> publicMember : " + this.publicMember);
+		}.bind(this); // 绑定this后, 在回调等问题上, 可以避免出问题
+
+		// 静态函数
+		CTestClass.StaticFunction = function() {
+			document.write("_privateFunction -> privateMember : " + m_privateMember); // 可以访问
+			document.write("<br>");
+			document.write("_privateFunction -> publicMember : " + this.publicMember); // 绑了this后可以访问
+			document.write("<br>");
+			document.write("KK " + CTestClass.KK);
+		};
+		
+		document.write("<br><br>");
+			// _privateFunction.call(this); // 如果不用call等, 函数里的this不是对象本身
+			_privateFunction(); // 这里用bind绑定了this, 所以可以访问到
+		document.write("<br><br>");
+			
+		this.publicFunction();
+		document.write("<br><br>");
+		
+		this.prototypeFunction();
+	};
+	
+	
+	// 回调
+	function CTestCallback(pObj, callback) {
+		var _pObj = pObj;
+		this.callback = callback;
+		document.write("CTestCallback.callback();<br>");
+		callback(); // 使用bind绑定了this. 这里可以不传obj也ok
+		document.write("<br><br>");
+		document.write("CTestCallback.callback(_pObj);<br>");
+		callback.call(_pObj);
+	};
+	
+	var testClass = new CTestClass();
+	document.write("<br><br>");
+	var testCallback = new CTestCallback(testClass, testClass.prototypeFunction);
+	
+	document.write("<br><br>");
+	document.write("static member : " + CTestClass.KK);
+	
+	document.write("<br><br>");
+	CTestClass.StaticFunction();
+</script>
+ 
+
+
+</body>
+</html>
