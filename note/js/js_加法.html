@@ -1,0 +1,18 @@
+<!DOCTYPE html><html><head></head><body>
+
+<input id='a' width="100" value="" /> +
+<input id='b'  value="" /> =
+<input id='result'  value="" />
+
+<script type="text/javascript">
+	function doCalc() {
+		var aEle = document.getElementById("a");
+		var bEle = document.getElementById("b");
+		var cEle = document.getElementById("result");
+		cEle.value = (Number)(aEle.value) + (Number)(bEle.value);
+	}
+</script>
+
+<button type="button" id='confirm' onclick="doCalc()">calc</button>
+
+</body></html>

@@ -1,0 +1,14 @@
+1.安装phton
+
+2.
+	在pip-18.1目录下
+	python setup.py install
+	安装成功后看一下版本号
+	pip -v
+
+3.然后安装 tinify 模块, 
+切到pip-18.1/src目录下
+python pip install --upgrade tinify
+
+4.img_src 放需要压缩的目录
+5.img_dest 输出目录

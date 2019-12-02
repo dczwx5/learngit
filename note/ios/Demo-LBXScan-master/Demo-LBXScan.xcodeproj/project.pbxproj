@@ -1,0 +1,721 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1F1088572064AC160067DD4E /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F1088562064AC160067DD4E /* AppDelegate.m */; };
+		1F10885F2064AC160067DD4E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1F10885E2064AC160067DD4E /* Assets.xcassets */; };
+		1F1088622064AC160067DD4E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1F1088602064AC160067DD4E /* LaunchScreen.storyboard */; };
+		1F1088652064AC160067DD4E /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F1088642064AC160067DD4E /* main.m */; };
+		1F10886F2064AC160067DD4E /* Demo_LBXScanTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F10886E2064AC160067DD4E /* Demo_LBXScanTests.m */; };
+		1F10887A2064AC160067DD4E /* Demo_LBXScanUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F1088792064AC160067DD4E /* Demo_LBXScanUITests.m */; };
+		1F10889D2064D9A40067DD4E /* WITHomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F10889C2064D9A40067DD4E /* WITHomeViewController.m */; };
+		1F1088A02064DFAC0067DD4E /* WITOrderScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F10889F2064DFAC0067DD4E /* WITOrderScanViewController.m */; };
+		BBCE760D013E1606A13DBAA8 /* libPods-Demo-LBXScan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F1C10A042B94FE530F9D3E45 /* libPods-Demo-LBXScan.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1F10886B2064AC160067DD4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F10884A2064AC160067DD4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F1088512064AC160067DD4E;
+			remoteInfo = "Demo-LBXScan";
+		};
+		1F1088762064AC160067DD4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F10884A2064AC160067DD4E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F1088512064AC160067DD4E;
+			remoteInfo = "Demo-LBXScan";
+		};
+		1F10888F2064B0870067DD4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F1088882064B0860067DD4E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 0575CEC09418556F4BD403F7288D67A2;
+			remoteInfo = LBXAlertAction;
+		};
+		1F1088912064B0870067DD4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F1088882064B0860067DD4E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 575613F8D82A94A305684F79889621CE;
+			remoteInfo = LBXScan;
+		};
+		1F1088932064B0870067DD4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F1088882064B0860067DD4E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = E8A5ADDC3E6A80742D84843123052D37;
+			remoteInfo = "Pods-Demo-LBXScan";
+		};
+		1F1088952064B0870067DD4E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1F1088882064B0860067DD4E /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = ECFF362F9E952672A9CF4320CDDA2E56;
+			remoteInfo = ZBarSDK;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1F1088522064AC160067DD4E /* Demo-LBXScan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Demo-LBXScan.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F1088552064AC160067DD4E /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		1F1088562064AC160067DD4E /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		1F10885E2064AC160067DD4E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1F1088612064AC160067DD4E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		1F1088632064AC160067DD4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F1088642064AC160067DD4E /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		1F10886A2064AC160067DD4E /* Demo-LBXScanTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Demo-LBXScanTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F10886E2064AC160067DD4E /* Demo_LBXScanTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Demo_LBXScanTests.m; sourceTree = "<group>"; };
+		1F1088702064AC160067DD4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F1088752064AC160067DD4E /* Demo-LBXScanUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Demo-LBXScanUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1F1088792064AC160067DD4E /* Demo_LBXScanUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Demo_LBXScanUITests.m; sourceTree = "<group>"; };
+		1F10887B2064AC170067DD4E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1F1088882064B0860067DD4E /* Pods.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = Pods.xcodeproj; path = Pods/Pods.xcodeproj; sourceTree = "<group>"; };
+		1F1088982064D26F0067DD4E /* PrefixHeader.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
+		1F10889B2064D9A40067DD4E /* WITHomeViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITHomeViewController.h; sourceTree = "<group>"; };
+		1F10889C2064D9A40067DD4E /* WITHomeViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WITHomeViewController.m; sourceTree = "<group>"; };
+		1F10889E2064DFAB0067DD4E /* WITOrderScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITOrderScanViewController.h; sourceTree = "<group>"; };
+		1F10889F2064DFAC0067DD4E /* WITOrderScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITOrderScanViewController.m; sourceTree = "<group>"; };
+		76A91F6D14A6CABE175C7C73 /* Pods-Demo-LBXScan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo-LBXScan.release.xcconfig"; path = "Pods/Target Support Files/Pods-Demo-LBXScan/Pods-Demo-LBXScan.release.xcconfig"; sourceTree = "<group>"; };
+		C716B395BA02C93225316DB6 /* Pods-Demo-LBXScan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Demo-LBXScan.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Demo-LBXScan/Pods-Demo-LBXScan.debug.xcconfig"; sourceTree = "<group>"; };
+		F1C10A042B94FE530F9D3E45 /* libPods-Demo-LBXScan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Demo-LBXScan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1F10884F2064AC160067DD4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BBCE760D013E1606A13DBAA8 /* libPods-Demo-LBXScan.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F1088672064AC160067DD4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F1088722064AC160067DD4E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1F1088492064AC160067DD4E = {
+			isa = PBXGroup;
+			children = (
+				1F1088542064AC160067DD4E /* Demo-LBXScan */,
+				1F10886D2064AC160067DD4E /* Demo-LBXScanTests */,
+				1F1088782064AC160067DD4E /* Demo-LBXScanUITests */,
+				1F1088532064AC160067DD4E /* Products */,
+				23B6E3ADED3C38CB17CC9CEA /* Pods */,
+				D673D982989B077E4D342140 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		1F1088532064AC160067DD4E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1F1088522064AC160067DD4E /* Demo-LBXScan.app */,
+				1F10886A2064AC160067DD4E /* Demo-LBXScanTests.xctest */,
+				1F1088752064AC160067DD4E /* Demo-LBXScanUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1F1088542064AC160067DD4E /* Demo-LBXScan */ = {
+			isa = PBXGroup;
+			children = (
+				1F10889E2064DFAB0067DD4E /* WITOrderScanViewController.h */,
+				1F10889F2064DFAC0067DD4E /* WITOrderScanViewController.m */,
+				1F1088552064AC160067DD4E /* AppDelegate.h */,
+				1F1088562064AC160067DD4E /* AppDelegate.m */,
+				1F10885E2064AC160067DD4E /* Assets.xcassets */,
+				1F1088632064AC160067DD4E /* Info.plist */,
+				1F1088602064AC160067DD4E /* LaunchScreen.storyboard */,
+				1F1088642064AC160067DD4E /* main.m */,
+				1F1088982064D26F0067DD4E /* PrefixHeader.pch */,
+				1F10889B2064D9A40067DD4E /* WITHomeViewController.h */,
+				1F10889C2064D9A40067DD4E /* WITHomeViewController.m */,
+			);
+			path = "Demo-LBXScan";
+			sourceTree = "<group>";
+		};
+		1F10886D2064AC160067DD4E /* Demo-LBXScanTests */ = {
+			isa = PBXGroup;
+			children = (
+				1F10886E2064AC160067DD4E /* Demo_LBXScanTests.m */,
+				1F1088702064AC160067DD4E /* Info.plist */,
+			);
+			path = "Demo-LBXScanTests";
+			sourceTree = "<group>";
+		};
+		1F1088782064AC160067DD4E /* Demo-LBXScanUITests */ = {
+			isa = PBXGroup;
+			children = (
+				1F1088792064AC160067DD4E /* Demo_LBXScanUITests.m */,
+				1F10887B2064AC170067DD4E /* Info.plist */,
+			);
+			path = "Demo-LBXScanUITests";
+			sourceTree = "<group>";
+		};
+		1F1088892064B0860067DD4E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1F1088902064B0870067DD4E /* libLBXAlertAction.a */,
+				1F1088922064B0870067DD4E /* libLBXScan.a */,
+				1F1088942064B0870067DD4E /* libPods-Demo-LBXScan.a */,
+				1F1088962064B0870067DD4E /* libZBarSDK.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		23B6E3ADED3C38CB17CC9CEA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				C716B395BA02C93225316DB6 /* Pods-Demo-LBXScan.debug.xcconfig */,
+				76A91F6D14A6CABE175C7C73 /* Pods-Demo-LBXScan.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		D673D982989B077E4D342140 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1F1088882064B0860067DD4E /* Pods.xcodeproj */,
+				F1C10A042B94FE530F9D3E45 /* libPods-Demo-LBXScan.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1F1088512064AC160067DD4E /* Demo-LBXScan */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F10887E2064AC170067DD4E /* Build configuration list for PBXNativeTarget "Demo-LBXScan" */;
+			buildPhases = (
+				AE1BF92BBB65489FB3866B8F /* [CP] Check Pods Manifest.lock */,
+				1F10884E2064AC160067DD4E /* Sources */,
+				1F10884F2064AC160067DD4E /* Frameworks */,
+				1F1088502064AC160067DD4E /* Resources */,
+				0BE14F692F0DEA594671A555 /* [CP] Embed Pods Frameworks */,
+				21504CDC21ECF1225C277000 /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Demo-LBXScan";
+			productName = "Demo-LBXScan";
+			productReference = 1F1088522064AC160067DD4E /* Demo-LBXScan.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1F1088692064AC160067DD4E /* Demo-LBXScanTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F1088812064AC170067DD4E /* Build configuration list for PBXNativeTarget "Demo-LBXScanTests" */;
+			buildPhases = (
+				1F1088662064AC160067DD4E /* Sources */,
+				1F1088672064AC160067DD4E /* Frameworks */,
+				1F1088682064AC160067DD4E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1F10886C2064AC160067DD4E /* PBXTargetDependency */,
+			);
+			name = "Demo-LBXScanTests";
+			productName = "Demo-LBXScanTests";
+			productReference = 1F10886A2064AC160067DD4E /* Demo-LBXScanTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1F1088742064AC160067DD4E /* Demo-LBXScanUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1F1088842064AC170067DD4E /* Build configuration list for PBXNativeTarget "Demo-LBXScanUITests" */;
+			buildPhases = (
+				1F1088712064AC160067DD4E /* Sources */,
+				1F1088722064AC160067DD4E /* Frameworks */,
+				1F1088732064AC160067DD4E /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1F1088772064AC160067DD4E /* PBXTargetDependency */,
+			);
+			name = "Demo-LBXScanUITests";
+			productName = "Demo-LBXScanUITests";
+			productReference = 1F1088752064AC160067DD4E /* Demo-LBXScanUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1F10884A2064AC160067DD4E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = WIT;
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = witsystem;
+				TargetAttributes = {
+					1F1088512064AC160067DD4E = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					1F1088692064AC160067DD4E = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 1F1088512064AC160067DD4E;
+					};
+					1F1088742064AC160067DD4E = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+						TestTargetID = 1F1088512064AC160067DD4E;
+					};
+				};
+			};
+			buildConfigurationList = 1F10884D2064AC160067DD4E /* Build configuration list for PBXProject "Demo-LBXScan" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1F1088492064AC160067DD4E;
+			productRefGroup = 1F1088532064AC160067DD4E /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = 1F1088892064B0860067DD4E /* Products */;
+					ProjectRef = 1F1088882064B0860067DD4E /* Pods.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				1F1088512064AC160067DD4E /* Demo-LBXScan */,
+				1F1088692064AC160067DD4E /* Demo-LBXScanTests */,
+				1F1088742064AC160067DD4E /* Demo-LBXScanUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		1F1088902064B0870067DD4E /* libLBXAlertAction.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libLBXAlertAction.a;
+			remoteRef = 1F10888F2064B0870067DD4E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1F1088922064B0870067DD4E /* libLBXScan.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libLBXScan.a;
+			remoteRef = 1F1088912064B0870067DD4E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1F1088942064B0870067DD4E /* libPods-Demo-LBXScan.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = "libPods-Demo-LBXScan.a";
+			remoteRef = 1F1088932064B0870067DD4E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		1F1088962064B0870067DD4E /* libZBarSDK.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libZBarSDK.a;
+			remoteRef = 1F1088952064B0870067DD4E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1F1088502064AC160067DD4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F1088622064AC160067DD4E /* LaunchScreen.storyboard in Resources */,
+				1F10885F2064AC160067DD4E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F1088682064AC160067DD4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F1088732064AC160067DD4E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		0BE14F692F0DEA594671A555 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Demo-LBXScan/Pods-Demo-LBXScan-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		21504CDC21ECF1225C277000 /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Demo-LBXScan/Pods-Demo-LBXScan-resources.sh",
+				"${PODS_ROOT}/LBXScan/LBXScan/UI/CodeScan.bundle",
+				"${PODS_ROOT}/ZBarSDK/iphone/res/zbar-back.png",
+				"${PODS_ROOT}/ZBarSDK/iphone/res/zbar-help.html",
+				"${PODS_ROOT}/ZBarSDK/iphone/res/zbar-helpicons.png",
+				"${PODS_ROOT}/ZBarSDK/iphone/res/zbar-samples.png",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/CodeScan.bundle",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zbar-back.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zbar-help.html",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zbar-helpicons.png",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/zbar-samples.png",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Demo-LBXScan/Pods-Demo-LBXScan-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		AE1BF92BBB65489FB3866B8F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Demo-LBXScan-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1F10884E2064AC160067DD4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F1088652064AC160067DD4E /* main.m in Sources */,
+				1F1088572064AC160067DD4E /* AppDelegate.m in Sources */,
+				1F10889D2064D9A40067DD4E /* WITHomeViewController.m in Sources */,
+				1F1088A02064DFAC0067DD4E /* WITOrderScanViewController.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F1088662064AC160067DD4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F10886F2064AC160067DD4E /* Demo_LBXScanTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1F1088712064AC160067DD4E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1F10887A2064AC160067DD4E /* Demo_LBXScanUITests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1F10886C2064AC160067DD4E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F1088512064AC160067DD4E /* Demo-LBXScan */;
+			targetProxy = 1F10886B2064AC160067DD4E /* PBXContainerItemProxy */;
+		};
+		1F1088772064AC160067DD4E /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1F1088512064AC160067DD4E /* Demo-LBXScan */;
+			targetProxy = 1F1088762064AC160067DD4E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		1F1088602064AC160067DD4E /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				1F1088612064AC160067DD4E /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1F10887C2064AC170067DD4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		1F10887D2064AC170067DD4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1F10887F2064AC170067DD4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = C716B395BA02C93225316DB6 /* Pods-Demo-LBXScan.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Demo-LBXScan/PrefixHeader.pch";
+				INFOPLIST_FILE = "Demo-LBXScan/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.witsystem.Demo-LBXScan";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1F1088802064AC170067DD4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 76A91F6D14A6CABE175C7C73 /* Pods-Demo-LBXScan.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "Demo-LBXScan/PrefixHeader.pch";
+				INFOPLIST_FILE = "Demo-LBXScan/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.witsystem.Demo-LBXScan";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1F1088822064AC170067DD4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Demo-LBXScanTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.witsystem.Demo-LBXScanTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Demo-LBXScan.app/Demo-LBXScan";
+			};
+			name = Debug;
+		};
+		1F1088832064AC170067DD4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Demo-LBXScanTests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.witsystem.Demo-LBXScanTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Demo-LBXScan.app/Demo-LBXScan";
+			};
+			name = Release;
+		};
+		1F1088852064AC170067DD4E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Demo-LBXScanUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.witsystem.Demo-LBXScanUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Demo-LBXScan";
+			};
+			name = Debug;
+		};
+		1F1088862064AC170067DD4E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "Demo-LBXScanUITests/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "cn.com.witsystem.Demo-LBXScanUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "Demo-LBXScan";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1F10884D2064AC160067DD4E /* Build configuration list for PBXProject "Demo-LBXScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F10887C2064AC170067DD4E /* Debug */,
+				1F10887D2064AC170067DD4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1F10887E2064AC170067DD4E /* Build configuration list for PBXNativeTarget "Demo-LBXScan" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F10887F2064AC170067DD4E /* Debug */,
+				1F1088802064AC170067DD4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1F1088812064AC170067DD4E /* Build configuration list for PBXNativeTarget "Demo-LBXScanTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F1088822064AC170067DD4E /* Debug */,
+				1F1088832064AC170067DD4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1F1088842064AC170067DD4E /* Build configuration list for PBXNativeTarget "Demo-LBXScanUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1F1088852064AC170067DD4E /* Debug */,
+				1F1088862064AC170067DD4E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1F10884A2064AC160067DD4E /* Project object */;
+}

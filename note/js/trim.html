@@ -1,0 +1,29 @@
+<!DOCTYPE html><html><head></head><body>
+
+<input id='a' width="100" value="" /> =>
+<input id='result'  value="" />
+
+<script type="text/javascript">
+	function doCalc() {
+		var aEle = document.getElementById("a");
+		var cEle = document.getElementById("result");
+
+		var inValue = aEle.value;
+		if (!inValue || inValue.length == 0) {
+			return ;
+		}
+		var newValue = "";
+		for (var i = 0; i < inValue.length; i++) {
+			var c = inValue.charAt(i);
+			if (c != " ") {
+				newValue += c;
+			}
+		}
+
+		cEle.value = newValue;
+	}
+</script>
+
+<button type="button" id='confirm' onclick="doCalc()">calc</button>
+
+</body></html>

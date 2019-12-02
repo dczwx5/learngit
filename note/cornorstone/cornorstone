@@ -1,0 +1,5 @@
+* 无法clean up
+  * https://jingyan.baidu.com/article/5552ef47d4959c518ffbc9af.html
+  * 在 .svn目录下
+  * sqlite3 .svn/wc.db "select * from work_queue"
+  * sqlite3 .svn/wc.db "delete from work_queue" 

@@ -1,0 +1,62 @@
+<!DOCTYPE html><html>
+<head><meta charset="utf-8">
+</head><body>
+
+<canvas id="drawing"  width=" 600" height="600">A drawing of something.</canvas>
+
+<script> 
+var mx = 0;
+var my = 0;
+function mouseMove(ev) 
+{ 
+	Ev= ev || window.event; 
+	var mousePos = mouseCoords(ev); 
+	mx = mousePos.x; 
+	my = mousePos.y; 
+}
+function mouseCoords(ev) 
+{ 
+	if(ev.pageX || ev.pageY){ 
+	return {x:ev.pageX, y:ev.pageY}; 
+} 
+return{ 
+	x:ev.clientX + document.body.scrollLeft - document.body.clientLeft, 
+	y:ev.clientY + document.body.scrollTop - document.body.clientTop 
+}; 
+} 
+document.onmousemove = mouseMove; 
+</script> 
+
+<script type="text/javascript">
+	var drawing = document.getElementById("drawing");
+	var context;
+	//确定浏览器支持<canvas>元素
+	if (drawing.getContext) {
+	    context = drawing.getContext("2d"); 
+	    drawBg();
+	}
+
+	function rain() {
+		setInterval("doRain()", 1);
+	}
+	rain();
+
+	function doRain() {
+
+		drawBg();
+		drawRect(mx-25, my-25);
+	}
+
+	function drawBg() {
+		context.fillStyle = "#000000";
+	    context.fillRect(2, 2, 596, 596);
+	    context.fillStyle = "rgba(0,0,255,0.5)";
+	}
+	function drawRect(x, y) {
+		context.fillStyle = "#ff0000";
+	    context.fillRect(x, y, 50, 50);
+	    context.fillStyle = "rgba(0,0,255,0.5)";
+	}
+</script>
+
+</body></html>

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<content>
+<!-- common -->
+<text id = "loging"><![CDATA[正在登录...]]></text>
+<text id = "can_not_exit_by_playing"><![CDATA[正在游戏中,不能退出]]></text>
+<text id = "big"><![CDATA[大]]></text>
+<text id = "small"><![CDATA[小]]></text>
+<text id = "not_open"><![CDATA[暂未开放！]]></text>
+<text id = "others_keep_desk"><![CDATA[机台已被保留，请选择其他机台！]]></text>
+<text id = "error_sizebets_score"><![CDATA[分数超出限额]]></text>
+<text id = "sizebets_betsMin_error"><![CDATA[最低下注10金币]]></text>
+<text id = "net_res_busy"><![CDATA[网络信号通信中。。。请稍候]]></text>
+<text id = "day_7"><![CDATA[日]]></text>
+<text id = "day_6"><![CDATA[六]]></text>
+<text id = "day_5"><![CDATA[五]]></text>
+<text id = "day_4"><![CDATA[四]]></text>
+<text id = "day_3"><![CDATA[三]]></text>
+<text id = "day_2"><![CDATA[二]]></text>
+<text id = "day_1"><![CDATA[一]]></text>
+<text id = "today"><![CDATA[今天]]></text>
+<text id = "Fruits"><![CDATA[经典水果机]]></text>
+<text id = "ePoker"><![CDATA[电动扑克]]></text>
+<text id = "year_name"><![CDATA[{v1}年]]></text>
+<text id = "month_name"><![CDATA[{v1}月]]></text>
+<text id = "date_name"><![CDATA[{v1}日]]></text>
+<text id = "recharge_money_less_than"><![CDATA[充值金额不得小于{v1}]]></text>
+<text id = "recharge_money_more_than"><![CDATA[充值金额不得大于{v1}]]></text>
+<text id = "withdraw_money_less_than"><![CDATA[提现金额不得小于{v1}]]></text>
+<text id = "withdraw_money_more_than"><![CDATA[提现金额不得大于{v1}]]></text>
+<text id = "recharge_fail"><![CDATA[充值失败, 请联系客服]]></text>
+<text id = "withdraw_fail"><![CDATA[提现失败, 请联系客服]]></text>
+<text id = "recharge_success"><![CDATA[充值成功]]></text>
+<text id = "withdraw_success"><![CDATA[提现成功]]></text>
+
+<text id = "insurance"><![CDATA[请买保险]]></text>
+<text id = "player_controll"><![CDATA[玩家操作阶段]]></text>
+<text id = "bets_success"><![CDATA[下注成功]]></text>
+<text id = "please_bets"><![CDATA[已开局，请下注]]></text>
+<text id = "bets_stop"><![CDATA[停止下注]]></text>
+<text id = "resulting"><![CDATA[正在结算]]></text>
+<text id = "shuffling"><![CDATA[洗牌中]]></text>
+
+<text id = "success"><![CDATA[成功！]]></text>
+<text id = "faild"><![CDATA[失败！]]></text>
+<text id = "room_1"><![CDATA[初级房]]></text>
+<text id = "room_2"><![CDATA[中级房]]></text>
+<text id = "room_3"><![CDATA[高级房]]></text>
+<text id = "no"><![CDATA[否]]></text>
+<text id = "yes"><![CDATA[是]]></text>
+<text id = "cancel"><![CDATA[取消]]></text>
+<text id = "confirm"><![CDATA[确定]]></text>
+<text id = "startGame"><![CDATA[开始游戏]]></text>
+<text id = "jumpExplain"><![CDATA[跳过说明]]></text>
+
+<!-- 大厅-->
+
+<text id = "Bacc"><![CDATA[百家乐]]></text>
+<text id = "Sicbo"><![CDATA[骰宝]]></text>
+
+<text id = "today_bets_title"><![CDATA[今日投注]]></text>
+<text id = "today_award_title"><![CDATA[今日返奖]]></text>
+<text id = "RECORED_TYPE_chongzhi"><![CDATA[充值]]></text>
+<text id = "RECORED_TYPE_tixian"><![CDATA[提现]]></text>
+<text id = "RECORED_TYPE_youxijiesuan"><![CDATA[游戏结算]]></text>
+<text id = "RECORED_TYPE_all"><![CDATA[全部]]></text>
+<text id = "search_recored"><![CDATA[查询账变]]></text>
+<text id = "edit_nam"><![CDATA[修改昵称]]></text>
+<text id = "cache_config"><![CDATA[保存用户设置]]></text>
+<text id = "error_time_range"><![CDATA[请选择正确的时间]]></text>
+<text id = "none_record"><![CDATA[无记录]]></text>
+<text id = "game_commingsoon"><![CDATA[敬请期待]]></text>
+<text id = "accRecoredTabs"><![CDATA[充值,提现,游戏结算,全部]]></text>
+<text id = "transfer_busy"><![CDATA[请求中, 请稍候...]]></text>
+
+<!-- 游戏大厅 - 通用 -->
+<text id = "game_hall_join_rule"><![CDATA[入场要求{v1}$]]></text>
+<text id = "game_hall_bets_rule"><![CDATA[房间限注{v1} - {v2}$]]></text>
+<text id = "game_hall_join_not_enough_blance"><![CDATA[您的金额不足，是否前往充值中心充值？]]></text>
+<text id = "copy_md5_check_success"><![CDATA[成功复制到剪切板！]]></text>
+<text id = "reconnecting"><![CDATA[有未结算清单, 正在重连]]></text>
+<text id = "reconnect_fail"><![CDATA[重连失败]]></text>
+<text id = "no_enough_money"><![CDATA[余额不足]]></text>
+
+
+<!-- 百家乐 -->
+
+<text id = "bets_max_limit"><![CDATA[下注超过最大限额]]></text>
+<text id = "bets_min_limit"><![CDATA[投注少于最小限额]]></text>
+<text id = "bets_max_limit_2"><![CDATA[下注超过最大限额, 按最大限额下注]]></text>
+<text id = "bets_not_enough_money"><![CDATA[余额不足]]></text>
+<text id = "bets_not_enough_money2"><![CDATA[余额不足, 按最大下注]]></text>
+
+
+<!-- 21点 -->
+<text id = "ask_buy_insurance"><![CDATA[是否花费一半的投注金额购买保险？购买保险后，若庄家为黑杰克，则可以获得2倍的保险金]]></text>
+<text id = "buy_insurance_sucess"><![CDATA[成功购买保险]]></text>
+
+<!-- net -->
+<text id = "net_asserts"><![CDATA[与服务器断开连接, 请重新登录]]></text>
+
+<text id = "net_unready"><![CDATA[没有初始化]]></text>
+<text id = "net_error_0"><![CDATA[被同一账号挤下线]]></text>
+<text id = "net_error_1"><![CDATA[后台踢线]]></text>
+<text id = "net_error_2"><![CDATA[维护踢线]]></text>
+<text id = "net_error_5"><![CDATA[维护中]]></text>
+<text id = "net_error_6"><![CDATA[服务器繁忙（连接异常）]]></text>
+<text id = "net_error_10000"><![CDATA[维护中]]></text>
+<text id = "net_error_10001"><![CDATA[服务器繁忙（连接异常）]]></text>
+<text id = "net_error_10002"><![CDATA[游戏未开放]]></text>
+<text id = "net_error_10003"><![CDATA[游戏不存在]]></text>
+<text id = "net_error_10004"><![CDATA[数据异常]]></text>
+<text id = "net_error_10005"><![CDATA[货币状态：关闭]]></text>
+<text id = "net_error_10006"><![CDATA[场次不存在]]></text>
+<text id = "net_error_11001"><![CDATA[账号不存在]]></text>
+<text id = "net_error_11002"><![CDATA[账号被停用/冻结]]></text>
+<text id = "net_error_11003"><![CDATA[账号密码错误]]></text>
+<text id = "net_error_11004"><![CDATA[账号余额不足]]></text>
+<text id = "net_error_11005"><![CDATA[已经结算游戏，不能重连]]></text>
+<text id = "net_error_11006"><![CDATA[重连房间为空，不能重连]]></text>
+<text id = "net_error_11007"><![CDATA[不是重连状态发送重连加入指令]]></text>
+<text id = "net_error_11008"><![CDATA[当局未结算不能退出游戏]]></text>
+<text id = "net_error_11009"><![CDATA[下注余额不足]]></text>
+<text id = "net_error_11010"><![CDATA[下注系统异常]]></text>
+<text id = "net_error_11011"><![CDATA[下注时间间隔过短]]></text>
+<text id = "net_error_11012"><![CDATA[当前状态不能下注]]></text>
+<text id = "net_error_11014"><![CDATA[您的下注金额超过了最大下注]]></text>
+<text id = "net_error_11015"><![CDATA[您的余额不足以支付最大赔付]]></text>
+<text id = "net_error_11016"><![CDATA[重复下注]]></text>
+<text id = "net_error_11017"><![CDATA[非操作牌阶段]]></text>
+<text id = "net_error_11018"><![CDATA[您没有参与到本局游戏，请待下一局]]></text>
+<text id = "net_error_11019"><![CDATA[非该玩家操作]]></text>
+<text id = "net_error_11020"><![CDATA[当前牌区结束操作了]]></text>
+<text id = "net_error_11021"><![CDATA[非保险阶段]]></text>
+<text id = "net_error_11022"><![CDATA[当前环节已经结束 ]]></text>
+<text id = "net_error_11023"><![CDATA[ 当前不能分牌]]></text>
+<text id = "net_error_11024"><![CDATA[分牌后不能加倍]]></text>
+<text id = "net_error_11025"><![CDATA[要牌失败(对A分牌只能要一张)]]></text>
+<text id = "net_error_other"><![CDATA[其它意外]]></text>
+<text id = "buy_insurance_sucess"><![CDATA[成功购买保险]]></text>
+
+
+</content>

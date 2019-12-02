@@ -1,0 +1,10 @@
+# laya 项目index.html文件生成
+	由于加入了版本控制, 生成的js, lib , 和index.js文件是改名过的, 而index.html也是经过修改的, 并且, 在index.html加入了预加载元素, 所以，打版时，需要修改index.html里指定的一些文件名
+
+# template
+	index_template.html index模板
+	configs_template.json config模板
+# 命令
+参数1 : fair 包体目录
+参数2 : 要替换掉config里ip字段的值, 如果没有该参数, 则不会替换config
+start python buildIndex.py fair,www.hbspace.net

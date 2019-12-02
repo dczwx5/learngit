@@ -1,0 +1,12 @@
+# 操作 
+* 快捷键
+  * command+space : 搜索框(win的运行), 可打开可执行文件 
+* 命令 
+  * terminal : 打开命令行 
+  * pwd : 查看当前目录
+
+# 安装 pod
+* 命令行输入 sudo gem install cocoapods
+* 输入  mac密码
+
+* pod install 要换成 pod install --verbose --no-repo-update

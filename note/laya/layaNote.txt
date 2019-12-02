@@ -1,0 +1,73 @@
+## 版本控制
+* laya 自带的版本控制只根据文件大小，没根据修改日期。导致修改了的文件，如果文件大小没变，md5值没变， 具体表现在小文件。或配置文件上面
+* index.js
+  * 肯定会有问题。必须加?v=xxx
+  * index.js内容虽然改了，但是所有的md5值都是8位，文件大小不变
+* config文件。也容易出问题
+## Scene
+Scene.open();
+	有回调, 肯定已经加载完资源
+	但是加载完资源是以Scene里面的loadlist来判断的, 也就是说。如果同时加载很多资源(scene所需以外的), 会等所有加载完
+生命周期 :
+	// addChild之后, 才会有onAwake之类的东西
+	new XXX();
+	this.addChild();
+	onAwake();
+	onEnable();
+	
+	// onDestroy 不是想象中的结果, 手动调用xxx才会触发
+	// onDisable :用这个
+	// controller和view的生命周期
+	controller.onAwake() -> controller.onEnable ->...
+	view.onAwake() -> view.onEnable ->
+	
+	// 只要addChild就会触发生命周期。remove触发disable ****不会马上触发, 会到后面的帧触发.导致取controller很不方便。controller需要在add之后, 受生命周期管理之后, 才拿的到
+	
+Scene里
+	对象如果是view, 则不可以用var, 只能用name
+Scene.open
+	Scene.open的回调Handler, 不能用Handler.create., 场景切换, 对象池会清掉(再验证), 导致 Handler会被其他对象拿去重新赋值。
+	(即里面的method和args改变了)
+	这种情况用new Handler
+	
+disabled
+	改成ui组件的disabled属性, 会改变mouseEnable
+	这导致, 图片原本不可选, 用disabled设置灰化, 再恢复会使用变成可选
+mask :
+	不能用. 用panel. panel 可以裁剪
+## 粒子
+不能直接拉到场景上(会因为还没加载好。报错)
+手动加载资源。加载完了，才使用	
+Laya.loader.load('effect/gold_rain.part', Laya.Handler.create(this, this._onLoadedGoldRainPart), null, Laya.Loader.JSON);
+	private _onLoadedGoldRainPart(settings) {
+		let part:Laya.Particle2D = new Laya.Particle2D(settings);
+	}
+！！！粒子不能用。手机端还是会有问题
+
+## 元件
+datasource :
+	１．data, 2. item
+	如果data的某个key, 和item的某个name, 同名, 则会item[key].datasource = data[key];
+	
+## 发布 :
+	如果要版本控制，则每次发布之前。要把之前打版出来的内容删掉。不然有问题
+Timer不会被回收	
+## 适配
+// 使用i6
+* 物理分辨率=像素分辨率*devicePixelRatio
+* 物理分辨率 : 象素分辨率 : px -> 750x1334 -> Browser.width和Browser.height
+* 逻辑分辨率 : 屏幕上的点 : pt -> 375x667 -> Browser.clientWidth和Browser.clientHeight
+* 像素比 : devicePixelRatio : 2
+
+1. 设计宽高：
+	在项目代码中项目代码中初始化舞台Laya.init()中定义的宽高即为设计宽高。
+2. Stage宽高：
+	stage宽高为游戏舞台实际大小的宽高。
+3. 适配宽高：
+	通过引擎的适配模式对设计宽高进行缩放改变后的宽高，为了便于区分理解，我们称为适配宽高。
+4. 画布宽高：
+	画布宽高是指HTML5中canvas节点的宽高，游戏中所有可见的内容都在画布区域内。
+5. 屏幕宽高：
+	屏幕宽高是指手机浏览器屏幕的宽高，例如iphone6竖屏时的屏幕宽高为375*667。LayaAir引擎可以通过laya.utils.Browser.clientWidth和laya.utils.Browser.clientHeight来获取屏幕的宽与高。
+6. 物理宽高：
+	关于设备屏幕的物理宽高，我们需要先了解像素密度的概念。在PC电脑上，通常一个像素位置上就是一个物理像素。在移动设备高速发展的今天，手机的屏幕上通常是一个像素位置上拥有2个或3个像素。例iphone6竖屏时的物理宽高为750*1334。LayaAir引擎可以通过laya.utils.Browser.width和laya.utils.Browser.height来获取设备屏幕屏幕的物理宽高。

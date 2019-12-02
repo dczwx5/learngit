@@ -1,0 +1,7 @@
+1.打开cocosCreator->resources->static->preview_tempplates
+2.装ccc-devtools放在preview_tempplates目录下
+3.打开preview_tempplates/index.jade
+	打开index.jade,找到body里最后一个div，在下面添加include ./ccc-devtools/index.html，注意用tab键与上面的div对齐
+	
+当升级 Cococs Creator 时会清空resources目录，需要重新下载配置，如自定义了一些配置，请做好备份。
+开启节点树会增加渲染消耗，非调试阶段请关闭。

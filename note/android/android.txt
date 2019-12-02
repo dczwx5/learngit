@@ -1,0 +1,11 @@
+eoe android社区
+Eclipse IDE
+
+## 环境安装
+* JDK ：
+  1.下载安装Java SDK  Java SE Development Kit 8 Downloads
+  2.修改系统变量Path，添加变量值 ;%JAVA_HOME%\bin;
+  3.命令行 ： java -version 检测是否安装成功
+
+* IDE
+  1.Android Studio  http://www.android-studio.org/

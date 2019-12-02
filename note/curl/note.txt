@@ -1,0 +1,9 @@
+将压缩包curl-7.61.1-win64-mingw.zip放置到某个路径下解压，
+然后在系统环境变量中添加一个变量CURL_HOME，
+变量值（curl-7.61.1-win64-mingw.zip解压后得到文件夹的路径）
+：D:\MyInstalledSoft\curl-7.61.1-win64-mingw。
+
+然后在系统变量path中添加值：%CURL_HOME%\bin。
+
+完成上面的配置以后，在cmd命令窗口中，输入命令：curl --help，
+如果出现如图所示内容，则说明curl工具安装成功。

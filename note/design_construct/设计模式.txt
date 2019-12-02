@@ -1,0 +1,337 @@
+# 设计模式
+## 六大原则 
+### 开闭原则
+开放扩展
+使用组件模式
+### 里氏代换原则
+子类可以替换掉基类, 功能正常运行
+### 依赖倒转原则
+对接口编程, 依赖于抽象而不依赖于具体
+### 接口隔离原则
+* 最小接口
+* 避免接口太大
+* 不给用户不需要的接口
+
+拆分大接口, 分成多个小接口
+但也要避免接口过多
+
+客户端不应该依赖它不需要的接口；
+一个类对另一个类的依赖应该建立在最小的接口上；
+一个接口代表一个角色，不应该将不同的角色都交给一个接口，因为这样可能会形成一个臃肿的大接口；
+不应该强迫客户依赖它们从来不用的方法。
+
+```javascript
+interface IAnimal {
+    eat();
+	sleep();
+}
+interface IPeople {
+    work();
+}
+interface IBird {
+    fly();
+}
+class CPeople implements IAnimal, IPeople { }
+```
+### 迪米特原则
+* 低耦合
+* 类独立
+* 减少类对外接口(public)
+* 类与类之间的相互作用, 通过第三个类
+* Facade Mediator
+
+迪米特原则要求类“羞涩”一点，尽量不要对外公开太多的public方法和非静态的public变量，尽量内敛，多使用private,package-private,protected等访问权限
+迪米特法则的初衷在于降低类之间的耦合。由于每个类尽量减少对其他类的依赖，因此，很容易使得系统的功能模块功能独立，相互之间不存在（或很少有）依赖关系。
+因此，应用迪米特法则有可能造成的一个后果就是：系统中存在大量的中介类，这些类之所以存在完全是为了传递类之间的相互调用关系——这在一定程度上增加了系统的复杂度。
+
+实体独立, 实体之间尽少交互
+门面模式（Facade）和中介模式（Mediator），都是迪米特法则应用的例子
+
+是自己的就是自己的
+在实践中经常出现这样一个方法，放在本类中也可以，放到其它类中也可以。那怎么处理呢？你可以坚持一个原则：如果一个方法放在本类中，即不增加类间关系，也对本类不产生负面影响，那就放到本类中。
+
+```javascript
+// error
+class A {
+	// 假设A要用B来实现一个功能
+	someFunc() {
+		if (B.isXX()) {
+			B.doIt();
+			B.close();
+		}
+}
+
+class B {}
+
+```
+```javascript
+// right
+class A {
+	someFunc() {
+		B.bFacade.doit();
+	}
+}
+class B {
+	bFacade:BFacade;
+}
+class BFacade {
+	doIt() { 
+		if (B.isXX()) {
+			B.doIt();
+			B.close();
+		}
+	}
+}
+
+
+```
+### 合成复用原则
+尽量使用合成/聚合, 而不是使用继承
+## 组件模式
+组件模式暴露组件 背离了 迪米特原则, 外部对子系统访问过多
+可配Facade 提供封装访问（但又封装过渡）
+如果非单个component可实现的功能。可用Mediater
+
+component.addComponent(new Facade());
+getComponent(Facade).enterLevel();
+## 外观模式 Facade
+* 定义
+	外观模式的一般描述是：外观模式定义了一个高层的功能，为子系统中的多个模块协同的完成某种功能需求提供简单的对外功能调用方式，使得这一子系统更加容易被外部使用。
+
+	1.一个系统拆分成多子系统
+	2.外部不直接访问子系统
+	3.一个操作由多个子系统完成, 外观模式提供一个接口，封装子系统的操作
+
+	外观模式的目的不是给予子系统添加新的功能接口，而是为了让外部减少与子系统内多个模块的交互，松散耦合，从而让外部能够更简单地使用子系统。
+
+	总结:对外提供一个好看的接口。不需要关心内部实现
+
+* 例 : (由外观例子, 类似例子)
+
+```javascript
+class User {
+	hp:number;
+	run() {
+		consolo.log('run');
+	}
+}
+
+// 强势假设hp >100才能run
+let user = new User();
+if (hp > 100) {
+	user.run();
+}
+```
+==> 改为
+
+```javascript
+class User {
+	hp:number;
+	run() {
+		if (hp > 100) {
+			consolo.log('run');
+		}
+	}
+}
+
+let user = new User();
+user.run();
+```
+
+两者的区别
+例1, 外部判断了run的条件, 访问了内部hp, 即内部的逻辑和成员都使用了, 这对使用者来说, 不友好
+例2, 外部直接调用run , run内部装逻辑和操作都封装了, 对外界来说, 是友好的
+ps 上面并不是外观的例子
+
+* 例
+	外观系统结构
+	* 系统
+	* 子系统
+	* 外观类
+	* 实现
+	
+```javascript
+// ItemList - 子系统
+// BagSystem - 系统
+// BagFacade - 外观
+class BagSystem {
+	facade:BagFacade; // 对外提供facade即, 外部不直接访问bagSystem
+	itemList:Array<Item>; // 子系统
+	constructor() {
+		this.facade = new BagFacade(this);
+	}
+}
+
+class BagFacade {
+	private m_owner:BagSystem; // 外观与系统耦合
+	constructor(pOwner:BagSystem) {
+		this.m_owner = pOwner;
+	}
+
+	// 提供接口, 封装操作
+	getItem(itemID:number) {
+		const itemList = this.m_owner.itemList;
+		for (let item of itemList) {
+			if (item.id == itemID) {
+				return item;
+			}
+		}
+	}
+}
+
+// 使用
+let bagSystem = new BagSystem();
+bagSystem.facade.getItem(itemID);
+```
+
+## 策略模式 Strategy
+之前寻路里的寻路方式中, 使用的就是这种方式, 将算法封装成一个类, 如果要使用其他算法，就替换类对象
+* 划重点
+	* 不用stategy可能需要不同的数据, stategy 可以自有数据
+	* stategy需要的数据, 可以扩展owner, 也可以由stategy自有, 再传入
+	* 可以将owner传入stategy, (是否可以让stategy拥有owner呢?)
+	* 策略的核心是对象替换
+* 定义
+	GOF定义:定义一组算法,并封装每个算法,让它们可以彼此交换使用.策略模式让这些算法在客户端使用它们时能更加独立
+	把不同的策略独立的实现,载体根据需要随意调用对应的策略,同时让相关逻辑集中在同一个类下管理,有助于后续项目的维护,降低复杂度.同时减少了if else的使用频率.
+	策略模式则是由一群没有任何关系的类所组成,不知彼此存在 
+	,策略模式是由封装计算算法而形成的一种设计模式,算法之间不存在任何依赖关系,有新增的算法就可以马上加入或替换.
+
+* 解决 : 
+	if else 过多, 导致某个方法过于庞大
+	
+```javascript
+class Game {
+	render() {
+		if (type == 'RPG') {
+			// rpgSceneRender();
+		} else {
+			// otherSceneRender();
+		}
+	}
+}
+```
+
+===> * 实例
+
+```javascript
+class Game {
+	private m_sceneStrategy:SceneStrategy;
+	setSceneStategy(v:Strategy) {
+		this.m_sceneStrategy = v;
+	}
+	render() {
+		this.m_sceneStrategy.render();
+	}
+}
+class SceneStrategy {
+	render() {}
+}
+class CRpgSceneStrategy  extends SceneStrategy {
+	render() {}
+}
+class CSLGSceneStrategy  extends SceneStrategy {
+	render() { }
+}
+
+// usage
+let game = new Game();
+let slg = new CSlgSceneStrategy();
+game.setSceneStategy(slg);
+game.render();
+```
+## 中介模式 Mediator
+Facade 是封装子系统. 外部不访问子系统
+Mediator 是封装子对象 使对象间不相互引用
+中介对象来封装一系列的对象交互。中介者使各对象不需要显式地相互引用 
+
+```javascript
+Role {
+	hit(other) {
+		let damage = this.attack - other.defends;
+		other.hurt(damage);
+	}
+	hurt(damage) {
+		this.hp -= damage;
+	}
+	get defends() { return 50; }
+	get attack() { return 100; }
+}
+let a:Role = new Role();
+let b:Role = new Role();
+a.hit(b);
+```
+==>
+
+```javascript
+Role {
+	hurt(damage) {
+		this.hp -= damage;
+	}
+	get defends() { return 50; }
+	get attack() { return 100; }
+}
+
+Mediator {
+	hit(attacker:Role, defender:Role) {
+		let damage = attacker.attack - defender.defends;
+		defender.hurt(damage);
+	}
+}
+```
+## 观察者 observer
+定义了一种一对多的依赖关系，让多个观察者对象同时监听某一个主题对象，主这个主题对象在状态发生变化时，会通知所有观察者对象，使它们能够自动更新自己
+
+|     对象    |  描述        | 
+| -----------|-------------|
+| Subject    |   被观察对象，保存观察者列表，提供添加/删除观察者对象  |
+| Observer   | 提供通知接口， subject发生改变时，调用通知接口  |
+| ObserverImp| 实现通知接口 |
+
+```javascript
+// 主题，被观察者
+class CSubject {
+	addObserver(pObserver:CObserver) {
+		this.m_observerList.push(pObserver);
+	}
+	removeObserver(pObserver:CObserver) {
+		for (let i:number = 0; i < this.m_observerList.length; ++i) {
+			if (this.m_observerList[i] == pObserver) {
+				this.m_observerList.splice(i, 1);
+				break;
+			}
+		}
+	}
+	notify() {
+		for (let i:number = 0; i < this.m_observerList.length; ++i) {
+			let pObserver = this.m_observerList[i];
+			if (pObserver == pObserver) {
+				pObserver.notify();
+			}
+		}
+	}
+	private m_observerList:Array<CObserver>;
+}
+```
+
+```javascript
+// 观察者
+class CObserver {
+	notify() {
+		// dosomething
+	}
+}
+
+class CObserverImp1 {
+	notify() {
+		// dosomething
+	}
+}
+```
+## ECS
+ECS 的设计就是为了管理复杂度，它提供的指导方案就是 Component 是纯数据组合，没有任何操作这个数据的方法；而 System 是纯方法组合，它自己没有内部状态。它要么做成无副作用的纯函数，根据它所能见到的对象 Component 组合计算出某种结果；要么用来更新特定 Component 的状态。System 之间也不需要相互调用（减少耦合），是由游戏世界（外部框架）来驱动若干 System 的。如果满足了这些前提条件，每个 System 都可以独立开发，它只需要遍历给框架提供给它的组件集合，做出正确的处理，更新组件状态就够了。编写 Gameplay 的人更像是在用胶水粘合这些 System ，他只要清楚每个 System 到底做了什么，操作本身对哪些 Component 造成了影响，正确的书写 System 的更新次序就可以了。一个 System 对大多数 Component 是只读的，只对少量 Component 是会改写的，这个可以预先定义清楚，有了这个知识，一是容易管理复杂度，二是给并行处理留下了优化空间。
+
+
+## 数据驱动
+
+## End

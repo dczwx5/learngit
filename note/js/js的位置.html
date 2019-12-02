@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+function funcAdd(c) {
+	// js 可以在head
+	var a = 100;
+	var b = 20;
+    document.getElementById("result").innerHTML = "a+b+c=" + (a+b+c);
+}
+</script>
+</head>
+
+<body>
+
+<script type="text/javascript">
+	function funcMulti(c) {
+		var a = 100;
+		var b = 20;
+		var value = a*b*c;
+		document.getElementById("result").innerHTML = "a*b*c=" + (a*b*c);
+	}
+</script>
+<script src="http://www.w3school.com.cn/demo/myScript.js"></script>
+<p id="demo">外部js</p>
+<p id="result">结果</p>
+<script src="/myScript.js"></script>
+
+<button type="button" onclick="funcAdd(50)">加法</button>
+<button type="button" onclick="funcMulti(50)">乘法</button>
+<button type="button" onclick="funcSub(50)">减法</button>
+<button type="button" onclick="myFunction()">外部js</button>
+
+</body>
+</html>

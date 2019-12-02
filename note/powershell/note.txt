@@ -1,0 +1,15 @@
+1.powerShell 如果执行脚本
+	1.
+		PowerShell 无法加载文件ps1，因为在此系统中禁止执行脚本 
+		直接运行powershell时提示“无法加载文件ps1，因为在此系统中禁止执行脚本。有关详细信息，请参阅 "get-help about_signing"。
+		主要是由于没有权限执行脚本。
+	2.
+		运行get-help about_signing 提示了解执行策略输入
+		get-executionpolicy
+		显示 Restricted  
+		即不允许执行任何脚本。
+	3.
+		通过命令
+		get-help set-executionpolicy 可知有以下执行策略：<Unrestricted> | <RemoteSigned> | <AllSigned> | <Restricted> | <Default> | <Bypass> | <Undefined>
+		然后修改其策略：
+		set-executionpolicy remotesigned即可执行脚本

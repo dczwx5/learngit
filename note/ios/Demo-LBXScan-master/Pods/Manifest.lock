@@ -1,0 +1,29 @@
+PODS:
+  - LBXAlertAction (1.0.6)
+  - LBXScan/LBXNative (2.3):
+    - LBXScan/Types (~> 2.2)
+  - LBXScan/LBXZBar (2.3):
+    - LBXScan/Types (~> 2.2)
+    - ZBarSDK (~> 1.3.1)
+  - LBXScan/LBXZXing (2.3):
+    - LBXScan/Types (~> 2.2)
+  - LBXScan/Types (2.3)
+  - LBXScan/UI (2.3):
+    - LBXScan/Types (~> 2.2)
+  - ZBarSDK (1.3.1)
+
+DEPENDENCIES:
+  - LBXAlertAction (~> 1.0.6)
+  - LBXScan/LBXNative (~> 2.3)
+  - LBXScan/LBXZBar (~> 2.3)
+  - LBXScan/LBXZXing (~> 2.3)
+  - LBXScan/UI (~> 2.3)
+
+SPEC CHECKSUMS:
+  LBXAlertAction: c69d119d0d1224e536e3ae2e90212bb989685481
+  LBXScan: e51449f0832d1fe17da632af0d22adeb3cfa3543
+  ZBarSDK: 4c1b5daeb7d6cc67dc9355e690af0230a661f6ec
+
+PODFILE CHECKSUM: c8f30ae9be4b6345061ee585914b871dafe14b97
+
+COCOAPODS: 1.4.0

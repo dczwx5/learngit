@@ -1,0 +1,95 @@
+# 数组定义 :
+	let list: number[] = [1, 2, 3];
+	let list: Array<number> = [1, 2, 3];
+# 元组 :
+	let x:[string, number] = ['aaa', 100];
+	x[0] = 'bbb'
+	x[1] = 10;
+	x[2] = 'cccc';
+	x[3] = true; /// error 类型 不对, 这里应该是number
+# enum :
+	enum Color {Red, Green, Blue}
+	let c: Color = Color.Green;
+	->or
+	enum Color {Red = 1, Green = 2, Blue = 4}
+	let c: Color = Color.Green;
+		-> Color[2] == 'Green' // 使用数组访问。可得到枚举名
+as 
+	(obj as int) === (<int>obj);
+解构
+	1.数组
+		let [a, b] = [1,2];
+		等于
+		let a = 1;
+		let b = 2;
+		
+		function foo([a, b]:[number, number] {...};
+		等于
+		fucntion foo(a:number, b:number);
+		
+		let [a, ...other] = [1,2,3,4,5] // other == [2,3,4,5]
+		
+		let [a] = [1,2,3,4]; // a == 1
+		let [a,b,,d] = [1,2,3,4]; // ok
+	2.对象
+		let o = {a:1, b:2, c:3};
+		
+		let {a, b} = o;
+			or
+				({a, b} = {a:1, b:2}) // 这里的小括号不能省略
+		等于
+		let a = o.a; let b = o.b;
+		
+		let {a, ...other} = o;
+		other.b, other.c; // {b:2, c:3}
+	3.指定类型
+		let {a, b}:{a:number, b:number}; // 后面是类型
+	4.属性重命名
+		let {a:AA, b:BB} = o;
+		等于
+		let AA = o.a;
+		let BB = o.b;
+	5.默认值
+		let {a, b = 100} = o; // b如果为undefine时, 使用默认值100
+	6.函数参数
+		function foo({a, b}:{a:number, b:number}) ; // :{a:number, b:number}为类型
+# 全局变量
+	declare var foo: number;
+# 全局函数
+	declare function greet(greeting: string): void;
+# 函数重载
+	declare function getWidget(n: number): Widget;
+	declare function getWidget(s: string): Widget[];
+		
+# 模块 :
+	// 导出 x.ts
+	class A {}
+	export = A;
+	//
+	导入
+	import z = require('./x);
+	
+	// 导出
+	class A {} 
+	export {A}
+	// 导入
+	import {A} from './x';
+	or 
+	import {A as K} from './x'; // 重命名为K
+	or
+	import * as Z from './x'; // Z.A来访问A
+	
+	// 导出
+	export default class A {}
+	// 导入
+	import A from './x';
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

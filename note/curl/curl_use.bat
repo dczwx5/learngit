@@ -1,0 +1,1 @@
+curl -o savePath/bb.png https://www.csdn.net/app/img/wxfix.png

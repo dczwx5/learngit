@@ -1,0 +1,12 @@
+{
+    "SFSConfig": {
+        "zone": "Hall",
+        "host": ____IP____,
+        "port": "8600",
+        "pingCommand": "1000",
+        "requestTimeoutMax": 360000,
+        "debug": false,
+        "useSSL": false
+    },
+	"lang":"zh_cn"
+}

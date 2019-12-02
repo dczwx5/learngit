@@ -1,0 +1,79 @@
+# 异常
+* multiple commands produced error 
+  * https://stackoverflow.com/questions/51071090/multiple-commands-produced-error-xcode-10
+  * xcode  10 的bug， file->workspace settings, -> change  build system to legacy buildsystem
+* xcode 不支持高版本ios 
+  * https://github.com/idbeny/DeviceSupport
+  * /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/DeviceSupport  iOS包路径
+
+# pod 
+* https://www.cnblogs.com/sasuke6/p/4724116.html
+* 步骤
+  * sudo gem install cocoapods (命令行下运行, 安装pod)
+  * 在项目目录下, pod init (需要和 xproject一个目录)
+  * 修改 podfile 添加内容
+  * pod install --verbose --no-repo-update （安装）
+* 异常
+  * 第一次如果出错。会导致后面的都有问题。需要清理缓存
+  * https://www.cnblogs.com/tangranyang/p/4491134.html
+  * 路径 
+    *3
+  
+  * library not found for -ljcore-ios-2.0.0
+    * clean -> build
+
+* 密码
+  li nan：密码：zhujiagui1993
+  密码对应 @135lnZQQ
+
+# bundle, 证书, 签名
+  * bundle id就是app一个唯一标记名字
+  * 签名是让你的电脑的xcode可以打出包
+  * 证书是让你打出包可以装在什么途径上的设备上。有三种
+    * 一种签了证书是只能装在app store上下载的；
+    * 一种签了证书只能在你苹果账号注册的设备上安装的
+    * 另一种是去企业版苹果开发账号的证书，可以随意装设备，这种比较少用。
+
+# 环境配置
+* 添加子项目
+  * https://www.jianshu.com/p/6b02bab19ba3
+  * 将主项目拖入xcode (子项目是static  library)
+  * 设置依赖 
+    * target-> build phases -> link binary with libraries 添加 子项目.a
+  * 添加子工项目头文件
+    * target -> build settings -> search paths -> header search paths 添加子项目目录
+      * $(inherited)
+        * target在设置自己路径的时候如果加了这个，那么就是继承project里设置的路径。如果不需要继承就不加，要不然乱加有可能整混导致路径错误。
+      * 带引号的路径和不带引号的路径
+        * 带引号主要是预防路径里有空格导致本来一个路径变成了两个路径，因为空格分开就被解析位两个路径，所以最好路径带上引号。
+      * $(SRCROOT) / $(PROJECT_DIR)基本没啥区别，都是指向*.xcodeproj所在的路径
+      * recursive遍历该目录，non-recursive默认路径设置；不遍历该目录。
+# 打包
+* https://developer.apple.com/membercenter
+* https://blog.csdn.net/haifangnihao/article/details/79728448
+* product>archive  打包
+* Window->Organizer 发布配置 
+  * distribute app
+    * ad hoc
+
+# 证书申请等
+  # 证书 
+    * https://docs.jiguang.cn/jpush/client/iOS/ios_cer_guide/
+  # teamid : 5T27X7H98D
+  # bundleID : org.hb.wallet
+  * csr : 创建证书需要
+    * -> 用命令行打开 KeychainAccess
+    * -> certificate assistant
+    * -> request a certificate from ....
+* https://fir.im/udid
+
+# appstore connect or itunes connect
+* https://appstoreconnect.apple.com/
+
+# app 上架流程
+* https://appstoreconnect.apple.com/
+
+
+
+
+
